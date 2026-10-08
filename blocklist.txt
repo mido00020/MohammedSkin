@@ -1,0 +1,12 @@
+# MohammedSkin - adult poster blocklist
+# The skin reads this file every few hours. Anything listed here gets no poster,
+# backdrop or scenes on every receiver, without updating the skin.
+#
+# One entry per line:
+#   tmdb:movie:12345      a film by its TMDB number (from the themoviedb.org address)
+#   tmdb:tv:67890         a series by its TMDB number
+#   title:some title      an EPG title (exact, any case)
+#   word:something        any EPG title or description containing this word
+#   channel:channel name  any channel whose name contains this text
+# Lines starting with # are ignored.
+
