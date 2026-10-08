@@ -6,7 +6,8 @@ Works on **OpenViX**, **OpenBlackHole**, **OpenATV**, **PurE2** and **EGAMI**. T
 
 - The image name glows in the middle of the infobar (OpenViX, OpenBlackHole, OpenATV, PurE2, EGAMI)
 - Posters, backdrops and scenes fetched online (kept in RAM only, nothing saved to flash)
-- Infobar styles: classic, four 3D poster designs (cinema, hologram, film reel, diagonal) and four framed poster designs
+- Infobar styles: classic, four 3D poster designs (cinema, hologram, film reel, diagonal), four framed poster designs, two compact designs, the clock arch, a glass panel with a round channel badge, and a curved bar with a round poster and running lights in the theme colour
+- Inside every infobar: date and day, receiver temperature, receiver IP, an IPTV mark for streams, and the softcam with its ECM time and server
 - Second infobar styles: classic, backdrop with four scenes, or backdrop with two scenes
 - Rating stars, rating, year and genre of films and series
 - Infobar poster in the bar, or above the bar and larger
