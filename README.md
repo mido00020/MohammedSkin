@@ -12,7 +12,7 @@ Works on **OpenViX**, **OpenBlackHole**, **OpenATV**, **PurE2** and **EGAMI**. T
 - Rating stars, rating, year and genre of films and series
 - Infobar poster in the bar, or above the bar and larger
 - Main menu styles: classic, black glass, ivory white, 3D tiles, neon glass
-- Channel list styles: classic, 3D lists with a white, black glass or colour panel, and seven 3D designs (premium glass, neon focus, cinema carousel, cover flow, vertical icons, futuristic, golden)
+- Channel list styles: classic, 3D lists with a white, black glass or colour panel, seven 3D designs (premium glass, neon focus, cinema carousel, cover flow, vertical icons, futuristic, golden), glass designs with tabs, side picture, big logos, neon and featured card, cinema tickets with a lit marquee board (one big picture, or poster with details and the next programme), and retro neon with a moving 3D grid floor
 - Channel list text size (small to extra large) and row size (compact to extra large), for every channel list style
 - Plugin list text size (small to extra large)
 - First infobar transparency: very transparent, transparent, normal, dark, very dark
