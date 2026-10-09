@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.54"
+SKIN_VERSION = "2.1.55"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4087,6 +4087,117 @@ def _borrow_styles():
 		print("[MohammedSkin] image skin styles: %s" % e)
 
 
+_KEYPIX = re.compile(r"(?i)(?:^|[/_-])(red|green|yellow|blue)(?:[_-]?(?:button|key|small|big|hd|fhd))?\.(?:png|svg)$")
+_FONT_SPEC = re.compile(r"^\s*([^;]+);\s*(\d+)\s*$")
+_COLOR_ATTRS = ("foregroundColor", "backgroundColor", "foregroundColorSelected", "backgroundColorSelected", "borderColor",
+	"shadowColor", "scrollbarSliderForegroundColor", "scrollbarSliderBorderColor", "scrollbarBackgroundColor",
+	"scrollbarForegroundColor", "scrollbarBorderColor")
+_LIST_RENDERS = ("Listbox", "ChannelSelectionHorizontal")
+
+
+def _our_font(spec, title=False):
+	m = _FONT_SPEC.match(spec or "")
+	if not m:
+		return spec
+	fam, size = m.group(1).strip().lower(), m.group(2)
+	if title:
+		return "Title;%s" % size
+	if "mono" in fam or "console" in fam or "fixed" in fam:
+		return "Fixed;%s" % size
+	if "bold" in fam or "semi" in fam or "medium" in fam or "title" in fam or "head" in fam or "black" in fam:
+		return "Semi;%s" % size
+	return "Regular;%s" % size
+
+
+def _wh(e):
+	try:
+		w, h = [int(v) for v in e.attrib.get("size", "0,0").split(",")]
+		return w, h
+	except ValueError:
+		return 0, 0
+
+
+def _restyle(elem, panel=False):
+	"""The image skin's window with its layout kept (positions, sizes, widgets, font sizes) and this skin's
+	look: its background, accent line, fonts and theme colours; the image skin's own graphics are left out."""
+	W, H = _wh(elem)
+	if not W and elem.attrib.get("position", "").strip() == "fill":
+		W, H = [int(v) for v in (_borrow.get("res") or "1920,1080").split(",")]
+	if not panel:
+		elem.attrib["backgroundColor"] = "transparent"
+		elem.attrib["flags"] = "wfNoBorder"
+	for e in list(elem):
+		tag = e.tag
+		w, h = _wh(e)
+		if tag == "ePixmap":
+			m = _KEYPIX.search(e.attrib.get("pixmap", ""))
+			elem.remove(e)
+			if m and w and h:  # a colour key picture becomes this skin's key dot
+				try:
+					x, y = [int(v) for v in e.attrib.get("position", "0,0").split(",")]
+				except ValueError:
+					continue
+				d = 18
+				dot = {"position": "%d,%d" % (x + 2, y + max(0, (h - d) // 2)), "size": "%d,%d" % (d, d),
+					"backgroundColor": "key" + m.group(1).lower(), "zPosition": "1"}
+				from xml.etree.ElementTree import Element
+				elem.append(Element("eLabel", dot))
+			continue
+		if tag == "eLabel":
+			big = (W and H and w >= W * 0.6 and h >= H * 0.4) or (panel and not W and w >= 600 and h >= 300)
+			if big and not e.attrib.get("text"):
+				elem.remove(e)  # the image skin's window background: ours comes instead
+				continue
+			if e.attrib.get("text"):
+				e.attrib["font"] = _our_font(e.attrib.get("font", "Regular;24"))
+				e.attrib["foregroundColor"] = "ivorydim"
+				e.attrib["backgroundColor"] = "panel"
+				e.attrib["transparent"] = "1"
+			elif (h and h <= 4) or (w and w <= 4):
+				e.attrib["backgroundColor"] = "line"  # thin lines
+			else:  # boxes and bars: this skin's panel, or its accent where the image skin had a coloured bar
+				c = e.attrib.get("backgroundColor", "")
+				val = _borrow.get("colors", {}).get(c, c if c.startswith("#") else "")
+				e.attrib["backgroundColor"] = "crimson" if val and _color_target(val, c) == "crimson" else "panel"
+			for a in ("backgroundPixmap", "pixmap"):
+				e.attrib.pop(a, None)
+			continue
+		if tag == "widget":
+			a = e.attrib
+			title = a.get("source") == "Title"
+			if "font" in a:
+				a["font"] = _our_font(a["font"], title)
+			render = a.get("render", "")
+			is_list = render in _LIST_RENDERS or a.get("name") in ("list", "config", "menu", "filelist", "entries", "menulist") or "itemHeight" in a
+			for k in ("selectionPixmap", "selectionPixmapLarge", "backgroundPixmap", "scrollbarSliderPicture", "scrollbarbackgroundPicture",
+					"scrollbarBackgroundPicture", "sliderPixmap", "itemCornerRadius", "itemCornerRadiusSelected", "cornerRadius"):
+				a.pop(k, None)
+			if render == "Progress" or render == "PositionGauge":
+				a.pop("pixmap", None)
+				a["foregroundColor"] = "crimson"
+				a["backgroundColor"] = "line"
+				continue
+			if is_list:
+				a["foregroundColor"] = "ivory"
+				a["backgroundColor"] = "panel"
+				a["foregroundColorSelected"] = "white"
+				a["backgroundColorSelected"] = "crimson"
+				a["transparent"] = "1"
+			elif "font" in a or render in ("Label", "FixedLabel", "VRunningText", "RunningText") or (not render and not a.get("pixmap") and not a.get("pixmaps")):
+				a["foregroundColor"] = "ivory" if title or "font" not in a or int((_FONT_SPEC.match(a["font"]) or [0, 0, "0"])[2]) >= 30 else "ivorydim"
+				a["backgroundColor"] = "panel"
+				a["transparent"] = "1"
+				a.pop("backgroundColorSelected", None)
+			for k in ("borderColor", "shadowColor"):
+				a.pop(k, None)
+			continue
+	if not panel and W and H:
+		from xml.etree.ElementTree import Element
+		elem.insert(0, Element("eLabel", {"position": "0,0", "size": "%d,%d" % (W, H), "backgroundColor": "panel", "zPosition": "-1"}))
+		elem.insert(1, Element("eLabel", {"position": "0,0", "size": "%d,4" % W, "backgroundColor": "crimson", "zPosition": "1"}))
+	return elem
+
+
 def _register_borrowed(name):
 	"""Put the image skin's window (and the panels it uses) where the skin reader finds it."""
 	import skin as S
@@ -4095,7 +4206,7 @@ def _register_borrowed(name):
 	if src is None:
 		return False
 	_borrow_styles()
-	elem = deepcopy(src)
+	elem = _restyle(deepcopy(src))
 	# the panels it uses come from the image skin too, under their own names (other windows keep theirs)
 	todo = [elem]
 	while todo:
@@ -4106,7 +4217,7 @@ def _register_borrowed(name):
 				new = "msimg_" + pn
 				p.attrib["name"] = new
 				if new not in S.domScreens:
-					pe = deepcopy(_borrow["screens"][pn])
+					pe = _restyle(deepcopy(_borrow["screens"][pn]), panel=True)
 					S.domScreens[new] = (pe, _borrow["dir"])
 					todo.append(pe)
 	res = _borrow.get("res")
