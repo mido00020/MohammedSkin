@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.50"
+SKIN_VERSION = "2.1.51"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -3538,6 +3538,20 @@ def _small(w, h, pos=""):
 	return True
 
 
+_FONT_SIZE = re.compile(r'font\s*=\s*"[^";]*;\s*(\d+)')
+_ITEM_H = re.compile(r'itemHeight\s*=\s*"\s*(\d+)')
+
+
+def _made_for_fhd(text):
+	"""Windows already drawn for full HD (big fonts, tall rows) must not be enlarged again,
+	even when they are small: that is what made some plugin windows too big."""
+	sizes = sorted(int(x) for x in _FONT_SIZE.findall(text or ""))
+	rows = [int(x) for x in _ITEM_H.findall(text or "")]
+	if sizes and sizes[len(sizes) // 2] >= 25:
+		return True
+	return bool(rows) and max(rows) >= 45
+
+
 def fit_skin_text(text, name=""):
 	"""The same skin text with resolution="1280,720" added to its first <screen> when that window is small."""
 	if isinstance(text, (list, tuple)):
@@ -3551,7 +3565,7 @@ def fit_skin_text(text, name=""):
 	if "resolution=" in tag or " id=" in tag:
 		return text
 	sm = _SIZE_ATTR.search(tag)
-	if not sm or not _small(int(sm.group(1)), int(sm.group(2)), tag):
+	if not sm or not _small(int(sm.group(1)), int(sm.group(2)), tag) or _made_for_fhd(text):
 		return text
 	return text[:m.start()] + '<screen resolution="%s"' % FIT_RES + tag[len("<screen"):] + text[m.end():]
 
@@ -3574,7 +3588,8 @@ def _fit_dom(names=None):
 			if [k for k in _NOT_TV if k in (name or "").lower()]:
 				continue
 			sm = _SIZE_ATTR.search('size="%s"' % elem.attrib.get("size", ""))
-			if sm and _small(int(sm.group(1)), int(sm.group(2)), 'position="%s"' % elem.attrib.get("position", "")):
+			if sm and _small(int(sm.group(1)), int(sm.group(2)), 'position="%s"' % elem.attrib.get("position", "")) and not _made_for_fhd(
+					" ".join('font="%s" itemHeight="%s"' % (e.attrib.get("font", ""), e.attrib.get("itemHeight", "")) for e in elem.iter())):
 				elem.attrib["resolution"] = FIT_RES
 		except Exception:
 			pass
@@ -3701,6 +3716,13 @@ def _orig_positions(screen, names):
 	pos = {}
 	if elem is None:
 		return pos
+	try:  # the size the plugin's window has on a full HD screen
+		w, h = [int(v) for v in elem.attrib.get("size", "0,0").split(",")]
+		res = elem.attrib.get("resolution", "")
+		hd = res.startswith("1280") or (not res and not _made_for_fhd(" ".join('font="%s"' % e.attrib.get("font", "") for e in elem.iter())))
+		pos["__width__"] = int(w * 1.5) if hd else w
+	except Exception:
+		pass
 	for w in elem.iter("widget"):
 		key = w.attrib.get("name") or w.attrib.get("source")
 		try:
@@ -3725,7 +3747,8 @@ def plan_auto_screen(parts, pos):
 	scrolls = [n for n, k in parts if k == "scroll"]
 	texts = [(n, k) for n, k in parts if k in ("label", "static")]
 	# only the labels the plugin's own design shows (screens carry a few empty helpers)
-	texts = [t for t in texts if t[0] in pos] if pos else [t for t in texts if t[0] != "title"]
+	shown = [k for k in pos if not k.startswith("__")]
+	texts = [t for t in texts if t[0] in shown] if shown else [t for t in texts if t[0] != "title"]
 	keys = {}
 	for n, k in parts:
 		m = _KEY_RE.match(n)
@@ -3740,6 +3763,8 @@ def plan_auto_screen(parts, pos):
 	above = sorted([t for t in texts if pos.get(t[0], 9999) < mainY], key=lambda t: pos.get(t[0], 0))
 	below = sorted([t for t in texts if t not in above], key=lambda t: pos.get(t[0], 9999))
 	W, H = (1600, 900) if scrolls else (1400, 860)
+	if lists and 0 < pos.get("__width__", 9999) < 1000:  # a small window (e.g. a list of a few cams): a smaller frame
+		W, H = 1150, 740
 	x, w = 50, W - 100
 	out = ['<screen name="MohammedAuto" position="center,center" size="%d,%d" backgroundColor="transparent" flags="wfNoBorder">' % (W, H),
 		'<eLabel position="0,0" size="%d,%d" backgroundColor="panel" zPosition="-1" />' % (W, H),
@@ -3834,6 +3859,68 @@ def auto_window(screen, names):
 	return name
 
 
+_KEYS4 = ("red", "green", "yellow", "blue")
+_keys_done = set()  # windows already checked (kept out of the window's own attributes)
+
+
+def ensure_keys(screen, names):
+	"""A window of this skin that shows none of the colour keys the screen offers gets a key row added
+	under it (the window grows by one row), so the keys of every window can always be seen."""
+	try:
+		import skin as S
+		from xml.etree.ElementTree import SubElement
+	except Exception:
+		return
+	elem = None
+	for n in names:
+		item = S.domScreens.get(n)
+		if item:
+			if (item[1] or "").startswith(SKIN_DIR):
+				elem = item[0]
+			break
+	if elem is None or id(elem) in _keys_done:
+		return
+	used = set()
+	for w in elem.iter("widget"):
+		used.add(w.attrib.get("name") or w.attrib.get("source") or "")
+	if any(("key_" + c) in used for c in _KEYS4):
+		_keys_done.add(id(elem))  # the design shows its keys itself
+		return
+	keys = []
+	for c in _KEYS4:
+		k = "key_" + c
+		if k in screen:
+			kind = _kind(k, screen[k])
+			if kind in ("keyLabel", "keyStatic"):
+				keys.append((c, k, kind))
+	if not keys:
+		return  # nothing to show (the same screen class may show keys another time: check again then)
+	try:
+		w, h = [int(v) for v in elem.attrib.get("size", "0,0").split(",")]
+	except ValueError:
+		return
+	pos = elem.attrib.get("position", "")
+	if w < 700 or h < 300 or h > 1000 or not pos.replace(" ", "").startswith("center"):
+		_keys_done.add(id(elem))
+		return
+	for e in list(elem):  # the window background grows with the window
+		if e.tag == "eLabel" and e.attrib.get("size", "").replace(" ", "") == "%d,%d" % (w, h):
+			e.attrib["size"] = "%d,%d" % (w, h + 56)
+	elem.attrib["size"] = "%d,%d" % (w, h + 56)
+	step = (w - 100) // 4
+	for i, (c, k, kind) in enumerate(keys):
+		x = 50 + i * step
+		SubElement(elem, "eLabel", {"position": "%d,%d" % (x, h + 15), "size": "18,18", "backgroundColor": "key" + c, "zPosition": "3"})
+		a = {"position": "%d,%d" % (x + 28, h + 4), "size": "%d,40" % (step - 40), "font": "Regular;24", "foregroundColor": "ivory",
+			"backgroundColor": "panel", "valign": "center", "transparent": "1", "noWrap": "1", "zPosition": "3"}
+		if kind == "keyStatic":
+			a.update({"source": k, "render": "Label"})
+		else:
+			a["name"] = k
+		SubElement(elem, "widget", a)
+	_keys_done.add(id(elem))
+
+
 _reader = []
 
 
@@ -3857,6 +3944,7 @@ def install_auto_windows():
 				auto = auto_window(screen, names)
 				if auto:
 					return orig(screen, skin, [auto] + names, desktop)
+				ensure_keys(screen, names)
 		except Exception as e:
 			print("[MohammedSkin] auto window: %s" % e)
 		return orig(screen, skin, names, desktop)

@@ -830,10 +830,22 @@
 		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
 		<widget source="Title" render="Label" position="50,28" size="1300,68" font="Title;46" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
 		<eLabel position="50,110" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="config" position="50,130" size="1300,560" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
-		<eLabel position="50,708" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="description" position="50,724" size="1300,110" font="Regular;24" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="2" />
-		<widget name="footnote" conditional="footnote" position="50,838" size="1300,20" font="Regular;17" foregroundColor="smoke" backgroundColor="panel" transparent="1" zPosition="2" />
+		<widget name="config" position="50,130" size="1300,520" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="50,664" size="1300,1" backgroundColor="line" zPosition="1" />
+		<widget name="description" position="50,676" size="1300,92" font="Regular;24" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="2" />
+		<widget name="footnote" conditional="footnote" position="50,770" size="1300,26" font="Regular;19" foregroundColor="smoke" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="50,814" size="18,18" backgroundColor="keyred" zPosition="1" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="78,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="78,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="375,814" size="18,18" backgroundColor="keygreen" zPosition="1" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="403,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="403,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="700,814" size="18,18" backgroundColor="keyyellow" zPosition="1" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="728,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="728,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="1025,814" size="18,18" backgroundColor="keyblue" zPosition="1" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="1053,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="1053,804" size="285,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
 		<widget name="HelpWindow" conditional="HelpWindow" position="0,1100" size="4,4" pixmap="/usr/share/enigma2/MohammedSkin/img/blank.png" alphatest="on" zPosition="-1" />
 	</screen>
 
