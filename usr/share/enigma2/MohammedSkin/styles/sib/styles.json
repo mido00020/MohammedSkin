@@ -1,0 +1,12 @@
+{
+ "order": [
+  "classic",
+  "scenes4",
+  "scenes2"
+ ],
+ "labels": {
+  "classic": "Classic",
+  "scenes4": "1  Backdrop + four scenes",
+  "scenes2": "2  Backdrop + two scenes"
+ }
+}

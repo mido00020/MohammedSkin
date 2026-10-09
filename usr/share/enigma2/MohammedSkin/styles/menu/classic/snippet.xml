@@ -1,0 +1,17 @@
+	<!-- MENU START (classic) -->
+	<screen name="Menu" position="center,center" size="1200,800" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1200,800" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1200,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="50,28" size="1100,68" font="Title;46" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
+		<eLabel position="50,110" size="1100,1" backgroundColor="line" zPosition="1" />
+		<widget source="menu" render="Listbox" position="50,130" size="1100,616" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2">
+			<convert type="TemplatedMultiContent">
+				{"template": [ MultiContentEntryText(pos = (30, 0), size = (1040, 56), flags = RT_HALIGN_LEFT | RT_VALIGN_CENTER, text = 0) ],
+				"fonts": [gFont("Regular", 30)],
+				"itemHeight": 56
+				}
+			</convert>
+		</widget>
+		<widget name="menuimage" conditional="menuimage" position="0,0" size="2,2" transparent="1" zPosition="-1" />
+	</screen>
+	<!-- MENU END -->

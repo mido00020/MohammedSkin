@@ -1,0 +1,16 @@
+{
+ "order": [
+  "classic",
+  "glass",
+  "ivory",
+  "tiles",
+  "neon"
+ ],
+ "labels": {
+  "classic": "Classic",
+  "glass": "1  Black glass",
+  "ivory": "2  Ivory white",
+  "tiles": "3  3D tiles",
+  "neon": "4  Neon glass"
+ }
+}

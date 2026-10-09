@@ -1,0 +1,10 @@
+		<!-- IBPOSTER START (left) -->
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/card_ib.png" position="70,794" size="168,252" alphatest="blend" zPosition="3" />
+		<widget source="session.CurrentService" render="Picon" position="84,860" size="140,84" alphatest="blend" zPosition="3">
+			<convert type="ServiceName">Reference</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="78,948" size="152,76" font="Semi;18" halign="center" valign="top" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" zPosition="3">
+			<convert type="ServiceName">Name</convert>
+		</widget>
+		<widget source="session.Event_Now" render="MohammedPoster" kind="poster" fill="#00060304" cornerRadius="19" position="70,794" size="168,252" zPosition="4" />
+		<!-- IBPOSTER END -->

@@ -1,0 +1,13 @@
+{
+ "red": {"label": "Red", "ink": "#060304", "accent": "#C8102E", "accent2": "#FF5A4E", "neon": "#FF1E2A", "sel_a": "#8E0A1F", "sel_b": "#D8293F", "line": "#2A2627", "ivorydim": "#B9B3AB"},
+ "blue": {"label": "Blue", "ink": "#03050B", "accent": "#1460F0", "accent2": "#5AA2FF", "neon": "#2E8BFF", "sel_a": "#0B3A9C", "sel_b": "#2A7BFF", "line": "#222838", "ivorydim": "#AEB6C6"},
+ "turquoise": {"label": "Turquoise", "ink": "#020807", "accent": "#00A39A", "accent2": "#3FE3D2", "neon": "#18E0CF", "sel_a": "#006A64", "sel_b": "#13BFB2", "line": "#1C2B2A", "ivorydim": "#A9BDBA"},
+ "gold": {"label": "Gold", "ink": "#070604", "accent": "#B8892E", "accent2": "#F2C46B", "neon": "#FFC94D", "sel_a": "#7A5A1C", "sel_b": "#C99A3C", "line": "#2C2820", "ivorydim": "#BDB4A2"},
+ "black": {"label": "Black", "ink": "#000000", "accent": "#9AA3AE", "accent2": "#E9EDF2", "neon": "#FFFFFF", "sel_a": "#2B2F36", "sel_b": "#5E6672", "line": "#26282C", "ivorydim": "#B4B8BE"},
+ "purple": {"label": "Purple", "ink": "#06040A", "accent": "#8E3BD9", "accent2": "#C58BFF", "neon": "#B45CFF", "sel_a": "#5A1E96", "sel_b": "#9C4BEA", "line": "#2A2433", "ivorydim": "#B7B0C2"},
+ "emerald": {"label": "Emerald green", "ink": "#030805", "accent": "#10A35A", "accent2": "#4BE08F", "neon": "#1DF08A", "sel_a": "#0A6A3A", "sel_b": "#19B86A", "line": "#1E2B23", "ivorydim": "#ABBDB2"},
+ "orange": {"label": "Orange", "ink": "#080503", "accent": "#E8681A", "accent2": "#FFA45C", "neon": "#FF8A2A", "sel_a": "#9C3F0A", "sel_b": "#F07A2A", "line": "#2D2620", "ivorydim": "#C0B5AA"},
+ "rose": {"label": "Rose pink", "ink": "#080406", "accent": "#D6337A", "accent2": "#FF7FB3", "neon": "#FF4F9A", "sel_a": "#8E1A4E", "sel_b": "#E2488C", "line": "#2D2429", "ivorydim": "#C0B1B8"},
+ "sky": {"label": "Sky blue (fayrouzi)", "ink": "#02060A", "accent": "#1EA7E0", "accent2": "#6FD3FF", "neon": "#3CC8FF", "sel_a": "#0E6A93", "sel_b": "#2BB4EC", "line": "#1D2830", "ivorydim": "#A9BAC4"},
+ "white": {"label": "White", "ink": "#050506", "accent": "#DDE1E6", "accent2": "#FFFFFF", "neon": "#FFFFFF", "sel_a": "#5C636C", "sel_b": "#A3AAB3", "line": "#2E3033", "ivorydim": "#C9CDD2", "sel_accent": "#707882"}
+}

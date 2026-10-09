@@ -1,0 +1,192 @@
+	<!-- IB START (s1) -->
+	<screen name="InfoBar" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_s1_bg.png" position="0,748" size="1920,332" alphatest="blend" zPosition="0" />
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cornerRadius="24" position="760,740" size="604,340" zPosition="1" />
+		<!-- poster with a glowing frame -->
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_pframe.png" position="40,750" size="234,330" alphatest="blend" zPosition="3" />
+		<widget source="session.CurrentService" render="Picon" position="64,840" size="186,111" alphatest="blend" zPosition="3">
+			<convert type="ServiceName">Reference</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="58,960" size="198,60" font="Semi;20" halign="center" valign="top" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" zPosition="3">
+			<convert type="ServiceName">Name</convert>
+		</widget>
+		<widget source="session.Event_Now" render="MohammedPoster" kind="poster" fill="#00060304" cornerRadius="19" position="52,762" size="210,306" zPosition="4" />
+		<widget source="session.CurrentService" render="Picon" position="300,776" size="150,60" alphatest="blend" zPosition="4">
+			<convert type="ServiceName">Reference</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="460,776" size="70,60" font="Title;34" halign="left" valign="center" foregroundColor="crimson" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedInfo">Number</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="530,776" size="340,60" font="Regular;27" halign="left" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="ServiceName">Name</convert>
+		</widget>
+		<!-- CLOCK START (royal) -->
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/clock/dial.png" position="853,645" size="215,215" alphatest="blend" zPosition="5" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="hour" frames="/usr/share/enigma2/MohammedSkin/clock/hour_%03d.png" count="120" position="853,645" size="215,215" alphatest="blend" zPosition="6" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="minute" frames="/usr/share/enigma2/MohammedSkin/clock/min_%03d.png" count="180" position="853,645" size="215,215" alphatest="blend" zPosition="7" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="second" frames="/usr/share/enigma2/MohammedSkin/clock/sec_%03d.png" count="240" interval="250" position="853,645" size="215,215" alphatest="blend" zPosition="8" />
+		<!-- CLOCK END -->
+		<!-- DOTS OFFSET 0,4 -->
+		<!-- DOTS START (normal) -->
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/dots_%02d.png" count="12" interval="90" position="780,860" size="360,30" alphatest="blend" zPosition="3" />
+		<!-- DOTS END -->
+		<!-- name of the image this box runs (OpenViX, OpenBlackHole, OpenATV, PurE2, EGAMI) -->
+		<widget source="global.CurrentTime" render="Label" position="740,856" size="440,38" font="Title;28" halign="center" valign="center" foregroundColor="neonred" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+			<convert type="MohammedInfo">ImageName</convert>
+		</widget>
+		<eLabel position="300,898" size="1050,1" backgroundColor="line" zPosition="4" />
+		<widget source="session.Event_Now" render="Label" position="300,902" size="1040,70" font="Title;54" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="EventName">Name</convert>
+		</widget>
+		<widget source="session.Event_Now" render="Label" position="300,974" size="76,32" font="Regular;23" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="EventTime">StartTime</convert>
+			<convert type="ClockToText">Format:%H:%M</convert>
+		</widget>
+		<widget source="session.Event_Now" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_track_600.png" position="382,987" size="600,6" alphatest="blend" zPosition="4">
+			<convert type="MohammedInfo">HasEvent</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<widget source="session.Event_Now" render="Progress" pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_prog_600.png" position="382,987" size="600,6" transparent="1" zPosition="5">
+			<convert type="EventTime">Progress</convert>
+		</widget>
+		<widget source="session.Event_Now" render="Label" position="992,974" size="76,32" font="Regular;23" halign="left" valign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="EventTime">EndTime</convert>
+			<convert type="ClockToText">Format:%H:%M</convert>
+		</widget>
+		<widget source="session.Event_Now" render="Label" position="1072,974" size="190,32" font="Regular;23" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedInfo">Remaining</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_hd.png" position="300,1030" size="42,26" alphatest="blend" zPosition="4">
+			<convert type="MohammedInfo">IsHD</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_uhd.png" position="300,1030" size="42,26" alphatest="blend" zPosition="4">
+			<convert type="MohammedInfo">IsUHD</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/tag_frame70.png" position="350,1030" size="70,26" alphatest="blend" zPosition="4" />
+		<widget source="session.CurrentService" render="Label" position="350,1030" size="70,26" font="Semi;16" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5">
+			<convert type="MohammedInfo">Resolution</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_dd.png" position="428,1030" size="44,26" alphatest="blend" zPosition="4">
+			<convert type="MohammedInfo">IsDolby</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/icon_lock.png" position="482,1030" size="22,26" alphatest="blend" zPosition="4">
+			<convert type="MohammedInfo">IsCrypted</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<!-- transponder line: pulsing glow in the theme colour -->
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/ibx_tp_%02d.png" count="24" interval="70" position="520,1021" size="560,44" alphatest="blend" zPosition="3" />
+		<widget source="session.CurrentService" render="Label" position="540,1030" size="76,26" font="Semi;20" halign="center" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedTransponder">Orbital</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="618,1030" size="78,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedTransponder">Frequency</convert>
+		</widget>
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_pol.png" position="700,1030" size="26,26" alphatest="blend" zPosition="4" />
+		<widget source="session.CurrentService" render="Label" position="700,1030" size="26,26" font="Semi;17" halign="center" valign="center" foregroundColor="white" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+			<convert type="MohammedTransponder">Polarization</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="732,1030" size="80,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedTransponder">SymbolRate</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="814,1030" size="56,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedTransponder">FEC</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="872,1030" size="84,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedTransponder">Modulation</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="958,1030" size="60,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedTransponder">System</convert>
+		</widget>
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_card_510x162.png" position="1384,756" size="510,162" alphatest="blend" zPosition="1" />
+		<eLabel text="SNR" position="1414,778" size="64,34" font="Regular;25" valign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="4" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_meter_track_280.png" position="1480,792" size="280,6" alphatest="blend" zPosition="4" />
+		<widget source="session.FrontendStatus" render="Progress" pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_meter_280.png" position="1480,788" size="280,14" transparent="1" zPosition="5">
+			<convert type="FrontendInfo">SNR</convert>
+		</widget>
+		<widget source="session.FrontendStatus" render="Label" position="1768,768" size="96,52" font="Title;42" halign="right" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="FrontendInfo">SNR</convert>
+		</widget>
+		<eLabel text="AGC" position="1414,862" size="64,34" font="Regular;25" valign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="4" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_meter_track_280.png" position="1480,876" size="280,6" alphatest="blend" zPosition="4" />
+		<widget source="session.FrontendStatus" render="Progress" pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_meter_280.png" position="1480,872" size="280,14" transparent="1" zPosition="5">
+			<convert type="FrontendInfo">AGC</convert>
+		</widget>
+		<widget source="session.FrontendStatus" render="Label" position="1768,852" size="96,52" font="Title;42" halign="right" valign="center" foregroundColor="signal" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="FrontendInfo">AGC</convert>
+		</widget>
+		<widget source="session.FrontendStatus" render="Label" position="1480,824" size="280,27" font="Semi;22" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="FrontendInfo">SNRdB</convert>
+		</widget>
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_card_510x156.png" position="1384,920" size="510,156" alphatest="blend" zPosition="1" />
+		<widget source="session.Event_Next" render="MohammedPoster" kind="poster" fill="#00060304" cornerRadius="12" position="1406,940" size="64,96" zPosition="4" />
+		<widget source="session.Event_Next" render="Label" position="1486,940" size="80,28" font="Regular;20" halign="left" valign="center" foregroundColor="brass" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedInfo">Text:Next at</convert>
+		</widget>
+		<widget source="session.Event_Next" render="Label" position="1566,940" size="80,28" font="Regular;20" halign="left" valign="center" foregroundColor="brass" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="EventTime">StartTime</convert>
+			<convert type="ClockToText">Format:%H:%M</convert>
+		</widget>
+		<widget source="session.Event_Next" render="Label" position="1486,970" size="388,36" font="Semi;27" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="EventName">Name</convert>
+		</widget>
+		<widget source="session.Event_Next" render="Label" position="1486,1006" size="388,26" font="Regular;19" halign="left" valign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedInfo">Duration</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/dot_green.png" position="1486,1040" size="20,20" alphatest="blend" zPosition="5">
+			<convert type="MohammedEcm">IsConnected</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/dot_red.png" position="1486,1040" size="20,20" alphatest="blend" zPosition="5">
+			<convert type="MohammedEcm">NotConnected</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="1512,1036" size="80,28" font="Semi;19" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedEcm">Cam</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="1594,1036" size="280,28" font="Regular;19" halign="left" valign="center" foregroundColor="okgreen" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+			<convert type="MohammedEcm">Short</convert>
+		</widget>
+		<!-- widgets some images ask for; hidden -->
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<!-- WEATHER START (card) -->
+		<widget source="global.CurrentTime" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/weather_card.png" position="1470,36" size="410,132" alphatest="blend" zPosition="6"><convert type="MohammedWeather">HasWeather</convert><convert type="ConditionalShowHide" /></widget>
+		<widget source="global.CurrentTime" render="MohammedWeatherIcon" icons="/usr/share/enigma2/MohammedSkin/weather/96/%s.png" position="1484,54" size="96,96" alphatest="blend" zPosition="7" />
+		<widget source="global.CurrentTime" render="Label" position="1588,44" size="150,76" font="Title;64" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="7"><convert type="MohammedWeather">Temp</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1720,52" size="144,34" font="Semi;24" halign="right" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="7"><convert type="MohammedWeather">City</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1720,88" size="144,30" font="Regular;22" halign="right" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="7"><convert type="MohammedWeather">MinMax</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1590,124" size="274,34" font="Regular;24" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="7"><convert type="MohammedWeather">Condition</convert></widget>
+		<!-- WEATHER END -->
+			<!-- SIGNAL BIGGER -->
+		<!-- INFO START -->
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/st_cal.png" position="1090,1033" size="22,22" alphatest="blend" zPosition="6" />
+		<widget source="global.CurrentTime" render="Label" position="1118,1028" size="178,32" font="Regular;19" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="6">
+			<convert type="ClockToText">Format:%a %d.%m.%Y</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/st_temp.png" position="1298,1033" size="22,22" alphatest="blend" zPosition="6">
+			<convert type="MohammedBox">HasTemp</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="1324,1028" size="62,32" font="Regular;19" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="6">
+			<convert type="MohammedBox">Temp</convert>
+		</widget>
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/st_net.png" position="1414,834" size="22,22" alphatest="blend" zPosition="6" />
+		<widget source="session.CurrentService" render="Label" position="1442,830" size="132,30" font="Regular;18" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="6">
+			<convert type="MohammedBox">IP</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_iptv.png" position="538,1030" size="54,26" alphatest="blend" zPosition="7">
+			<convert type="MohammedBox">IPTV</convert>
+			<convert type="ConditionalShowHide" />
+		</widget>
+		<!-- INFO END -->
+	</screen>
+	<!-- IB END -->

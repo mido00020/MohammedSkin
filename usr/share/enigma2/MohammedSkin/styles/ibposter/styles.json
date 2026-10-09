@@ -1,0 +1,10 @@
+{
+ "order": [
+  "left",
+  "top"
+ ],
+ "labels": {
+  "left": "In the bar (left)",
+  "top": "Above the bar, larger"
+ }
+}

@@ -1,0 +1,59 @@
+	<!-- CHANNELS START (thumbs) -->
+	<screen name="ChannelSelection" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/cl3_bg.png" position="0,0" size="1920,1080" alphatest="blend" zPosition="0" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_strip_bg.png" position="20,20" size="130,1040" alphatest="blend" zPosition="2" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/cl4_strip_%02d.png" count="34" interval="90" position="30,160" size="110,760" alphatest="blend" zPosition="3" />
+		<widget name="list" position="176,40" size="800,896" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/cl4_thumb_sel.png" backgroundPixmap="/usr/share/enigma2/MohammedSkin/img/cl4_thumb_row.png" backgroundColor="ink" foregroundColor="ivory" foregroundColorSelected="white" foregroundColorEvent="ivorydim" foregroundColorEventSelected="white" foregroundColorServiceNotAvail="smoke" foregroundColorMarked="ink" foregroundColorMarkedSelected="white" backgroundColorMarked="brass" backgroundColorMarkedSelected="ember" serviceItemHeight="112" serviceNumberFont="Title;30" serviceNameFont="Semi;33" serviceInfoFont="Regular;25" progressBarWidth="90" progressbarHeight="6" colorEventProgressbar="ember" colorEventProgressbarSelected="white" colorEventProgressbarBorder="ink" colorEventProgressbarBorderSelected="ember" colorServiceDescription="ivorydim" colorServiceDescriptionSelected="white" fieldMargins="24" transparent="1" scrollbarMode="showOnDemand" zPosition="4" />
+		<widget source="global.CurrentTime" render="Label" position="1460,34" size="200,32" font="Semi;24" halign="right" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+			<convert type="ClockToText">Format:%A</convert>
+		</widget>
+		<widget source="global.CurrentTime" render="Label" position="1460,66" size="200,32" font="Regular;24" halign="right" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+			<convert type="ClockToText">Format:%e %B</convert>
+		</widget>
+		<eLabel position="1678,36" size="2,60" backgroundColor="line" zPosition="5" />
+		<widget source="global.CurrentTime" render="Label" position="1692,30" size="170,70" font="Title;60" halign="right" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+			<convert type="ClockToText">Format:%H:%M</convert>
+		</widget>
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_side_pic.png" position="960,110" size="940,600" alphatest="blend" zPosition="2" />
+		<widget source="ServiceEvent" render="MohammedPoster" kind="backdrop" event="now" delay="450" fill="#00060304" cornerRadius="22" position="982,132" size="896,556" zPosition="5" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_side_info.png" position="960,722" size="940,296" alphatest="blend" zPosition="2" />
+		<widget source="ServiceEvent" render="Label" position="990,742" size="880,60" font="Title;46" halign="left" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" zPosition="6" noWrap="1"><convert type="ServiceName">Name</convert></widget>
+		<widget source="ServiceEvent" render="Label" position="990,812" size="80,34" font="Regular;26" halign="left" valign="top" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="6"><convert type="EventTime">StartTime</convert><convert type="ClockToText">Format:%H:%M</convert></widget>
+		<eLabel text="-" position="1068,812" size="20,34" font="Regular;26" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" zPosition="6" />
+		<widget source="ServiceEvent" render="Label" position="1088,812" size="80,34" font="Regular;26" halign="left" valign="top" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="6"><convert type="EventTime">EndTime</convert><convert type="ClockToText">Format:%H:%M</convert></widget>
+		<widget source="ServiceEvent" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_track_480.png" position="1190,828" size="480,4" alphatest="blend" zPosition="6"><convert type="MohammedInfo">HasEvent</convert><convert type="ConditionalShowHide" /></widget>
+		<widget source="ServiceEvent" render="Progress" foregroundColor="ember" position="1190,828" size="480,4" transparent="1" zPosition="7"><convert type="EventTime">Progress</convert></widget>
+		<widget source="ServiceEvent" render="Label" position="1680,812" size="190,34" font="Regular;24" halign="right" valign="top" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="6"><convert type="MohammedInfo">Remaining</convert></widget>
+		<widget source="ServiceEvent" render="Label" position="990,856" size="880,150" font="ArText;24" halign="left" valign="top" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" zPosition="6"><convert type="MohammedTranslate">Description</convert></widget>
+		<eLabel position="190,1044" size="18,18" backgroundColor="keyred" zPosition="5" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="218,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="218,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="370,1044" size="18,18" backgroundColor="keygreen" zPosition="5" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="398,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="398,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="550,1044" size="18,18" backgroundColor="keyyellow" zPosition="5" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="578,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="578,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="730,1044" size="18,18" backgroundColor="keyblue" zPosition="5" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="758,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="758,1036" size="150,34" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<!-- SIGNAL START -->
+		<eLabel text="SNR" position="1190,1037" size="46,32" font="Regular;18" halign="left" valign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="5" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/meter_track_120.png" position="1238,1050" size="120,6" alphatest="blend" zPosition="5" />
+		<widget source="session.FrontendStatus" render="Progress" pixmap="/usr/share/enigma2/MohammedSkin/img/meter_120.png" position="1238,1046" size="120,14" transparent="1" zPosition="6">
+			<convert type="FrontendInfo">SNR</convert>
+		</widget>
+		<widget source="session.FrontendStatus" render="Label" position="1362,1037" size="64,32" font="Semi;20" halign="right" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="6">
+			<convert type="FrontendInfo">SNR</convert>
+		</widget>
+		<eLabel text="AGC" position="1446,1037" size="46,32" font="Regular;18" halign="left" valign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="5" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/meter_track_120.png" position="1494,1050" size="120,6" alphatest="blend" zPosition="5" />
+		<widget source="session.FrontendStatus" render="Progress" pixmap="/usr/share/enigma2/MohammedSkin/img/meter_120.png" position="1494,1046" size="120,14" transparent="1" zPosition="6">
+			<convert type="FrontendInfo">AGC</convert>
+		</widget>
+		<widget source="session.FrontendStatus" render="Label" position="1618,1037" size="64,32" font="Semi;20" halign="right" valign="center" foregroundColor="signal" backgroundColor="ink" transparent="1" noWrap="1" zPosition="6">
+			<convert type="FrontendInfo">AGC</convert>
+		</widget>
+		<!-- SIGNAL END -->
+	</screen>
+	<!-- CHANNELS END -->

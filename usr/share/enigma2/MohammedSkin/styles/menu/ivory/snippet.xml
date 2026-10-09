@@ -1,0 +1,18 @@
+	<!-- MENU START (ivory) -->
+	<screen name="Menu" position="center,center" size="1240,840" backgroundColor="transparent" flags="wfNoBorder">
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/mnu_ivory_bg.png" position="0,0" size="1240,840" alphatest="blend" zPosition="0" />
+		<widget source="Title" render="Label" position="60,18" size="900,66" font="Title;48" halign="left" valign="center" foregroundColor="white" backgroundColor="ink" transparent="1" noWrap="1" zPosition="1" />
+		<widget source="global.CurrentTime" render="Label" position="1000,18" size="190,66" font="Title;42" halign="right" valign="center" foregroundColor="white" backgroundColor="ink" transparent="1" zPosition="1">
+			<convert type="ClockToText">Format:%H:%M</convert>
+		</widget>
+		<widget source="menu" render="Listbox" position="40,124" size="1160,640" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/mnu_ivory_sel.png" backgroundPixmap="/usr/share/enigma2/MohammedSkin/img/mnu_ivory_row.png" backgroundColor="ink" foregroundColor="#00201618" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2">
+			<convert type="TemplatedMultiContent">
+				{"template": [ MultiContentEntryText(pos = (36, 0), size = (1064, 64), flags = RT_HALIGN_LEFT | RT_VALIGN_CENTER, text = 0) ],
+				"fonts": [gFont("Regular", 31)],
+				"itemHeight": 64
+				}
+			</convert>
+		</widget>
+		<widget name="menuimage" conditional="menuimage" position="0,0" size="2,2" transparent="1" zPosition="-1" />
+	</screen>
+	<!-- MENU END -->

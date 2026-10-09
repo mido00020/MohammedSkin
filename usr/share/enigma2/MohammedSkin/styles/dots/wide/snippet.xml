@@ -1,0 +1,3 @@
+		<!-- DOTS START (wide) -->
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/dotsw_%02d.png" count="12" interval="90" position="730,856" size="460,30" alphatest="blend" zPosition="3" />
+		<!-- DOTS END -->

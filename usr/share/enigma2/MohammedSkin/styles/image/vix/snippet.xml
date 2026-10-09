@@ -1,0 +1,54 @@
+	<!-- WINDOWSTYLE START (vix) -->
+	<windowstyle type="skinned" id="0">
+		<title offset="34,14" font="Semi;30" />
+		<color name="Background" color="panel" />
+		<color name="LabelForeground" color="ivory" />
+		<color name="ListboxBackground" color="panel" />
+		<color name="ListboxForeground" color="ivory" />
+		<color name="ListboxSelectedBackground" color="crimson" />
+		<color name="ListboxSelectedForeground" color="white" />
+		<color name="ListboxMarkedBackground" color="brass" />
+		<color name="ListboxMarkedForeground" color="ink" />
+		<color name="ListboxMarkedAndSelectedBackground" color="ember" />
+		<color name="ListboxMarkedAndSelectedForeground" color="white" />
+		<color name="WindowTitleForeground" color="ivory" />
+		<color name="WindowTitleBackground" color="panel" />
+		<borderset name="bsWindow">
+			<pixmap pos="bpTopLeft" filename="/usr/share/enigma2/MohammedSkin/img/win/b_tl.png" />
+			<pixmap pos="bpTop" filename="/usr/share/enigma2/MohammedSkin/img/win/b_t.png" />
+			<pixmap pos="bpTopRight" filename="/usr/share/enigma2/MohammedSkin/img/win/b_tr.png" />
+			<pixmap pos="bpLeft" filename="/usr/share/enigma2/MohammedSkin/img/win/b_l.png" />
+			<pixmap pos="bpRight" filename="/usr/share/enigma2/MohammedSkin/img/win/b_r.png" />
+			<pixmap pos="bpBottomLeft" filename="/usr/share/enigma2/MohammedSkin/img/win/b_bl.png" />
+			<pixmap pos="bpBottom" filename="/usr/share/enigma2/MohammedSkin/img/win/b_b.png" />
+			<pixmap pos="bpBottomRight" filename="/usr/share/enigma2/MohammedSkin/img/win/b_br.png" />
+		</borderset>
+	</windowstyle>
+	<!-- hotkey settings: the image has no skin of its own for these, without them the screen opens empty -->
+	<screen name="ButtonSetup" position="center,center" size="1400,860" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1400,860" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
+		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
+	</screen>
+	<screen name="ButtonSetupSelect" position="center,center" size="1400,860" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1400,860" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
+		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="50,812" size="8,30" backgroundColor="keyred" zPosition="1" />
+		<widget name="key_red" position="68,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
+		<eLabel position="320,812" size="8,30" backgroundColor="keygreen" zPosition="1" />
+		<widget name="key_green" position="338,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
+	</screen>
+	<!-- WINDOWSTYLE END -->

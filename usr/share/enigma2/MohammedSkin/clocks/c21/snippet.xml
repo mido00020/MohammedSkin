@@ -1,0 +1,6 @@
+		<!-- CLOCK START (c21) -->
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/clock/dial.png" position="853,645" size="215,215" alphatest="blend" zPosition="5" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="hour" frames="/usr/share/enigma2/MohammedSkin/clock/hour_%03d.png" count="120" position="853,645" size="215,215" alphatest="blend" zPosition="6" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="minute" frames="/usr/share/enigma2/MohammedSkin/clock/min_%03d.png" count="180" position="853,645" size="215,215" alphatest="blend" zPosition="7" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="second" frames="/usr/share/enigma2/MohammedSkin/clock/sec_%03d.png" count="240" interval="250" position="853,645" size="215,215" alphatest="blend" zPosition="8" />
+		<!-- CLOCK END -->

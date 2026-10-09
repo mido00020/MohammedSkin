@@ -1,0 +1,11 @@
+		<!-- IBPOSTER START (top) -->
+		<!-- poster sits on the bar bottom and rises above it, larger; logo card underneath when there is none -->
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/card_ib_top.png" position="50,716" size="220,330" alphatest="blend" zPosition="3" />
+		<widget source="session.CurrentService" render="Picon" position="62,800" size="196,118" alphatest="blend" zPosition="3">
+			<convert type="ServiceName">Reference</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="58,930" size="204,96" font="Semi;20" halign="center" valign="top" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" zPosition="3">
+			<convert type="ServiceName">Name</convert>
+		</widget>
+		<widget source="session.Event_Now" render="MohammedPoster" kind="poster" fill="#00060304" cornerRadius="19" position="50,716" size="220,330" zPosition="4" />
+		<!-- IBPOSTER END -->

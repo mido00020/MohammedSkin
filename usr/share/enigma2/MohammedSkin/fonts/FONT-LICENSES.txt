@@ -1,0 +1,1953 @@
+Fonts bundled with MohammedSkin
+moh-regular.otf / moh-semibold.otf = Inter (SIL Open Font License 1.1)
+moh-title.otf = TeX Gyre Heros Cn Bold (GUST Font License)
+moh-arabic.ttf / moh-mono.ttf = DejaVu Sans / DejaVu Sans Mono (Bitstream Vera / DejaVu license)
+cjk.otf = Noto Sans CJK SC, Chinese and Japanese subset (SIL Open Font License 1.1, Copyright 2014-2021 Adobe)
+
+===== Inter =====
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: fonts-inter
+Upstream-Contact: The Inter Project Authors <rasmus@notion.se>
+Source: https://github.com/rsms/inter
+Files-Excluded: docs/font-files/*.woff* docs/lab docs/samples
+
+Files: *
+Copyright: 2016-2023 The Inter Project Authors <rasmus@notion.se>
+License: OFL-1.1 and Apache-2.0
+
+License: OFL-1.1
+ PREAMBLE
+ The goals of the Open Font License (OFL) are to stimulate worldwide
+ development of collaborative font projects, to support the font
+ creation efforts of academic and linguistic communities, and to
+ provide a free and open framework in which fonts may be shared and
+ improved in partnership with others.
+ .
+ The OFL allows the licensed fonts to be used, studied, modified and
+ redistributed freely as long as they are not sold by themselves. The
+ fonts, including any derivative works, can be bundled, embedded,
+ redistributed and/or sold with any software provided that any
+ reserved names are not used by derivative works. The fonts and
+ derivatives, however, cannot be released under any other type of
+ license. The requirement for fonts to remain under this license
+ does not apply to any document created using the fonts or their
+ derivatives.
+ .
+ DEFINITIONS
+ Font Software refers to the set of files released by the
+ Copyright Holder(s) under this license and clearly marked as such.
+ This may include source files, build scripts and documentation.
+ .
+ Reserved Font Name refers to any names specified as such after
+ the copyright statement(s).
+ .
+ Original Version refers to the collection of Font Software
+ components as distributed by the Copyright Holder(s).
+ .
+ Modified Version refers to any derivative made by adding to,
+ deleting, or substituting in part or in whole any of the components
+ of the Original Version, by changing formats or by porting the Font
+ Software to a new environment.
+ .
+ Author refers to any designer, engineer, programmer, technical
+ writer or other person who contributed to the Font Software.
+ .
+ PERMISSION & CONDITIONS
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of the Font Software, to use, study, copy, merge,
+ embed, modify, redistribute, and sell modified and unmodified copies
+ of the Font Software, subject to the following conditions:
+ .
+ 1) Neither the Font Software nor any of its individual components,
+    in Original or Modified Versions, may be sold by itself.
+ .
+ 2) Original or Modified Versions of the Font Software may be bundled,
+    redistributed and/or sold with any software, provided that each
+    copy contains the above copyright notice and this license. These
+    can be included either as stand-alone text files, human-readable
+    headers or in the appropriate machine-readable metadata fields
+    within text or binary files as long as those fields can be easily
+    viewed by the user.
+ .
+ 3) No Modified Version of the Font Software may use the Reserved Font
+    Name(s) unless explicit written permission is granted by the
+    corresponding Copyright Holder. This restriction only applies to
+    the primary font name as presented to the users.
+ .
+ 4) The name(s) of the Copyright Holder(s) or the Author(s) of the
+    Font Software shall not be used to promote, endorse or advertise
+    any Modified Version, except to acknowledge the contribution(s)
+    of the Copyright Holder(s) and the Author(s) or with their
+    explicit written permission.
+ .
+ 5) The Font Software, modified or unmodified, in part or in whole,
+    must be distributed entirely under this license, and must not be
+    distributed under any other license. The requirement for fonts to
+    remain under this license does not apply to any document created
+    using the Font Software.
+ .
+ TERMINATION
+ This license becomes null and void if any of the above conditions
+ are not met.
+ .
+ DISCLAIMER
+ THE FONT SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+ OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL
+ THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR
+ CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT
+ SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.
+
+License: Apache-2.0
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+ .
+      https://www.apache.org/licenses/LICENSE-2.0
+ .
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ .
+ On Debian systems, the full text of the Apache Software License version 2 can
+ be found in the file `/usr/share/common-licenses/Apache-2.0'.
+
+Files: debian/*
+Copyright: 2019-2023 Gürkan Myczko <tar@debian.org>
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+===== TeX Gyre =====
+###########################################################################
+############          The TeX Gyre Collection of Fonts         ############
+############                 The font Heros                    ############
+###########################################################################
+
+Font: TeX Gyre Heros
+Authors: Bogus\l{}aw Jackowski and Janusz M. Nowacki
+Version: 2.004
+Date: 30 X 2009
+Downloads: http://www.gust.org.pl/projects/e-foundry/tex-gyre/heros
+
+License:
+  % Copyright 2007--2009 for TeX Gyre extensions by B. Jackowski
+  % and J.M. Nowacki (on behalf of TeX Users Groups).
+  % Vietnamese characters were added by Han The Thanh.
+  %
+  % This work can be freely used and distributed under
+  % the GUST Font License (GFL -- see GUST-FONT-LICENSE.txt)
+  % which is actually an instance of the LaTeX Project Public License
+  % (LPPL -- see http://www.latex-project.org/lppl.txt ).
+  %
+  % This work has the maintenance status "maintained". The Current Maintainer
+  % of this work is Bogus\l{}aw Jackowski and Janusz M. Nowacki.
+  %
+  % This work consists of the files listed
+  % in the MANIFEST-TeX-Gyre-Heros.txt file.
+
+###########################################################################
+############         A BRIEF DESCRIPTION OF THE PACKAGE        ############
+###########################################################################
+
+The current package contains the most recent version of the TeX Gyre
+Adventor family of fonts in the PostScript Type 1 and OpenType formats.
+TeX Gyre Adventor is based on the URW Nimbus Sans L kindly released by
+URW++ Design and Development Inc. under GFL (independently of the GPL
+release accompanying Ghostscript). The Vietnamese glyphs were added by
+Han The Thanh. 
+
+TeX Gyre Heros can be used as a replacement for a popular font Helvetica,
+also known as Swiss (prepared by Max Miedinger with Eduard Hoffmann, 1957,
+at the Haas Type Foundry).
+
+Note that the widths of nearly all glyphs made consistent with the Adobe
+metric data (for the glyphs from the Adobe Standard Encoding):
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hv______.afm
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hvo_____.afm
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hvb_____.afm
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hvbo____.afm
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hvn_____.afm
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hvno____.afm
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hvnb____.afm
+  ftp://ftp.adobe.com/pub/adobe/type/win/all/afmfiles/base35/hvnbo___.afm
+
+There are, however, a few exceptions (all of which we consider Adobe's
+mistakes):
+  font     glyph      Adobe width     TG width
+  --------------------------------------------
+  qhvb     slash         611             716
+    "      lslash        278             418
+  --------------------------------------------
+  qhvbi    Lslash        611             716
+    "      lslash        278             418
+  --------------------------------------------
+  qhvr     Lslash        556             627
+    "      dotlessi      278             222
+    "      exclamdown    333             278
+    "      lslash        222             305
+    "      oslash        611             556
+    "      questiondown  611             556
+  --------------------------------------------
+  qhvri    Lslash        556             628
+    "      dotlessi      278             222
+    "      exclamdown    333             278
+    "      lslash        222             305
+    "      questiondown  611             556
+  --------------------------------------------
+  qhcb     Lslash        501             618
+    "      lslash        228             402
+  --------------------------------------------
+  qhcbi    Lslash        501             618
+    "      lslash        228             402
+  --------------------------------------------
+  qhcr     Lslash        456             552
+    "      dotlessi      228             182
+    "      exclamdown    273             228
+    "      lslash        182             314
+    "      oslash        501             456
+    "      questiondown  501             456
+  --------------------------------------------
+  qhcri    Lslash        456             552
+    "      dotlessi      228             182
+    "      exclamdown    273             228
+    "      lslash        182             314
+    "      questiondown  501             456
+
+
+                           *   *   *
+
+The TeX Gyre project, following the Latin Modern project, aims at providing
+a rich collection of diacritical characters in the attempt to cover as many
+Latin-based scripts as possible. To our knowledge, the repertoire of
+characters covers all European languages as well as some other Latin-based
+alphabets such as Vietnamese and Navajo; at the request of users, recent
+extensions (following the enhancement of the Latin Modern collection)
+provide glyphs sufficient for typesetting of romanized transliterations
+of Arabic and Sanskrit scripts. We have frequently used the information
+presented by Michael Everson at the ``The Alphabets of Europe''
+( http://www.evertype.com/alphabets/ ) web site. If you know about European
+languages that are not covered completely or if some glyphs have apparently
+wrong shapes -- please let us know. Note, however, that Greek glyphs
+bear provisional character.
+
+The TeX Gyre Project was launched and is supported by TeX USERS GROUPS
+(CS TUG, DANTE eV, GUST, NTG, TUG India, TUG). Hearty thanks to the
+representatives of these groups and also to all people who helped with
+comments, ideas, remarks, bug reports, objections, hints, consolations, etc.
+
+                           *   *   *
+
+The TeX Gyre Heros family consists of 8 text fonts: regular,
+italic, bold and bold italic (qhvr, qhvri, qhvb, qhvbi)
+and the condensed variants (qhvcr, qhvcri, qhvcb, qhvcbi).
+
+The TeX Gyre Heros family can be freely used and distributed
+under the GUST Font License (see above) which is actually
+an instance of the LaTeX Project Public License
+(LPPL; see http://www.latex-project.org/lppl.txt ).
+
+                           *   *   *
+
+The package consists of the files in the directories conforming
+to the TeX Directory Structure (v. 1.1). The directories contain:
+
+doc/fonts/tex-gyre             this file, manifest, licence, test files,
+                               and, moreover, selected files used as input
+                               for generating OTFs (meant as a technical
+                               documentation of the OTFs)
+tex/latex/tex-gyre             support for LaTeX (*.fd and *.sty files,
+                               prepared by Marcin Woli\'nski)
+fonts/enc/dvips/tex-gyre       support for dvips (*.enc files);
+                               NOTE: all fonts of the TeX Gyre family
+                                 share the same *.enc files with
+                                 a few exceptions: CS, QX, and RM encodings
+                                 for TeX Gyre Cursor (monospace) differ
+                                 from the standard ones (because of the
+                                 compatibility with Computer Modern
+                                 typewriter fonts requested by users),
+                                 and, moreover, CS, L7x, QX and RM encodings
+                                 for TeX Gyre Chorus exploit exceptionally
+                                 the `lslash_lslash' ligature
+fonts/map/dvips/tex-gyre       support for dvips (*.map files)
+fonts/opentype/public/tex-gyre fonts in the OpenType format (*.otf files)
+fonts/type1/public/tex-gyre    PostScript (Type 1) font files and printer
+                               font metric files (*.pfb and *.pfm,
+                               respectively);
+fonts/tfm/public/tex-gyre      TeX font metric files (*.tfm) for:
+                               -- CS (CSTUG) encoding (cs-*.tfm),
+                               -- EC (Cork) encoding (ec-*.tfm),
+                               -- L7x (Lithuanian) encoding (l7x-*.tfm),
+                               -- QX (GUST) encoding (qx-*.tfm),
+                               -- RM (Regular Math or OT1) encoding (rm-*.tfm),
+                               -- Y&Y's TeX'n'ANSI aka LY1 encoding
+                                  (texnansi-*.tfm),
+                               -- T5 (Vietnamese) encoding (t5-*.tfm),
+                               -- Text Companion for EC fonts aka TS1
+                                  (ts1-*.tfm).
+                               Encodings CS, EC, L7x, QX, RM, Y&Y, and T5
+                               have their cap-small-caps counterparts
+                               (*-sc.tfm).
+fonts/afm/public/tex-gyre      Adobe font metric files (*.afm);
+
+Email contact: Bogus\l{}aw Jackowski aka Jacko, B_Jackowski@gust.org.pl
+
+                           *   *   *
+
+In ConTeXt, support for TeX Gyre Collection can be found in the typescript
+definition files:
+
+  ... /tex/context/base/type-enc.tex
+  ... /tex/context/base/type-syn.tex
+  ... /tex/context/base/type-exa.tex
+  ... /tex/context/base/type-map.tex
+
+Additional encoding and map files can be found under:
+
+  ... /texmf/fonts/map/pdftex/context
+  ... /texmf/fonts/enc/pdftex/context
+
+                           *   *   *
+
+All eight font files, qhvb, qhvbi, qhvr, qhvri, qhvcb, qhvcbi, qhvcr, qhvcri,
+contain the same repertoire of 1089 characters, namely (these are the names
+used in Type 1 fonts):
+
+A a a.sc Aacute aacute aacute.sc Abreve abreve abreve.sc Abreveacute
+abreveacute abreveacute.sc Abrevedotbelow abrevedotbelow
+abrevedotbelow.sc Abrevegrave abrevegrave abrevegrave.sc Abrevehookabove
+abrevehookabove abrevehookabove.sc Abrevetilde abrevetilde abrevetilde.sc
+Acaron acaron acaron.sc Acircumflex acircumflex acircumflex.sc
+Acircumflexacute acircumflexacute acircumflexacute.sc Acircumflexdotbelow
+acircumflexdotbelow acircumflexdotbelow.sc Acircumflexgrave
+acircumflexgrave acircumflexgrave.sc Acircumflexhookabove
+acircumflexhookabove acircumflexhookabove.sc Acircumflextilde
+acircumflextilde acircumflextilde.sc Acute acute acute.dup acute.ts1
+Acutecomb acutecomb Adblgrave adblgrave adblgrave.sc Adieresis adieresis
+adieresis.sc Adotbelow adotbelow adotbelow.sc AE ae AE.dup ae.dup ae.sc
+AEacute aeacute aeacute.sc Agrave agrave agrave.sc Ahookabove ahookabove
+ahookabove.sc Alpha alpha Amacron amacron amacron.sc ampersand anglearc
+angleleft angleright Aogonek aogonek aogonek.sc Aogonekacute aogonekacute
+aogonekacute.sc approxequal Aring aring aring.sc Aringacute aringacute
+aringacute.sc arrowdown arrowleft arrowright arrowup asciicircum
+asciitilde asterisk asteriskmath at at.alt Atilde atilde atilde.sc B b
+b.sc backslash baht bar Beta beta bigcircle blanksymbol born braceleft
+braceright bracketleft bracketright Breve breve breve.ts1 Breveacute
+breveacute brevebelow brevebelowcomb brevebelowinverted
+brevebelowinvertedcomb Brevecomb brevecomb Brevegrave brevegrave
+Brevehookabove brevehookabove Breveinverted breveinverted
+Breveinvertedcomb breveinvertedcomb Brevetilde brevetilde brokenbar
+bullet C c c.sc Cacute cacute cacute.sc Caron caron caron.ts1 Caroncomb
+caroncomb Ccaron ccaron ccaron.sc Ccedilla ccedilla ccedilla.sc
+Ccircumflex ccircumflex ccircumflex.sc Cdotaccent cdotaccent
+cdotaccent.sc cedilla cedilla.dup cent cent.oldstyle centigrade Chi chi
+Circumflex circumflex circumflex.dup Circumflexacute circumflexacute
+Circumflexcomb circumflexcomb Circumflexgrave circumflexgrave
+Circumflexhookabove circumflexhookabove Circumflextilde circumflextilde
+colon colonmonetary comma commaaccent commaaccentcomb copyleft copyright
+copyright.alt currency cwm cwmascender cwmcapital cyrBreve cyrbreve
+cyrFlex cyrflex D d d.sc dagger daggerdbl dblbracketleft dblbracketright
+dblGrave dblgrave dblgrave.ts1 dblGravecomb dblgravecomb dblverticalbar
+Dcaron dcaron dcaron.sc Dcroat dcroat dcroat.sc Ddotbelow ddotbelow
+ddotbelow.sc degree Delta delta diameter died Dieresis dieresis
+dieresis.dup dieresis.ts1 Dieresisacute dieresisacute Dieresiscaron
+dieresiscaron Dieresiscomb dieresiscomb Dieresisgrave dieresisgrave
+discount divide divorced Dlinebelow dlinebelow dlinebelow.sc dollar
+dollar.oldstyle dong Dotaccent dotaccent Dotaccentcomb dotaccentcomb
+dotbelow dotbelowcomb dotlessi dotlessi.sc dotlessj dotlessj.dup
+dotlessj.sc E e e.sc Eacute eacute eacute.sc Ebreve ebreve ebreve.sc
+Ecaron ecaron ecaron.sc Ecircumflex ecircumflex ecircumflex.sc
+Ecircumflexacute ecircumflexacute ecircumflexacute.sc Ecircumflexdotbelow
+ecircumflexdotbelow ecircumflexdotbelow.sc Ecircumflexgrave
+ecircumflexgrave ecircumflexgrave.sc Ecircumflexhookabove
+ecircumflexhookabove ecircumflexhookabove.sc Ecircumflextilde
+ecircumflextilde ecircumflextilde.sc Edblgrave edblgrave edblgrave.sc
+Edieresis edieresis edieresis.sc Edotaccent edotaccent edotaccent.sc
+Edotbelow edotbelow edotbelow.sc Egrave egrave egrave.sc Ehookabove
+ehookabove ehookabove.sc eight eight.oldstyle eight.prop
+eight.taboldstyle ell ellipsis Emacron emacron emacron.sc emdash endash
+Eng eng eng.sc Eogonek eogonek eogonek.sc Eogonekacute eogonekacute
+eogonekacute.sc Epsilon epsilon epsilon.alt equal Ereversed ereversed
+ereversed.sc estimated Eta eta Eth eth eth.sc Etilde etilde etilde.sc
+eturned eturned.sc Euro exclam exclamdown F f f.sc f_k ff ffi ffl fi five
+five.oldstyle five.prop five.taboldstyle fl florin four four.oldstyle
+four.prop four.taboldstyle fraction fraction.alt G g g.sc Gacute gacute
+gacute.sc Gamma gamma Gbreve gbreve gbreve.sc Gcaron gcaron gcaron.sc
+Gcedilla gcedilla Gcircumflex gcircumflex gcircumflex.sc Gcommaaccent
+gcommaaccent gcommaaccent.sc Gdotaccent gdotaccent gdotaccent.sc
+Germandbls germandbls germandbls.dup germandbls.sc gnaborretni Grave
+grave grave.ts1 Gravecomb gravecomb greater greaterequal
+greaterorequalslant guarani guillemotleft guillemotright guilsinglleft
+guilsinglright H h h.sc Hbar hbar hbar.sc Hbrevebelow hbrevebelow
+hbrevebelow.sc Hcircumflex hcircumflex hcircumflex.sc Hdieresis hdieresis
+hdieresis.sc Hdotbelow hdotbelow hdotbelow.sc Hookabove hookabove
+Hookabovecomb hookabovecomb horn Htilde htilde htilde.sc Hungarumlaut
+hungarumlaut hungarumlaut.ts1 Hungarumlautcomb hungarumlautcomb hyphen
+hyphen.alt hyphen.dup hyphen.prop hyphendbl hyphendbl.alt I i i.sc Iacute
+iacute iacute.sc Ibreve ibreve ibreve.sc Icaron icaron icaron.sc
+Icircumflex icircumflex icircumflex.sc Idblgrave idblgrave idblgrave.sc
+Idieresis idieresis idieresis.sc Idieresisacute idieresisacute
+idieresisacute.sc Idotaccent idotaccent.sc Idotbelow idotbelow
+idotbelow.sc Igrave igrave igrave.sc Ihookabove ihookabove ihookabove.sc
+IJ ij ij.sc Imacron imacron Imacron.alt imacron.alt imacron.alt.sc
+imacron.sc infinity interrobang Iogonek iogonek iogonek.sc Iogonekacute
+iogonekacute iogonekacute.sc Iota iota Itilde itilde itilde.sc J j j.sc
+J_caron Jacute jacute jacute.sc jcaron jcaron.sc Jcircumflex jcircumflex
+jcircumflex.sc K k k.sc Kappa kappa Kcedilla kcedilla Kcommaaccent
+kcommaaccent kcommaaccent.sc L l l.sc Lacute lacute lacute.sc Lambda
+lambda Lcaron lcaron lcaron.sc Lcedilla lcedilla Lcommaaccent
+lcommaaccent lcommaaccent.sc Ldot ldot ldot.sc Ldotbelow ldotbelow
+ldotbelow.sc Ldotbelowmacron ldotbelowmacron ldotbelowmacron.sc leaf less
+lessequal lessorequalslant linebelow linebelowcomb lira logicalnot longs
+lozenge lscript Lslash lslash lslash.sc Ltilde ltilde ltilde.sc M m m.sc
+Macron macron Macron.alt macron.alt macron.dup macron.ts1 macronbelow
+macronbelowcomb Macroncomb macroncomb married Mdotbelow mdotbelow
+mdotbelow.sc mho minus minusplus Mu mu mu.alt multiply musicalnote N n
+n.sc Nacute nacute nacute.sc naira nbspace Ncaron ncaron ncaron.sc
+Ncedilla ncedilla Ncommaaccent ncommaaccent ncommaaccent.sc Ndotaccent
+ndotaccent ndotaccent.sc Ndotbelow ndotbelow ndotbelow.sc nine
+nine.oldstyle nine.prop nine.taboldstyle notequal Ntilde ntilde ntilde.sc
+Nu nu numbersign numero O o o.sc Oacute oacute oacute.sc Obreve obreve
+obreve.sc Ocaron ocaron ocaron.sc Ocircumflex ocircumflex ocircumflex.sc
+Ocircumflexacute ocircumflexacute ocircumflexacute.sc Ocircumflexdotbelow
+ocircumflexdotbelow ocircumflexdotbelow.sc Ocircumflexgrave
+ocircumflexgrave ocircumflexgrave.sc Ocircumflexhookabove
+ocircumflexhookabove ocircumflexhookabove.sc Ocircumflextilde
+ocircumflextilde ocircumflextilde.sc Odblgrave odblgrave odblgrave.sc
+Odieresis odieresis odieresis.sc Odotbelow odotbelow odotbelow.sc OE oe
+OE.dup oe.dup oe.sc ogonek Ograve ograve ograve.sc ohm Ohookabove
+ohookabove ohookabove.sc Ohorn ohorn ohorn.sc Ohornacute ohornacute
+ohornacute.sc Ohorndotbelow ohorndotbelow ohorndotbelow.sc Ohorngrave
+ohorngrave ohorngrave.sc Ohornhookabove ohornhookabove ohornhookabove.sc
+Ohorntilde ohorntilde ohorntilde.sc Ohungarumlaut ohungarumlaut
+ohungarumlaut.sc Omacron omacron omacron.sc Omega omega Omicron omicron
+one one.oldstyle one.prop one.superior one.taboldstyle onehalf onequarter
+Oogonek oogonek oogonek.sc Oogonekacute oogonekacute oogonekacute.sc
+openbullet ordfeminine ordmasculine Orogate orogate orogate.sc Oslash
+oslash Oslash.dup oslash.dup oslash.sc Oslashacute oslashacute
+oslashacute.sc Otilde otilde otilde.sc P p p.sc paragraph paragraph.alt
+parenleft parenright partialdiff percent period periodcentered permyriad
+perthousand perthousandzero peso Phi phi phi.alt Pi pi pi.alt plus
+plusminus Psi psi published Q q q.sc question questiondown
+quillbracketleft quillbracketright quotedbl quotedblbase quotedblbase.ts1
+quotedblleft quotedblright quoteleft quoteleft.dup quoteright
+quoteright.dup quotesinglbase quotesinglbase.ts1 quotesingle
+quotesingle.ts1 R r r.sc Racute racute racute.sc radical Rcaron rcaron
+rcaron.sc Rcedilla rcedilla Rcommaaccent rcommaaccent rcommaaccent.sc
+Rdblgrave rdblgrave rdblgrave.sc Rdotaccent rdotaccent rdotaccent.sc
+Rdotbelow rdotbelow rdotbelow.sc Rdotbelowmacron rdotbelowmacron
+rdotbelowmacron.sc recipe referencemark registered registered.alt Rho rho
+rho.alt Ring ring Ringacute ringacute Ringcomb ringcomb ringhalfleft
+ringhalfright S s s.sc Sacute sacute sacute.sc Scaron scaron scaron.sc
+Scedilla scedilla scedilla.sc schwa Scircumflex scircumflex
+scircumflex.sc Scommaaccent scommaaccent scommaaccent.sc Sdotbelow
+sdotbelow sdotbelow.sc section semicolon servicemark seven seven.oldstyle
+seven.prop seven.taboldstyle sfthyphen Sigma sigma sigma1 six
+six.oldstyle six.prop six.taboldstyle slash space star sterling summation
+suppress T t t.sc Tau tau Tcaron tcaron tcaron.sc Tcedilla tcedilla
+tcedilla.sc Tcommaaccent tcommaaccent tcommaaccent.sc Tdieresis tdieresis
+tdieresis.sc Tdotbelow tdotbelow tdotbelow.sc Theta theta theta.alt Thorn
+thorn thorn.sc three three.oldstyle three.prop three.superior
+three.taboldstyle threequarters threequartersemdash tie tieaccentcapital
+tieaccentcapital.new tieaccentlowercase tieaccentlowercase.new Tilde
+tilde tilde.dup tildebelow tildebelowcomb Tildecomb tildecomb tildelow
+Tlinebelow tlinebelow tlinebelow.sc trademark Ttilde ttilde ttilde.sc
+twelveudash two two.oldstyle two.prop two.superior two.taboldstyle U u
+u.sc Uacute uacute uacute.sc Ubreve ubreve ubreve.sc Ubrevebelowinverted
+ubrevebelowinverted ubrevebelowinverted.sc Ucaron ucaron ucaron.sc
+Ucircumflex ucircumflex ucircumflex.sc Udblgrave udblgrave udblgrave.sc
+Udieresis udieresis udieresis.sc Udieresisacute udieresisacute
+udieresisacute.sc Udieresiscaron udieresiscaron udieresiscaron.sc
+Udieresisgrave udieresisgrave udieresisgrave.sc Udotbelow udotbelow
+udotbelow.sc Ugrave ugrave ugrave.sc Uhookabove uhookabove uhookabove.sc
+Uhorn uhorn uhorn.sc Uhornacute uhornacute uhornacute.sc Uhorndotbelow
+uhorndotbelow uhorndotbelow.sc Uhorngrave uhorngrave uhorngrave.sc
+Uhornhookabove uhornhookabove uhornhookabove.sc Uhorntilde uhorntilde
+uhorntilde.sc Uhungarumlaut uhungarumlaut uhungarumlaut.sc Umacron
+umacron umacron.sc underscore undertie undertieinverted uni2010 uni2011
+uni2423 Uogonek uogonek uogonek.sc Upsilon upsilon Uring uring uring.sc
+Utilde utilde utilde.sc V v v.sc W w w.sc Wacute wacute wacute.sc
+Wcircumflex wcircumflex wcircumflex.sc Wdieresis wdieresis wdieresis.sc
+weierstrass Wgrave wgrave wgrave.sc won X x x.sc Xi xi Y y y.sc Yacute
+yacute yacute.sc Ycircumflex ycircumflex ycircumflex.sc Ydieresis
+ydieresis ydieresis.sc Ydotbelow ydotbelow ydotbelow.sc yen Ygrave ygrave
+ygrave.sc Yhookabove yhookabove yhookabove.sc Ytilde ytilde ytilde.sc Z z
+z.sc Zacute zacute zacute.sc Zcaron zcaron zcaron.sc Zdotaccent
+zdotaccent zdotaccent.sc Zdotbelow zdotbelow zdotbelow.sc zero
+zero.oldstyle zero.prop zero.slash zero.taboldstyle Zeta zeta
+
+===== DejaVu =====
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: DejaVu fonts
+Upstream-Author: Stepan Roh <src@users.sourceforge.net> (original author),
+                  see /usr/share/doc/fonts-dejavu-core/AUTHORS for full list
+Source: https://dejavu-fonts.github.io/
+
+Files: *
+Copyright: Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. 
+ Bitstream Vera is a trademark of Bitstream, Inc.
+ DejaVu changes are in public domain.
+License: bitstream-vera
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of the fonts accompanying this license ("Fonts") and associated
+ documentation files (the "Font Software"), to reproduce and distribute the
+ Font Software, including without limitation the rights to use, copy, merge,
+ publish, distribute, and/or sell copies of the Font Software, and to permit
+ persons to whom the Font Software is furnished to do so, subject to the
+ following conditions:
+ .
+ The above copyright and trademark notices and this permission notice shall
+ be included in all copies of one or more of the Font Software typefaces.
+ .
+ The Font Software may be modified, altered, or added to, and in particular
+ the designs of glyphs or characters in the Fonts may be modified and
+ additional glyphs or characters may be added to the Fonts, only if the fonts
+ are renamed to names not containing either the words "Bitstream" or the word
+ "Vera".
+ .
+ This License becomes null and void to the extent applicable to Fonts or Font
+ Software that has been modified and is distributed under the "Bitstream
+ Vera" names.
+ .
+ The Font Software may be sold as part of a larger software package but no
+ copy of one or more of the Font Software typefaces may be sold by itself.
+ .
+ THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT,
+ TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME
+ FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING
+ ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES,
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE
+ FONT SOFTWARE.
+ .
+ Except as contained in this notice, the names of Gnome, the Gnome
+ Foundation, and Bitstream Inc., shall not be used in advertising or
+ otherwise to promote the sale, use or other dealings in this Font Software
+ without prior written authorization from the Gnome Foundation or Bitstream
+ Inc., respectively. For further information, contact: fonts at gnome dot
+ org.
+
+Files: debian/*
+Copyright: (C) 2005-2006 Peter Cernak <pce@users.sourceforge.net> 
+           (C) 2006-2011 Davide Viti <zinosat@tiscali.it>
+           (C) 2011-2013 Christian Perrier <bubulle@debian.org>
+           (C) 2013 Fabian Greffrath <fabian+debian@greffrath.com>
+License: GPL-2+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU General Public
+ License along with this package; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 2 can be found in the file
+ /usr/share/common-licenses/GPL-2'.
+
+ar-title.ttf = Lalezar (SIL Open Font License 1.1)
+ar-text.ttf / ar-text-bold.ttf = Tajawal (SIL Open Font License 1.1)
+===== Lalezar =====
+Copyright 2015 The Lalezar Project Authors (https://github.com/BornaIz/Lalezar)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+===== Tajawal =====
+Copyright 2018 Boutros International. (http://www.boutrosfonts.com)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+
+Arabic font choices (fonts/arabic/), all SIL Open Font License 1.1:
+cairo-*.ttf = Cairo, almarai-*.ttf = Almarai, notokufi-*.ttf = Noto Kufi Arabic, plex-*.ttf = IBM Plex Sans Arabic,
+amiri-*.ttf = Amiri, changa-bold.ttf = Changa, elmessiri-bold.ttf = El Messiri, arefruqaa-bold.ttf = Aref Ruqaa, rakkas.ttf = Rakkas
+
+===== Cairo =====
+Copyright 2009 The Cairo Project Authors (https://github.com/Gue3bara/Cairo)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== Almarai =====
+Copyright 2019 The Almarai Project Authors (https://github.com/JuergenWillrodt/Almarai)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== Noto Kufi Arabic =====
+Copyright 2022 The Noto Project Authors (https://github.com/notofonts/arabic)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+https://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== IBM Plex Sans Arabic =====
+Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+
+This license is copied below, and is also available with a FAQ at: http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== Amiri =====
+Copyright 2010-2022 The Amiri Project Authors (https://github.com/aliftype/amiri).
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+https://openfontlicense.org/
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+
+===== Changa =====
+Copyright 2018 The Changa Project Authors (https://github.com/googlefonts/changa-vf)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== El Messiri =====
+Copyright 2015 The El Messiri Project Authors (https://github.com/Gue3bara/El-Messiri)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== Aref Ruqaa =====
+Copyright 2015-2020 The Aref Ruqaa Project Authors (https://github.com/alif-type/aref-ruqaa), with Reserved Font Name EURM10.
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+---------------------------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+---------------------------------------------------------------------------
+
+PREAMBLE
+
+The goals of the Open Font License (OFL) are to stimulate worldwide development
+of collaborative font projects, to support the font creation efforts of academic
+and linguistic communities, and to provide a free and open framework in which
+fonts may be shared and improved in partnership with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and redistributed
+freely as long as they are not sold by themselves. The fonts, including any
+derivative works, can be bundled, embedded, redistributed and/or sold with any
+software provided that any reserved names are not used by derivative works. The
+fonts and derivatives, however, cannot be released under any other type of license.
+The requirement for fonts to remain under this license does not apply to any
+document created using the fonts or their derivatives.
+
+DEFINITIONS
+
+"Font Software" refers to the set of files released by the Copyright Holder(s) under
+this license and clearly marked as such. This may include source files, build
+scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the copyright
+statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting, or
+substituting -- in part or in whole -- any of the components of the Original Version,
+by changing formats or by porting the Font Software to a new environment.
+
+"Author" refers to any designer, engineer, programmer, technical writer or other
+person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of the
+Font Software, to use, study, copy, merge, embed, modify, redistribute, and sell
+modified and unmodified copies of the Font Software, subject to the following
+conditions:
+
+1) Neither the Font Software nor any of its individual components, in Original or
+Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled, redistributed
+and/or sold with any software, provided that each copy contains the above copyright
+notice and this license. These can be included either as stand-alone text files,
+human-readable headers or in the appropriate machine-readable metadata fields within
+text or binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font Name(s) unless
+explicit written permission is granted by the corresponding Copyright Holder. This
+restriction only applies to the primary font name as presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font Software shall
+not be used to promote, endorse or advertise any Modified Version, except to
+acknowledge the contribution(s) of the Copyright Holder(s) and the Author(s) or with
+their explicit written permission.
+
+5) The Font Software, modified or unmodified, in part or in whole, must be distributed
+entirely under this license, and must not be distributed under any other license. The
+requirement for fonts to remain under this license does not apply to any document
+created using the Font Software.
+
+TERMINATION
+
+This license becomes null and void if any of the above conditions are not met.
+
+DISCLAIMER
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER
+RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR
+INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== Rakkas =====
+Copyright 2016 Zeynep Akay
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+===== Noto Sans CJK (cjk.otf) =====
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: noto-cjk
+Upstream-Contact: https://github.com/notofonts/noto-cjk/issues
+Source: https://github.com/notofonts/noto-cjk
+Files-Excluded:
+ .gitattributes
+ .gitignore
+ Sans/Mono/NotoSansMonoCJKhk-Bold.otf
+ Sans/Mono/NotoSansMonoCJKhk-Regular.otf
+ Sans/Mono/NotoSansMonoCJKjp-Bold.otf
+ Sans/Mono/NotoSansMonoCJKjp-Regular.otf
+ Sans/Mono/NotoSansMonoCJKkr-Bold.otf
+ Sans/Mono/NotoSansMonoCJKkr-Regular.otf
+ Sans/Mono/NotoSansMonoCJKsc-Bold.otf
+ Sans/Mono/NotoSansMonoCJKsc-Regular.otf
+ Sans/Mono/NotoSansMonoCJKtc-Bold.otf
+ Sans/Mono/NotoSansMonoCJKtc-Regular.otf
+ Sans/OTF/Japanese/NotoSansCJKjp-Black.otf
+ Sans/OTF/Japanese/NotoSansCJKjp-Bold.otf
+ Sans/OTF/Japanese/NotoSansCJKjp-DemiLight.otf
+ Sans/OTF/Japanese/NotoSansCJKjp-Light.otf
+ Sans/OTF/Japanese/NotoSansCJKjp-Medium.otf
+ Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf
+ Sans/OTF/Japanese/NotoSansCJKjp-Thin.otf
+ Sans/OTF/Korean/NotoSansCJKkr-Black.otf
+ Sans/OTF/Korean/NotoSansCJKkr-Bold.otf
+ Sans/OTF/Korean/NotoSansCJKkr-DemiLight.otf
+ Sans/OTF/Korean/NotoSansCJKkr-Light.otf
+ Sans/OTF/Korean/NotoSansCJKkr-Medium.otf
+ Sans/OTF/Korean/NotoSansCJKkr-Regular.otf
+ Sans/OTF/Korean/NotoSansCJKkr-Thin.otf
+ Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Black.otf
+ Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Bold.otf
+ Sans/OTF/SimplifiedChinese/NotoSansCJKsc-DemiLight.otf
+ Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Light.otf
+ Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Medium.otf
+ Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf
+ Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Thin.otf
+ Sans/OTF/TraditionalChinese/NotoSansCJKtc-Black.otf
+ Sans/OTF/TraditionalChinese/NotoSansCJKtc-Bold.otf
+ Sans/OTF/TraditionalChinese/NotoSansCJKtc-DemiLight.otf
+ Sans/OTF/TraditionalChinese/NotoSansCJKtc-Light.otf
+ Sans/OTF/TraditionalChinese/NotoSansCJKtc-Medium.otf
+ Sans/OTF/TraditionalChinese/NotoSansCJKtc-Regular.otf
+ Sans/OTF/TraditionalChinese/NotoSansCJKtc-Thin.otf
+ Sans/OTF/TraditionalChineseHK/NotoSansCJKhk-Black.otf
+ Sans/OTF/TraditionalChineseHK/NotoSansCJKhk-Bold.otf
+ Sans/OTF/TraditionalChineseHK/NotoSansCJKhk-DemiLight.otf
+ Sans/OTF/TraditionalChineseHK/NotoSansCJKhk-Light.otf
+ Sans/OTF/TraditionalChineseHK/NotoSansCJKhk-Medium.otf
+ Sans/OTF/TraditionalChineseHK/NotoSansCJKhk-Regular.otf
+ Sans/OTF/TraditionalChineseHK/NotoSansCJKhk-Thin.otf
+ Sans/SubsetOTF/HK/NotoSansHK-Black.otf
+ Sans/SubsetOTF/HK/NotoSansHK-Bold.otf
+ Sans/SubsetOTF/HK/NotoSansHK-DemiLight.otf
+ Sans/SubsetOTF/HK/NotoSansHK-Light.otf
+ Sans/SubsetOTF/HK/NotoSansHK-Medium.otf
+ Sans/SubsetOTF/HK/NotoSansHK-Regular.otf
+ Sans/SubsetOTF/HK/NotoSansHK-Thin.otf
+ Sans/SubsetOTF/JP/NotoSansJP-Black.otf
+ Sans/SubsetOTF/JP/NotoSansJP-Bold.otf
+ Sans/SubsetOTF/JP/NotoSansJP-DemiLight.otf
+ Sans/SubsetOTF/JP/NotoSansJP-Light.otf
+ Sans/SubsetOTF/JP/NotoSansJP-Medium.otf
+ Sans/SubsetOTF/JP/NotoSansJP-Regular.otf
+ Sans/SubsetOTF/JP/NotoSansJP-Thin.otf
+ Sans/SubsetOTF/KR/NotoSansKR-Black.otf
+ Sans/SubsetOTF/KR/NotoSansKR-Bold.otf
+ Sans/SubsetOTF/KR/NotoSansKR-DemiLight.otf
+ Sans/SubsetOTF/KR/NotoSansKR-Light.otf
+ Sans/SubsetOTF/KR/NotoSansKR-Medium.otf
+ Sans/SubsetOTF/KR/NotoSansKR-Regular.otf
+ Sans/SubsetOTF/KR/NotoSansKR-Thin.otf
+ Sans/SubsetOTF/SC/NotoSansSC-Black.otf
+ Sans/SubsetOTF/SC/NotoSansSC-Bold.otf
+ Sans/SubsetOTF/SC/NotoSansSC-DemiLight.otf
+ Sans/SubsetOTF/SC/NotoSansSC-Light.otf
+ Sans/SubsetOTF/SC/NotoSansSC-Medium.otf
+ Sans/SubsetOTF/SC/NotoSansSC-Regular.otf
+ Sans/SubsetOTF/SC/NotoSansSC-Thin.otf
+ Sans/SubsetOTF/TC/NotoSansTC-Black.otf
+ Sans/SubsetOTF/TC/NotoSansTC-Bold.otf
+ Sans/SubsetOTF/TC/NotoSansTC-DemiLight.otf
+ Sans/SubsetOTF/TC/NotoSansTC-Light.otf
+ Sans/SubsetOTF/TC/NotoSansTC-Medium.otf
+ Sans/SubsetOTF/TC/NotoSansTC-Regular.otf
+ Sans/SubsetOTF/TC/NotoSansTC-Thin.otf
+ Sans/SuperOTC/NotoSansCJK.ttc.zip
+ Sans/Variable/OTC/NotoSansCJK-VF.ttf.ttc
+ Sans/Variable/OTC/NotoSansMonoCJK-VF.ttf.ttc
+ Sans/Variable/OTF/Mono/NotoSansMonoCJKhk-VF.otf
+ Sans/Variable/OTF/Mono/NotoSansMonoCJKjp-VF.otf
+ Sans/Variable/OTF/Mono/NotoSansMonoCJKkr-VF.otf
+ Sans/Variable/OTF/Mono/NotoSansMonoCJKsc-VF.otf
+ Sans/Variable/OTF/Mono/NotoSansMonoCJKtc-VF.otf
+ Sans/Variable/OTF/NotoSansCJKhk-VF.otf
+ Sans/Variable/OTF/NotoSansCJKjp-VF.otf
+ Sans/Variable/OTF/NotoSansCJKkr-VF.otf
+ Sans/Variable/OTF/NotoSansCJKsc-VF.otf
+ Sans/Variable/OTF/NotoSansCJKtc-VF.otf
+ Sans/Variable/OTF/Subset/NotoSansHK-VF.otf
+ Sans/Variable/OTF/Subset/NotoSansJP-VF.otf
+ Sans/Variable/OTF/Subset/NotoSansKR-VF.otf
+ Sans/Variable/OTF/Subset/NotoSansSC-VF.otf
+ Sans/Variable/OTF/Subset/NotoSansTC-VF.otf
+ Sans/Variable/TTF/Mono/NotoSansMonoCJKhk-VF.ttf
+ Sans/Variable/TTF/Mono/NotoSansMonoCJKjp-VF.ttf
+ Sans/Variable/TTF/Mono/NotoSansMonoCJKkr-VF.ttf
+ Sans/Variable/TTF/Mono/NotoSansMonoCJKsc-VF.ttf
+ Sans/Variable/TTF/Mono/NotoSansMonoCJKtc-VF.ttf
+ Sans/Variable/TTF/NotoSansCJKhk-VF.ttf
+ Sans/Variable/TTF/NotoSansCJKjp-VF.ttf
+ Sans/Variable/TTF/NotoSansCJKkr-VF.ttf
+ Sans/Variable/TTF/NotoSansCJKsc-VF.ttf
+ Sans/Variable/TTF/NotoSansCJKtc-VF.ttf
+ Sans/Variable/TTF/Subset/NotoSansHK-VF.ttf
+ Sans/Variable/TTF/Subset/NotoSansJP-VF.ttf
+ Sans/Variable/TTF/Subset/NotoSansKR-VF.ttf
+ Sans/Variable/TTF/Subset/NotoSansSC-VF.ttf
+ Sans/Variable/TTF/Subset/NotoSansTC-VF.ttf
+ Serif/OTF/Japanese/NotoSerifCJKjp-Black.otf
+ Serif/OTF/Japanese/NotoSerifCJKjp-Bold.otf
+ Serif/OTF/Japanese/NotoSerifCJKjp-ExtraLight.otf
+ Serif/OTF/Japanese/NotoSerifCJKjp-Light.otf
+ Serif/OTF/Japanese/NotoSerifCJKjp-Medium.otf
+ Serif/OTF/Japanese/NotoSerifCJKjp-Regular.otf
+ Serif/OTF/Japanese/NotoSerifCJKjp-SemiBold.otf
+ Serif/OTF/Korean/NotoSerifCJKkr-Black.otf
+ Serif/OTF/Korean/NotoSerifCJKkr-Bold.otf
+ Serif/OTF/Korean/NotoSerifCJKkr-ExtraLight.otf
+ Serif/OTF/Korean/NotoSerifCJKkr-Light.otf
+ Serif/OTF/Korean/NotoSerifCJKkr-Medium.otf
+ Serif/OTF/Korean/NotoSerifCJKkr-Regular.otf
+ Serif/OTF/Korean/NotoSerifCJKkr-SemiBold.otf
+ Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Black.otf
+ Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Bold.otf
+ Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-ExtraLight.otf
+ Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Light.otf
+ Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Medium.otf
+ Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Regular.otf
+ Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-SemiBold.otf
+ Serif/OTF/TraditionalChinese/NotoSerifCJKtc-Black.otf
+ Serif/OTF/TraditionalChinese/NotoSerifCJKtc-Bold.otf
+ Serif/OTF/TraditionalChinese/NotoSerifCJKtc-ExtraLight.otf
+ Serif/OTF/TraditionalChinese/NotoSerifCJKtc-Light.otf
+ Serif/OTF/TraditionalChinese/NotoSerifCJKtc-Medium.otf
+ Serif/OTF/TraditionalChinese/NotoSerifCJKtc-Regular.otf
+ Serif/OTF/TraditionalChinese/NotoSerifCJKtc-SemiBold.otf
+ Serif/OTF/TraditionalChineseHK/NotoSerifCJKhk-Black.otf
+ Serif/OTF/TraditionalChineseHK/NotoSerifCJKhk-Bold.otf
+ Serif/OTF/TraditionalChineseHK/NotoSerifCJKhk-ExtraLight.otf
+ Serif/OTF/TraditionalChineseHK/NotoSerifCJKhk-Light.otf
+ Serif/OTF/TraditionalChineseHK/NotoSerifCJKhk-Medium.otf
+ Serif/OTF/TraditionalChineseHK/NotoSerifCJKhk-Regular.otf
+ Serif/OTF/TraditionalChineseHK/NotoSerifCJKhk-SemiBold.otf
+ Serif/SubsetOTF/HK/NotoSerifHK-Black.otf
+ Serif/SubsetOTF/HK/NotoSerifHK-Bold.otf
+ Serif/SubsetOTF/HK/NotoSerifHK-ExtraLight.otf
+ Serif/SubsetOTF/HK/NotoSerifHK-Light.otf
+ Serif/SubsetOTF/HK/NotoSerifHK-Medium.otf
+ Serif/SubsetOTF/HK/NotoSerifHK-Regular.otf
+ Serif/SubsetOTF/HK/NotoSerifHK-SemiBold.otf
+ Serif/SubsetOTF/JP/NotoSerifJP-Black.otf
+ Serif/SubsetOTF/JP/NotoSerifJP-Bold.otf
+ Serif/SubsetOTF/JP/NotoSerifJP-ExtraLight.otf
+ Serif/SubsetOTF/JP/NotoSerifJP-Light.otf
+ Serif/SubsetOTF/JP/NotoSerifJP-Medium.otf
+ Serif/SubsetOTF/JP/NotoSerifJP-Regular.otf
+ Serif/SubsetOTF/JP/NotoSerifJP-SemiBold.otf
+ Serif/SubsetOTF/KR/NotoSerifKR-Black.otf
+ Serif/SubsetOTF/KR/NotoSerifKR-Bold.otf
+ Serif/SubsetOTF/KR/NotoSerifKR-ExtraLight.otf
+ Serif/SubsetOTF/KR/NotoSerifKR-Light.otf
+ Serif/SubsetOTF/KR/NotoSerifKR-Medium.otf
+ Serif/SubsetOTF/KR/NotoSerifKR-Regular.otf
+ Serif/SubsetOTF/KR/NotoSerifKR-SemiBold.otf
+ Serif/SubsetOTF/SC/NotoSerifSC-Black.otf
+ Serif/SubsetOTF/SC/NotoSerifSC-Bold.otf
+ Serif/SubsetOTF/SC/NotoSerifSC-ExtraLight.otf
+ Serif/SubsetOTF/SC/NotoSerifSC-Light.otf
+ Serif/SubsetOTF/SC/NotoSerifSC-Medium.otf
+ Serif/SubsetOTF/SC/NotoSerifSC-Regular.otf
+ Serif/SubsetOTF/SC/NotoSerifSC-SemiBold.otf
+ Serif/SubsetOTF/TC/NotoSerifTC-Black.otf
+ Serif/SubsetOTF/TC/NotoSerifTC-Bold.otf
+ Serif/SubsetOTF/TC/NotoSerifTC-ExtraLight.otf
+ Serif/SubsetOTF/TC/NotoSerifTC-Light.otf
+ Serif/SubsetOTF/TC/NotoSerifTC-Medium.otf
+ Serif/SubsetOTF/TC/NotoSerifTC-Regular.otf
+ Serif/SubsetOTF/TC/NotoSerifTC-SemiBold.otf
+ Serif/Variable/OTC/NotoSerifCJK-VF.ttf.ttc
+ Serif/Variable/OTF/NotoSerifCJKhk-VF.otf
+ Serif/Variable/OTF/NotoSerifCJKjp-VF.otf
+ Serif/Variable/OTF/NotoSerifCJKkr-VF.otf
+ Serif/Variable/OTF/NotoSerifCJKsc-VF.otf
+ Serif/Variable/OTF/NotoSerifCJKtc-VF.otf
+ Serif/Variable/OTF/Subset/NotoSerifHK-VF.otf
+ Serif/Variable/OTF/Subset/NotoSerifJP-VF.otf
+ Serif/Variable/OTF/Subset/NotoSerifKR-VF.otf
+ Serif/Variable/OTF/Subset/NotoSerifSC-VF.otf
+ Serif/Variable/OTF/Subset/NotoSerifTC-VF.otf
+ Serif/Variable/TTF/NotoSerifCJKhk-VF.ttf
+ Serif/Variable/TTF/NotoSerifCJKjp-VF.ttf
+ Serif/Variable/TTF/NotoSerifCJKkr-VF.ttf
+ Serif/Variable/TTF/NotoSerifCJKsc-VF.ttf
+ Serif/Variable/TTF/NotoSerifCJKtc-VF.ttf
+ Serif/Variable/TTF/Subset/NotoSerifHK-VF.ttf
+ Serif/Variable/TTF/Subset/NotoSerifJP-VF.ttf
+ Serif/Variable/TTF/Subset/NotoSerifKR-VF.ttf
+ Serif/Variable/TTF/Subset/NotoSerifSC-VF.ttf
+ Serif/Variable/TTF/Subset/NotoSerifTC-VF.ttf
+
+Files: *
+Copyright: 2010-2012, Google Corporation
+License: SIL-1.1
+
+Files: debian/*
+Copyright: 2013, Vasudev Kamath <kamathvasudev@gmail.com>
+           2013-2015, Jonas Smedegaard <dr@jones.dk>
+           2015-2022, ChangZhuo Chen (陳昌倬) <czchen@debian.org>
+License: GPL-3+
+
+License: SIL-1.1
+ -----------------------------------------------------------
+ SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+ -----------------------------------------------------------
+ .
+ PREAMBLE
+ .
+ The goals of the Open Font License (OFL) are to stimulate worldwide
+ development of collaborative font projects, to support the font
+ creation efforts of academic and linguistic communities, and to provide
+ a free and open framework in which fonts may be shared and improved in
+ partnership with others.
+ .
+ The OFL allows the licensed fonts to be used, studied, modified and
+ redistributed freely as long as they are not sold by themselves. The
+ fonts, including any derivative works, can be bundled, embedded,
+ redistributed and/or sold with any software provided that any reserved
+ names are not used by derivative works. The fonts and derivatives,
+ however, cannot be released under any other type of license. The
+ requirement for fonts to remain under this license does not apply to
+ any document created using the fonts or their derivatives.
+ .
+ DEFINITIONS
+ .
+ "Font Software" refers to the set of files released by the Copyright
+ Holder(s) under this license and clearly marked as such. This may
+ include source files, build scripts and documentation.
+ .
+ "Reserved Font Name" refers to any names specified as such after the
+ copyright statement(s).
+ .
+ "Original Version" refers to the collection of Font Software components
+ as distributed by the Copyright Holder(s).
+ .
+ "Modified Version" refers to any derivative made by adding to,
+ deleting, or substituting -- in part or in whole -- any of the
+ components of the Original Version, by changing formats or by porting
+ the Font Software to a new environment.
+ .
+ "Author" refers to any designer, engineer, programmer, technical writer
+ or other person who contributed to the Font Software.
+ .
+ PERMISSION & CONDITIONS
+ .
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of the Font Software, to use, study, copy, merge, embed, modify,
+ redistribute, and sell modified and unmodified copies of the Font
+ Software, subject to the following conditions:
+ .
+ 1) Neither the Font Software nor any of its individual components, in
+ Original or Modified Versions, may be sold by itself.
+ .
+ 2) Original or Modified Versions of the Font Software may be bundled,
+ redistributed and/or sold with any software, provided that each copy
+ contains the above copyright notice and this license. These can be
+ included either as stand-alone text files, human-readable headers or
+ in the appropriate machine-readable metadata fields within text or
+ binary files as long as those fields can be easily viewed by the user.
+ .
+ 3) No Modified Version of the Font Software may use the Reserved Font
+ Name(s) unless explicit written permission is granted by the
+ corresponding Copyright Holder. This restriction only applies to the
+ primary font name as presented to the users.
+ .
+ 4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+ Software shall not be used to promote, endorse or advertise any
+ Modified Version, except to acknowledge the contribution(s) of the
+ Copyright Holder(s) and the Author(s) or with their explicit written
+ permission.
+ .
+ 5) The Font Software, modified or unmodified, in part or in whole, must
+ be distributed entirely under this license, and must not be distributed
+ under any other license. The requirement for fonts to remain under this
+ license does not apply to any document created using the Font Software.
+ .
+ TERMINATION
+ .
+ This license becomes null and void if any of the above conditions are
+ not met.
+ .
+ DISCLAIMER
+ .
+ THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+ OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+ DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+ OTHER DEALINGS IN THE FONT SOFTWARE.
+
+License: GPL-3+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".

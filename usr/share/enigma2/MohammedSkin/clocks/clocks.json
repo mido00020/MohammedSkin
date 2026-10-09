@@ -1,0 +1,138 @@
+{
+ "royal": {
+  "label": "Royal",
+  "seconds_theme": true
+ },
+ "arabesque": {
+  "label": "Arabesque",
+  "seconds_theme": false
+ },
+ "ornate": {
+  "label": "Ornate digital",
+  "seconds_theme": true
+ },
+ "none": {
+  "label": "No centre clock",
+  "seconds_theme": false
+ },
+ "c01": {
+  "label": "Neon gold",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c02": {
+  "label": "Gold mandala",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c03": {
+  "label": "Royal blue",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c04": {
+  "label": "Saudi green",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c05": {
+  "label": "Skeleton",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c06": {
+  "label": "Ruby",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c07": {
+  "label": "Silver night",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c08": {
+  "label": "Moonlight",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c09": {
+  "label": "Black marble",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c10": {
+  "label": "Racing red",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c11": {
+  "label": "Bronze arabesque",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c12": {
+  "label": "Sapphire",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c13": {
+  "label": "Riyadh skyline",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c14": {
+  "label": "Chronograph",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c15": {
+  "label": "Golden halo",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c16": {
+  "label": "Sport carbon",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c17": {
+  "label": "Lapis",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c18": {
+  "label": "Diamond gold",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c19": {
+  "label": "Red smoke",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c20": {
+  "label": "Saudi crest",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c21": {
+  "label": "Blue skeleton",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c22": {
+  "label": "Holy Kaaba",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c23": {
+  "label": "Malachite KSA",
+  "seconds_theme": true,
+  "hands": "royal"
+ },
+ "c24": {
+  "label": "Blue neon",
+  "seconds_theme": true,
+  "hands": "royal"
+ }
+}

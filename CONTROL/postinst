@@ -1,0 +1,36 @@
+#!/bin/sh
+mkdir -p /tmp/MohammedSkin
+# adapt skin.xml to this image (OpenViX, OpenBlackHole, OpenATV, PurE2, EGAMI or another one)
+# and keep the theme, clock and styles picked before this update
+python3 - <<'PY' || true
+import importlib.util
+spec = importlib.util.spec_from_file_location("msu", "/usr/lib/enigma2/python/Components/MohammedSkinUtils.py")
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+m.reapply_all()
+PY
+# last step: mark the install complete (the setup offers a repair when this mark is missing)
+python3 -c "import re;v=re.search(r'SKIN_VERSION = \"([^\"]+)\"',open('/usr/lib/enigma2/python/Components/MohammedSkinUtils.py').read()).group(1);open('/usr/share/enigma2/MohammedSkin/.installed','w').write(v)" 2>/dev/null || true
+# keep only the compiled code on the receiver (same speed: python runs the compiled form anyway)
+python3 - <<'PY' || true
+import os, py_compile, shutil
+files = ["/usr/lib/enigma2/python/Components/MohammedSkinUtils.py"]
+for d in ("/usr/lib/enigma2/python/Components/Renderer", "/usr/lib/enigma2/python/Components/Converter"):
+	files += [os.path.join(d, f) for f in os.listdir(d) if f.startswith("Mohammed") and f.endswith(".py")]
+p = "/usr/lib/enigma2/python/Plugins/Extensions/MohammedSkin"
+files += [os.path.join(p, f) for f in os.listdir(p) if f.endswith(".py")]
+for f in files:
+	try:
+		py_compile.compile(f, cfile=f + "c", doraise=True)
+		os.remove(f)
+	except Exception as e:
+		print("MohammedSkin: kept %s (%s)" % (f, e))
+	cache = os.path.join(os.path.dirname(f), "__pycache__")
+	base = os.path.basename(f)[:-3] + "."
+	if os.path.isdir(cache):
+		for c in os.listdir(cache):
+			if c.startswith(base):
+				os.remove(os.path.join(cache, c))
+PY
+echo "MohammedSkin installed. Select it in Menu > Setup > User Interface > Skin, then restart the GUI."
+exit 0

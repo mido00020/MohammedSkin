@@ -1,0 +1,170 @@
+	<!-- WINDOWSTYLE START (atv) -->
+	<windowstyle type="skinned" id="0">
+		<title offset="34,14" font="Semi;30" />
+		<color name="Background" color="panel" />
+		<color name="Foreground" color="ivory" />
+		<color name="ListboxBackground" color="panel" />
+		<color name="ListboxForeground" color="ivory" />
+		<color name="ListboxBackgroundSelected" color="crimson" />
+		<color name="ListboxForegroundSelected" color="white" />
+		<color name="ListboxBackgroundMarked" color="brass" />
+		<color name="ListboxForegroundMarked" color="ink" />
+		<color name="ListboxBackgroundMarkedSelected" color="ember" />
+		<color name="ListboxForegroundMarkedSelected" color="white" />
+		<color name="WindowTitleForeground" color="ivory" />
+		<color name="WindowTitleBackground" color="panel" />
+		<color name="ScrollbarForeground" color="crimson" />
+		<color name="ScrollbarBackground" color="panel" />
+		<borderset name="bsWindow">
+			<pixmap pos="bpTopLeft" filename="/usr/share/enigma2/MohammedSkin/img/win/b_tl.png" />
+			<pixmap pos="bpTop" filename="/usr/share/enigma2/MohammedSkin/img/win/b_t.png" />
+			<pixmap pos="bpTopRight" filename="/usr/share/enigma2/MohammedSkin/img/win/b_tr.png" />
+			<pixmap pos="bpLeft" filename="/usr/share/enigma2/MohammedSkin/img/win/b_l.png" />
+			<pixmap pos="bpRight" filename="/usr/share/enigma2/MohammedSkin/img/win/b_r.png" />
+			<pixmap pos="bpBottomLeft" filename="/usr/share/enigma2/MohammedSkin/img/win/b_bl.png" />
+			<pixmap pos="bpBottom" filename="/usr/share/enigma2/MohammedSkin/img/win/b_b.png" />
+			<pixmap pos="bpBottomRight" filename="/usr/share/enigma2/MohammedSkin/img/win/b_br.png" />
+		</borderset>
+	</windowstyle>
+	<!-- hotkey settings: the image has no skin of its own for these, without them the screen opens empty -->
+	<screen name="ButtonSetup" position="center,center" size="1400,860" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1400,860" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
+		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="50,812" size="8,30" backgroundColor="keyred" zPosition="1" />
+		<widget source="key_red" render="Label" position="68,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
+	</screen>
+	<screen name="ButtonSetupSelect" position="center,center" size="1400,860" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1400,860" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
+		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="50,812" size="8,30" backgroundColor="keyred" zPosition="1" />
+		<widget source="key_red" render="Label" position="68,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
+		<eLabel position="320,812" size="8,30" backgroundColor="keygreen" zPosition="1" />
+		<widget source="key_green" render="Label" position="338,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
+	</screen>
+	<screen name="VideoMode" position="1560,60" size="320,64" backgroundColor="panel" flags="wfNoBorder">
+		<eLabel position="0,0" size="4,64" backgroundColor="crimson" zPosition="1" />
+		<widget name="videomode" position="18,0" size="292,64" font="Semi;28" foregroundColor="ivory" backgroundColor="panel" transparent="1" halign="center" valign="center" zPosition="1" />
+	</screen>
+	<screen name="BufferIndicator" position="1560,140" size="320,56" backgroundColor="panel" flags="wfNoBorder">
+		<eLabel position="0,0" size="4,56" backgroundColor="crimson" zPosition="1" />
+		<widget name="status" position="18,0" size="292,56" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" halign="center" valign="center" zPosition="1" />
+	</screen>
+	<!-- EPG of one channel (EPG from the channel list): full screen, poster and translated story of the programme -->
+	<screen name="EPGSelection" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1920,1080" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1920,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="60,26" size="1300,60" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<widget source="global.CurrentTime" render="Label" position="1600,20" size="260,56" font="Title;50" halign="right" foregroundColor="ember" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1"><convert type="ClockToText">Format:%H:%M</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1460,74" size="400,30" font="Regular;24" halign="right" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1"><convert type="ClockToText">Format:%A %e %B</convert></widget>
+		<eLabel position="60,110" size="1800,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="60,990" size="1800,1" backgroundColor="line" zPosition="1" />
+		<widget name="list" position="60,130" size="1100,840" EventFontSingle="Regular;28" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="white" backgroundColorSelected="crimson" EntryForegroundColor="ivory" EntryForegroundColorSelected="white" EntryBackgroundColor="panel" EntryBackgroundColorSelected="crimson" EntryForegroundColorNow="gold" EntryForegroundColorNowSelected="white" EntryBackgroundColorNow="panel" EntryBackgroundColorNowSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="2" />
+		<widget name="lab1" position="60,130" size="1100,840" font="Regular;32" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="3" />
+		<eLabel position="1196,128" size="304,444" backgroundColor="line" zPosition="1" />
+		<widget source="Event" render="MohammedPoster" kind="poster" delay="300" cornerRadius="12" fill="#00140C0C" position="1198,130" size="300,440" zPosition="2" />
+		<widget source="Service" render="Label" position="1530,130" size="330,40" font="Semi;28" foregroundColor="ember" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2"><convert type="ServiceName">Name</convert></widget>
+		<widget source="Event" render="Label" position="1530,180" size="330,36" font="Semi;27" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2"><convert type="EventTime">StartTime</convert><convert type="ClockToText">Format:%a %H:%M</convert></widget>
+		<widget source="Event" render="Label" position="1530,220" size="330,36" font="Regular;25" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2"><convert type="EventTime">Duration</convert><convert type="ClockToText">InMinutes</convert></widget>
+		<widget source="Event" render="MohammedRunning" position="1198,590" size="662,60" font="ArTitle;38" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2"><convert type="MohammedTranslate">Name</convert></widget>
+		<widget source="Event" render="MohammedRunning" direction="up" pause="4000" position="1198,660" size="662,310" font="ArText;25" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2"><convert type="MohammedTranslate">Description</convert></widget>
+		<eLabel position="60,1020" size="18,18" backgroundColor="keyred" zPosition="5" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="88,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="88,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="360,1020" size="18,18" backgroundColor="keygreen" zPosition="5" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="388,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="388,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="660,1020" size="18,18" backgroundColor="keyyellow" zPosition="5" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="688,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="688,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="960,1020" size="18,18" backgroundColor="keyblue" zPosition="5" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="988,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="988,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+	</screen>
+	<!-- EPG of all channels (now / next / more): full screen -->
+	<screen name="EPGSelectionMulti" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1920,1080" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1920,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="60,26" size="1300,60" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<widget source="global.CurrentTime" render="Label" position="1600,20" size="260,56" font="Title;50" halign="right" foregroundColor="ember" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1"><convert type="ClockToText">Format:%H:%M</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1460,74" size="400,30" font="Regular;24" halign="right" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1"><convert type="ClockToText">Format:%A %e %B</convert></widget>
+		<eLabel position="60,110" size="1800,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="60,990" size="1800,1" backgroundColor="line" zPosition="1" />
+		<widget name="now_button" pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_lux_tab.png" position="60,124" size="240,84" alphatest="blend" zPosition="2" />
+		<widget name="next_button" pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_lux_tab.png" position="320,124" size="240,84" alphatest="blend" zPosition="2" />
+		<widget name="more_button" pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_lux_tab.png" position="580,124" size="240,84" alphatest="blend" zPosition="2" />
+		<widget name="now_button_sel" pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_lux_tabon.png" position="60,124" size="240,84" alphatest="blend" zPosition="2" />
+		<widget name="next_button_sel" pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_lux_tabon.png" position="320,124" size="240,84" alphatest="blend" zPosition="2" />
+		<widget name="more_button_sel" pixmap="/usr/share/enigma2/MohammedSkin/img/cl4_lux_tabon.png" position="580,124" size="240,84" alphatest="blend" zPosition="2" />
+		<widget name="now_text" position="60,124" size="240,84" font="Semi;28" halign="center" valign="center" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="3" />
+		<widget name="next_text" position="320,124" size="240,84" font="Semi;28" halign="center" valign="center" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="3" />
+		<widget name="more_text" position="580,124" size="240,84" font="Semi;28" halign="center" valign="center" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="3" />
+		<widget name="date" position="1400,140" size="460,50" font="Semi;28" halign="right" valign="center" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" />
+		<widget name="list" position="60,224" size="1800,750" EventFontMulti="Regular;28" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="white" backgroundColorSelected="crimson" EntryForegroundColor="ivory" EntryForegroundColorSelected="white" EntryBackgroundColor="panel" EntryBackgroundColorSelected="crimson" EntryForegroundColorNow="gold" EntryForegroundColorNowSelected="white" EntryBackgroundColorNow="panel" EntryBackgroundColorNowSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="2" />
+		<widget name="lab1" position="60,224" size="1800,750" font="Regular;32" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="3" />
+		<eLabel position="60,1020" size="18,18" backgroundColor="keyred" zPosition="5" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="88,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="88,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="360,1020" size="18,18" backgroundColor="keygreen" zPosition="5" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="388,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="388,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="660,1020" size="18,18" backgroundColor="keyyellow" zPosition="5" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="688,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="688,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="960,1020" size="18,18" backgroundColor="keyblue" zPosition="5" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="988,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="988,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />
+	</screen>
+	<screen name="Opkg" position="center,center" size="1400,800" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1400,800" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="40,20" size="1320,56" font="Title;40" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<eLabel position="40,88" size="1320,1" backgroundColor="line" zPosition="1" />
+		<widget name="package" position="40,104" size="1320,44" font="Semi;32" foregroundColor="gold" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
+		<widget name="status" position="40,152" size="1320,40" font="Regular;28" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" />
+		<widget name="activityslider" position="40,204" size="1320,6" foregroundColor="ember" backgroundColor="line" zPosition="2" />
+		<widget name="slider" position="40,222" size="1320,16" foregroundColor="crimson" backgroundColor="line" borderWidth="1" borderColor="line" zPosition="2" />
+		<widget name="log" position="40,256" size="1320,450" font="Console;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2" />
+		<eLabel position="40,724" size="1320,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="40,754" size="18,18" backgroundColor="keyred" zPosition="5" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="68,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="68,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="440,754" size="18,18" backgroundColor="keyblue" zPosition="5" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="468,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="468,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+	</screen>
+	<screen name="IpkgInstaller" position="center,center" size="1400,800" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1400,800" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="40,20" size="1320,56" font="Title;40" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<eLabel position="40,88" size="1320,1" backgroundColor="line" zPosition="1" />
+		<widget name="list" position="40,104" size="1320,560" itemHeight="50" font="Regular;30" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="white" backgroundColorSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="2" />
+		<widget source="introduction" render="Label" position="40,676" size="1320,40" font="Regular;26" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" />
+		<eLabel position="40,724" size="1320,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="40,754" size="18,18" backgroundColor="keyred" zPosition="5" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="68,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="68,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="370,754" size="18,18" backgroundColor="keygreen" zPosition="5" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="398,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="398,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="700,754" size="18,18" backgroundColor="keyyellow" zPosition="5" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="728,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="728,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<eLabel position="1030,754" size="18,18" backgroundColor="keyblue" zPosition="5" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="1058,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="1058,746" size="240,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
+	</screen>
+	<!-- WINDOWSTYLE END -->
