@@ -10,6 +10,8 @@
 #   <convert type="MohammedEcm">Short</convert>        0.21 s · 0B00 · cs.myserver.net
 #   <convert type="MohammedEcm">Full</convert>         0.21 s · CCcam · CAID 0B00 · hop 1 · cs.myserver.net
 #   <convert type="MohammedEcm">IsConnected</convert>  boolean (green / red dot)
+#   <convert type="MohammedEcm">Keys</convert>         several lines: CAID / PID / provider, reader and protocol,
+#                                                      ECM time and the control words (CW0 / CW1) as OSCam(-Emu) writes them
 # Use with source="session.CurrentService".
 
 import os
@@ -111,6 +113,38 @@ def read_ecm():
 	return {}
 
 
+def read_keys():
+	"""All of ecm.info in a few clear lines, with the control words (what OSCam-Emu users look at)."""
+	for path in ECM_FILES:
+		try:
+			if time.time() - os.path.getmtime(path) > STALE_SECONDS:
+				continue
+			with open(path) as f:
+				lines = f.read().splitlines()
+		except Exception:
+			continue
+		d = {}
+		for line in lines:
+			if ":" in line:
+				k, v = line.split(":", 1)
+				d.setdefault(k.strip().lower(), v.strip())
+		if not d:
+			continue
+		e = read_ecm()
+		out = []
+		ids = [("CAID", d.get("caid", "")), ("PID", d.get("pid", "")), ("Prov", d.get("prov", "") or d.get("provider", "")), ("ChID", d.get("chid", ""))]
+		out.append("   ".join("%s %s" % (k, v.replace("0x", "").upper()) for k, v in ids if v))
+		who = [d.get("reader", ""), e.get("protocol", "") or d.get("protocol", ""), d.get("from", "") or d.get("address", "")]
+		out.append("   ".join(x for x in who if x))
+		more = [("ECM", e.get("time", "")), ("hops", d.get("hops", ""))]
+		out.append("   ".join("%s %s" % (k, v) for k, v in more if v))
+		for k in ("cw0", "cw1"):
+			if d.get(k):
+				out.append("%s  %s" % (k.upper(), d[k]))
+		return "\n".join(x for x in out if x.strip())
+	return ""
+
+
 class MohammedEcm(Poll, Converter):
 	def __init__(self, type):
 		Converter.__init__(self, type)
@@ -124,6 +158,8 @@ class MohammedEcm(Poll, Converter):
 		t = self.type
 		if t == "Cam":
 			return running_cam()
+		if t == "Keys":
+			return read_keys()
 		e = read_ecm()
 		if t == "Server":
 			return e.get("server", "")
