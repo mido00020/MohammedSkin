@@ -51,4 +51,46 @@
 		<eLabel position="320,812" size="8,30" backgroundColor="keygreen" zPosition="1" />
 		<widget name="key_green" position="338,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
 	</screen>
+	<!-- OpenBlackHole Blue Panel: the cam list is one line that changes with LEFT / RIGHT (that is how OpenBh drives it),
+	     so it is drawn as a selector with arrows; OK makes it the default cam. ECM info and keys on the right. -->
+	<screen name="DeliteBluePanel" position="center,center" size="1300,840" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1300,840" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1300,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="40,22" size="1220,60" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<eLabel position="40,96" size="1220,1" backgroundColor="line" zPosition="1" />
+		<eLabel text="&#x2039;" position="40,116" size="50,64" font="Title;56" halign="center" valign="center" foregroundColor="gold" backgroundColor="panel" transparent="1" zPosition="3" />
+		<widget name="list" position="96,116" size="640,64" itemHeight="64" font="Semi;34" enableWrapAround="1" scrollbarMode="showNever" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" transparent="1" zPosition="2" />
+		<eLabel text="&#x203A;" position="742,116" size="50,64" font="Title;56" halign="center" valign="center" foregroundColor="gold" backgroundColor="panel" transparent="1" zPosition="3" />
+		<widget name="lab1" position="820,112" size="440,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
+		<widget name="lab3" position="820,150" size="440,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="40,198" size="1220,1" backgroundColor="line" zPosition="1" />
+		<widget name="activecam" position="40,214" size="1220,40" font="Semi;28" foregroundColor="gold" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<eLabel position="40,268" size="1220,1" backgroundColor="line" zPosition="1" />
+		<widget name="Ilab1" position="40,330" size="580,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="Ilab2" position="40,370" size="580,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="Ilab3" position="40,410" size="580,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="Ilab4" position="40,450" size="580,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<eLabel position="649,290" size="1,430" backgroundColor="line" zPosition="1" />
+		<widget name="Ecmtext" position="670,290" size="590,210" font="Fixed;22" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2" />
+		<widget source="session.CurrentService" render="Label" position="670,510" size="590,34" font="Semi;24" foregroundColor="gold" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2">
+			<convert type="MohammedEcm">Cam</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="670,548" size="590,172" font="Fixed;22" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2">
+			<convert type="MohammedEcm">Keys</convert>
+		</widget>
+		<eLabel text="&#x25C4; &#x25BA;  cam      OK  default" position="40,690" size="600,30" font="Regular;22" foregroundColor="smoke" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="40,736" size="1220,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="40,784" size="18,18" backgroundColor="keyred" zPosition="1" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="68,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="68,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="345,784" size="18,18" backgroundColor="keygreen" zPosition="1" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="373,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="373,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="650,784" size="18,18" backgroundColor="keyyellow" zPosition="1" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="678,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="678,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="955,784" size="18,18" backgroundColor="keyblue" zPosition="1" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="983,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="983,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+	</screen>
 	<!-- WINDOWSTYLE END -->
