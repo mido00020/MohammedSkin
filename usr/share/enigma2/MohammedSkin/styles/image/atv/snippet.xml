@@ -199,36 +199,41 @@
 		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="908,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
 		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="908,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
 	</screen>
-	<!-- EGAMI Blue Panel: same design as the softcam choice, with the ECM info and keys. -->
-	<screen name="BluePanel" position="center,center" size="1200,820" backgroundColor="transparent" flags="wfNoBorder">
-		<eLabel position="0,0" size="1200,820" backgroundColor="panel" zPosition="-1" />
-		<eLabel position="0,0" size="1200,4" backgroundColor="crimson" zPosition="1" />
-		<widget source="Title" render="Label" position="40,22" size="1120,60" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
-		<eLabel position="40,96" size="1120,1" backgroundColor="line" zPosition="1" />
-		<widget name="config" position="40,112" size="1120,160" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
-		<eLabel position="40,284" size="1120,1" backgroundColor="line" zPosition="1" />
-		<widget name="info" position="40,296" size="1120,200" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" />
-		<eLabel position="40,508" size="1120,1" backgroundColor="line" zPosition="1" />
-		<widget source="session.CurrentService" render="Label" position="40,518" size="1120,36" font="Semi;26" foregroundColor="gold" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2">
+	<!-- EGAMI Blue Panel (softcam choice): the cam to start with LEFT / RIGHT on the first line, the running cams and
+	     channel info on the left, the channel's ECM info and keys (CW0 / CW1, also OSCam-Emu) on the right. -->
+	<screen name="BluePanel" position="center,center" size="1300,840" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1300,840" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1300,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="40,22" size="1220,60" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<eLabel position="40,96" size="1220,1" backgroundColor="line" zPosition="1" />
+		<widget name="config" position="40,112" size="1220,110" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<eLabel position="40,234" size="1220,1" backgroundColor="line" zPosition="1" />
+		<widget name="actifcam" position="40,250" size="580,34" font="Semi;26" foregroundColor="gold" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="actifcam2" position="40,286" size="580,34" font="Semi;26" foregroundColor="gold" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="lb_provider" position="40,346" size="580,34" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="lb_channel" position="40,384" size="580,34" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="lb_aspectratio" position="40,422" size="580,34" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<widget name="lb_videosize" position="40,460" size="580,34" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" noWrap="1" />
+		<eLabel position="649,250" size="1,470" backgroundColor="line" zPosition="1" />
+		<widget name="ecminfo" position="670,250" size="590,250" font="Fixed;22" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2" />
+		<widget source="session.CurrentService" render="Label" position="670,510" size="590,34" font="Semi;24" foregroundColor="gold" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2">
 			<convert type="MohammedEcm">Cam</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="40,558" size="1120,170" font="Fixed;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2">
+		<widget source="session.CurrentService" render="Label" position="670,548" size="590,172" font="Fixed;22" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2">
 			<convert type="MohammedEcm">Keys</convert>
 		</widget>
-		<widget name="description" position="40,1100" size="4,4" font="Regular;10" transparent="1" zPosition="-1" />
-		<widget name="footnote" position="0,1100" size="4,4" font="Regular;10" transparent="1" zPosition="-1" />
-		<widget name="HelpWindow" position="0,1100" size="4,4" pixmap="/usr/share/enigma2/MohammedSkin/img/blank.png" alphatest="on" zPosition="-1" />
-		<eLabel position="40,770" size="18,18" backgroundColor="keyred" zPosition="1" />
-		<widget name="key_red" objectTypes="key_red,Label,Button" position="68,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
-		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="68,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
-		<eLabel position="320,770" size="18,18" backgroundColor="keygreen" zPosition="1" />
-		<widget name="key_green" objectTypes="key_green,Label,Button" position="348,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
-		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="348,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
-		<eLabel position="600,770" size="18,18" backgroundColor="keyyellow" zPosition="1" />
-		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="628,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
-		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="628,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
-		<eLabel position="880,770" size="18,18" backgroundColor="keyblue" zPosition="1" />
-		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="908,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
-		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="908,760" size="240,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="40,736" size="1220,1" backgroundColor="line" zPosition="1" />
+		<eLabel position="40,784" size="18,18" backgroundColor="keyred" zPosition="1" />
+		<widget name="key_red" objectTypes="key_red,Label,Button" position="68,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_red" render="Label" objectTypes="key_red,StaticText" position="68,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="345,784" size="18,18" backgroundColor="keygreen" zPosition="1" />
+		<widget name="key_green" objectTypes="key_green,Label,Button" position="373,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_green" render="Label" objectTypes="key_green,StaticText" position="373,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="650,784" size="18,18" backgroundColor="keyyellow" zPosition="1" />
+		<widget name="key_yellow" objectTypes="key_yellow,Label,Button" position="678,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_yellow" render="Label" objectTypes="key_yellow,StaticText" position="678,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="955,784" size="18,18" backgroundColor="keyblue" zPosition="1" />
+		<widget name="key_blue" objectTypes="key_blue,Label,Button" position="983,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_blue" render="Label" objectTypes="key_blue,StaticText" position="983,774" size="265,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
 	</screen>
 	<!-- WINDOWSTYLE END -->

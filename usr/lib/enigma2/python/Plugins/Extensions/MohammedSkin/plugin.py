@@ -184,6 +184,7 @@ class MohammedSkinSetup(Screen):
 		L = self.lang
 		t = lambda s: tr(L, s)
 		self.t = t
+		self.m = lambda ar, en: ar if L == "ar" else t(en)  # one language per message (mixed Arabic / English lines were shown out of order)
 		name = U.image_name()
 		self.setTitle("MohammedSkin Setup  -  %s" % name if name else "MohammedSkin Setup")
 		self["subtitle"] = StaticText(t("Setup"))
@@ -564,7 +565,7 @@ class MohammedSkinSetup(Screen):
 			pass
 
 	def restartNow(self):
-		self.status(u"جاري تطبيق الشكل وإعادة تشغيل الواجهة ...   Applying, the GUI restarts now ...")
+		self.status(self.m(u"جاري تطبيق الشكل وإعادة تشغيل الواجهة ...", "Applying, the GUI restarts now ..."))
 		from enigma import eTimer
 		self.restartTimer = eTimer()
 		try:
@@ -593,7 +594,7 @@ class MohammedSkinSetup(Screen):
 		if not places:
 			return
 		items = [(u"%s   %s" % (c["ar"], c["en"]) if c["ar"] != c["en"] else c["en"], i) for i, c in enumerate(places)]
-		self.session.openWithCallback(self.countryChosen, ChoiceBox, title=u"اختر الدولة - Choose the country", list=items)
+		self.session.openWithCallback(self.countryChosen, ChoiceBox, title=self.m(u"اختر الدولة", "Choose the country"), list=items)
 
 	def countryChosen(self, choice):
 		if not choice:
@@ -601,7 +602,7 @@ class MohammedSkinSetup(Screen):
 		from Screens.ChoiceBox import ChoiceBox
 		self.country = U.weather_places()[choice[1]]
 		items = [(u"%s   %s" % (c[1], c[0]) if c[1] != c[0] else c[0], i) for i, c in enumerate(self.country["cities"])]
-		self.session.openWithCallback(self.cityChosen, ChoiceBox, title=u"اختر المدينة - Choose the city (%s)" % self.country["en"], list=items)
+		self.session.openWithCallback(self.cityChosen, ChoiceBox, title=self.m(u"اختر المدينة (%s)", "Choose the city (%s)") % self.country["en"], list=items)
 
 	def cityChosen(self, choice):
 		if not choice:
@@ -646,7 +647,7 @@ class MohammedSkinSetup(Screen):
 		import threading
 		name = self.theme.value
 		self.updating = True
-		self.status(u"جاري تجهيز اللون الجديد، انتظر دقيقة أو دقيقتين ...   Preparing the %s colour, please wait ..." % self.themes.get(name, {}).get("label", name))
+		self.status(self.m(u"جاري تجهيز اللون الجديد، انتظر دقيقة أو دقيقتين ...", "Preparing the %s colour, please wait ..." % self.themes.get(name, {}).get("label", name)))
 
 		def work():
 			ok = False
@@ -778,17 +779,17 @@ class MohammedSkinSetup(Screen):
 		elif newer:
 			self.latestFound = latest
 			if U.version_tuple(latest) > U.version_tuple(U.SKIN_VERSION):
-				text = (u"يوجد تحديث جديد لسكن MohammedSkin\nA new version of MohammedSkin is available\n\n"
-					u"المثبت / Installed: %s\nالجديد / New: %s\n\nهل تريد التحديث الآن؟  Update now?" % (U.SKIN_VERSION, latest))
+				text = self.m(u"يوجد تحديث جديد لسكن MohammedSkin\n\nالمثبت: %s\nالجديد: %s\n\nهل تريد التحديث الآن؟",
+					"A new version of MohammedSkin is available.\n\nInstalled: %s\nNew: %s\n\nUpdate now?") % (U.SKIN_VERSION, latest)
 			else:
-				text = (u"آخر تحديث للسكن ما اكتمل (%s)\nThe last MohammedSkin update did not finish (%s).\n\n"
-					u"هل تريد إكماله الآن؟  Finish it now?" % (latest, latest))
+				text = self.m(u"آخر تحديث للسكن ما اكتمل (%s)\n\nهل تريد إكماله الآن؟",
+					"The last MohammedSkin update did not finish (%s).\n\nFinish it now?") % latest
 			self.session.openWithCallback(self.updateAnswer, MessageBox, text, MessageBox.TYPE_YESNO)
 		else:
 			self.latestFound = latest
 			self.session.openWithCallback(self.updateAnswer, MessageBox,
-				u"السكن محدث لآخر إصدار (%s)\nMohammedSkin is up to date (%s).\n\n"
-				u"إعادة التثبيت تصلح أي ملفات ناقصة.\nReinstall it now (repairs missing files)?" % (U.SKIN_VERSION, U.SKIN_VERSION),
+				self.m(u"السكن محدث لآخر إصدار (%s)\n\nإعادة التثبيت تصلح أي ملفات ناقصة. تبي تعيد التثبيت الحين؟",
+				"MohammedSkin is up to date (%s).\n\nReinstall it now (repairs missing files)?") % U.SKIN_VERSION,
 				MessageBox.TYPE_YESNO, default=False)
 
 	# ------------------------------------------------------------ automatic update when the setup opens
@@ -814,8 +815,8 @@ class MohammedSkinSetup(Screen):
 		from Screens.Console import Console
 		self.updating = True
 		self["key_blue"].setText(self.t("Updating..."))
-		self.status(u"جاري التحديث إلى %s ...   Updating to %s ..." % (latest, latest))
-		title = u"تحديث MohammedSkin إلى %s - انتظر، الواجهة تعيد التشغيل بنفسها" % latest
+		self.status(self.m(u"جاري التحديث إلى %s ...", "Updating to %s ...") % latest)
+		title = self.m(u"تحديث MohammedSkin إلى %s - انتظر، الواجهة تعيد التشغيل بنفسها", "Updating MohammedSkin to %s - please wait, the GUI restarts by itself") % latest
 		self.session.openWithCallback(self.consoleClosed, Console, title=title, cmdlist=[U.UPDATE_CMD])
 
 	def consoleClosed(self, *args):
@@ -825,7 +826,7 @@ class MohammedSkinSetup(Screen):
 			self["key_blue"].setText(self.t("Update"))
 		except Exception:
 			pass
-		self.status(u"لم يكتمل التحديث، جرّب مرة ثانية بالزر الأزرق.   The update did not finish - try again with the blue button.")
+		self.status(self.m(u"لم يكتمل التحديث، جرّب مرة ثانية بالزر الأزرق.", "The update did not finish - try again with the blue button."))
 
 	def autoUpdateData(self, data):
 		try:
