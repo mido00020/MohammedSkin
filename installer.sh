@@ -107,6 +107,135 @@ if fetch "$BASE/version.txt" /tmp/mohammedskin_version.txt; then
 fi
 echo "Latest version: ${VER:-unknown}"
 
+# ---------------------------------------------------------------- quick update
+# An installed skin keeps the list of its files (.manifest.json). Only the files that changed since
+# then are downloaded and replaced; the whole package is fetched only for a first install or a big change.
+SK=/usr/share/enigma2/MohammedSkin
+quick_update() {
+	[ -f "$SK/.installed" ] && [ -f "$SK/.manifest.json" ] || return 1
+	fetch "$BASE/ipk/manifest.json.gz?t=$(date +%s)" "$WORK/mohammedskin_manifest.json.gz" || return 1
+	python3 -E - "$WORK/mohammedskin_manifest.json.gz" "$WORK/mohammedskin-quick" "$SK/.manifest.json" <<'PY'
+import gzip, hashlib, http.client, json, os, re, shutil, ssl, sys, time
+new = json.loads(gzip.open(sys.argv[1]).read().decode("utf-8"))
+stage, local = sys.argv[2], sys.argv[3]
+old = json.load(open(local)).get("files", {})
+files = new["files"]
+ROOT = os.environ.get("MS_ROOT", "")  # only for testing
+regen = re.compile(r"usr/share/enigma2/MohammedSkin/clocks/[^/]+/(?!red/|common/)[^/]+/")  # remade on the box when needed
+
+
+def present(p):
+	a = ROOT + "/" + p
+	return os.path.exists(a) or (p.endswith(".py") and os.path.exists(a + "c"))
+
+
+get = []
+for p, (size, sha) in files.items():
+	if p.startswith("CONTROL/"):
+		get.append(p)
+	elif old.get(p) != [size, sha]:
+		get.append(p)
+	elif not present(p) and not regen.match(p) and not p.endswith("/preview.png"):
+		get.append(p)
+gone = [p for p in old if p not in files and not p.startswith("CONTROL/")]
+total = sum(files[p][0] for p in get)
+print("Changed files: %d (%d kB), removed: %d" % (len(get) - 1, total // 1024, len(gone)))
+if len(get) > 2500 or total > 40 * 1024 * 1024:
+	print("Big update: the whole package is downloaded instead.")
+	sys.exit(2)
+shutil.rmtree(stage, ignore_errors=True)
+os.makedirs(stage)
+host = os.environ.get("MS_HOST", "raw.githubusercontent.com")
+path0 = "/mido00020/MohammedSkin/%s/" % new["commit"]
+conn = [None]
+
+
+def connect(verify):
+	if os.environ.get("MS_HOST"):
+		return http.client.HTTPConnection(host, timeout=30)
+	ctx = ssl.create_default_context() if verify else ssl._create_unverified_context()
+	return http.client.HTTPSConnection(host, timeout=30, context=ctx)
+
+
+def slow_get(url):
+	import urllib.request
+	ctx = ssl._create_unverified_context()
+	return urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "MohammedSkin"}), timeout=30, context=None if url.startswith("http:") else ctx).read()
+
+
+def fetch_one(p):
+	from urllib.parse import quote
+	for attempt in range(5):
+		try:
+			if attempt >= 3:  # plain request that follows redirects
+				data = slow_get(("http://" if os.environ.get("MS_HOST") else "https://") + host + path0 + quote(p))
+				if hashlib.sha1(data).hexdigest() == files[p][1]:
+					return data
+				continue
+			if conn[0] is None:
+				conn[0] = connect(attempt < 2)
+			conn[0].request("GET", path0 + quote(p), headers={"Connection": "keep-alive", "User-Agent": "MohammedSkin"})
+			r = conn[0].getresponse()
+			data = r.read()
+			if r.status == 200 and hashlib.sha1(data).hexdigest() == files[p][1]:
+				return data
+		except Exception:
+			pass
+		try:
+			conn[0].close()
+		except Exception:
+			pass
+		conn[0] = None
+		time.sleep(1)
+	raise SystemExit("download failed: " + p)
+
+
+for i, p in enumerate(get):
+	data = fetch_one(p)
+	d = os.path.join(stage, p)
+	os.makedirs(os.path.dirname(d), exist_ok=True)
+	open(d, "wb").write(data)
+	if (i + 1) % 25 == 0:
+		print("  %d / %d" % (i + 1, len(get)))
+# everything is here and checked: put it in place
+for p in get:
+	if p.startswith("CONTROL/"):
+		continue
+	a = ROOT + "/" + p
+	os.makedirs(os.path.dirname(a), exist_ok=True)
+	tmp = a + ".msnew"
+	shutil.copyfile(os.path.join(stage, p), tmp)
+	os.replace(tmp, a)
+	if p.endswith(".py") and os.path.exists(a + "c"):
+		os.remove(a + "c")
+for p in gone:
+	for a in (ROOT + "/" + p, ROOT + "/" + p + "c" if p.endswith(".py") else None):
+		if a and os.path.isfile(a):
+			os.remove(a)
+PY
+	rc=$?
+	[ $rc -eq 0 ] || { rm -rf "$WORK/mohammedskin-quick"; return $rc; }
+	rm -f "$SK/.installed"
+	sh "$WORK/mohammedskin-quick/CONTROL/postinst" configure
+	rm -rf "$WORK/mohammedskin-quick"
+	[ -f "$SK/.installed" ] || return 1
+	python3 -E -c "import gzip,json,sys;m=json.loads(gzip.open(sys.argv[1]).read());json.dump({'version':m['version'],'files':m['files']},open(sys.argv[2],'w'))" "$WORK/mohammedskin_manifest.json.gz" "$SK/.manifest.json"
+	rm -f "$WORK/mohammedskin_manifest.json.gz"
+	return 0
+}
+
+if quick_update; then
+	echo "=============================================="
+	echo "  MohammedSkin ${VER} updated (changed files only)"
+	echo "=============================================="
+	echo "Restarting the GUI ..."
+	sync
+	sleep 1
+	killall -9 enigma2 >/dev/null 2>&1
+	exit 0
+fi
+rm -rf "$WORK/mohammedskin-quick"
+
 echo "Downloading ..."
 if ! fetch "$BASE/ipk/enigma2-skin-mohammedskin_all.ipk" "$IPK"; then
 	echo "ERROR: download failed. Check the internet connection."
@@ -128,8 +257,8 @@ if fetch "$BASE/ipk/enigma2-skin-mohammedskin_all.ipk.sha256" /tmp/mohammedskin.
 	fi
 	echo "Checksum OK"
 fi
-# the download must be a whole package (a cut connection leaves half a file)
-if ! python3 -E - "$IPK" <<'PY'
+# the download must be a whole package (a cut connection leaves half a file); the checksum above already proves it
+if [ -z "$GOT" ] && ! python3 -E - "$IPK" <<'PY'
 import sys, tarfile
 f = open(sys.argv[1], "rb")
 if f.read(8) != b"!<arch>\n":
@@ -229,6 +358,13 @@ else
 	echo "Installed directly (opkg was skipped)."
 fi
 rm -rf "$IPK" "$OPKG_TMP"
+
+# keep the list of installed files: the next update fetches only what changed
+rm -f "$SK/.manifest.json"
+if fetch "$BASE/ipk/manifest.json.gz?t=$(date +%s)" "$WORK/mohammedskin_manifest.json.gz"; then
+	python3 -E -c "import gzip,json,sys;m=json.loads(gzip.open(sys.argv[1]).read());v=open(sys.argv[2]).read().strip();m['version']==v and json.dump({'version':m['version'],'files':m['files']},open(sys.argv[3],'w'))" "$WORK/mohammedskin_manifest.json.gz" "$SK/.installed" "$SK/.manifest.json" 2>/dev/null
+	rm -f "$WORK/mohammedskin_manifest.json.gz"
+fi
 
 # Pillow is optional (used for the clock and theme tools); try to add it quietly.
 opkg list-installed 2>/dev/null | grep -q '^python3-pillow ' || opkg install python3-pillow >/dev/null 2>&1
