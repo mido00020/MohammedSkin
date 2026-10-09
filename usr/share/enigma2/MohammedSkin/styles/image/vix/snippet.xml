@@ -31,9 +31,9 @@
 		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
 		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
 		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
-		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
 	</screen>
 	<screen name="ButtonSetupSelect" position="center,center" size="1400,860" backgroundColor="transparent" flags="wfNoBorder">
@@ -42,9 +42,9 @@
 		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
 		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
 		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
-		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
 		<eLabel position="50,812" size="8,30" backgroundColor="keyred" zPosition="1" />
 		<widget name="key_red" position="68,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
@@ -59,7 +59,7 @@
 		<widget source="Title" render="Label" position="40,22" size="1220,60" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
 		<eLabel position="40,96" size="1220,1" backgroundColor="line" zPosition="1" />
 		<eLabel text="&#x2039;" position="40,116" size="50,64" font="Title;56" halign="center" valign="center" foregroundColor="gold" backgroundColor="panel" transparent="1" zPosition="3" />
-		<widget name="list" position="96,116" size="640,64" itemHeight="64" font="Semi;34" enableWrapAround="1" scrollbarMode="showNever" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" transparent="1" zPosition="2" />
+		<widget name="list" position="96,116" size="640,64" itemHeight="64" font="Semi;34" enableWrapAround="1" scrollbarMode="showNever" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1" zPosition="2" />
 		<eLabel text="&#x203A;" position="742,116" size="50,64" font="Title;56" halign="center" valign="center" foregroundColor="gold" backgroundColor="panel" transparent="1" zPosition="3" />
 		<widget name="lab1" position="820,112" size="440,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
 		<widget name="lab3" position="820,150" size="440,36" font="Regular;24" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />

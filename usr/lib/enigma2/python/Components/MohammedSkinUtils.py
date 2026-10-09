@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.55"
+SKIN_VERSION = "2.1.56"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -1255,6 +1255,19 @@ THEME_COLORS = (("crimson", "accent", "00"), ("ember", "accent2", "00"), ("neonr
 	("ink", "ink", "00"), ("panel", "ink", "14"), ("line", "line", "00"), ("ivorydim", "ivorydim", "00"))
 
 
+def selection_colors(theme):
+	"""The selection bar and the text on it, readable in every theme: a light theme colour (white, black/silver)
+	gets dark text, or its darker selection colour when the theme has one."""
+	sel = (theme.get("sel_accent") or theme.get("accent") or "#C8102E").lstrip("#")
+	try:
+		r, g, b = int(sel[0:2], 16), int(sel[2:4], 16), int(sel[4:6], 16)
+		light = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
+	except ValueError:
+		light = 0.3
+	fg = "#00" + (theme.get("ink", "#050506").lstrip("#").upper() if light > 0.62 else "FFFFFF")
+	return "#00" + sel.upper(), fg
+
+
 def load_themes(base=SKIN_DIR):
 	try:
 		with open(os.path.join(base, "themes", "themes.json")) as f:
@@ -1418,6 +1431,12 @@ def apply_theme(name, base=SKIN_DIR):
 	for cname, key, alpha in THEME_COLORS:
 		value = "#" + alpha + t[key].lstrip("#").upper()
 		xml = re.sub(r'(<color name="%s" value=")#[0-9A-Fa-f]{8}(")' % cname, r"\g<1>%s\g<2>" % value, xml)
+	sel, fg = selection_colors(t)
+	for cname, value in (("selbg", sel), ("selfg", fg)):
+		if '<color name="%s"' % cname in xml:
+			xml = re.sub(r'(<color name="%s" value=")#[0-9A-Fa-f]{8}(")' % cname, r"\g<1>%s\g<2>" % value, xml)
+		else:
+			xml = xml.replace("<colors>", '<colors>\n\t\t<color name="%s" value="%s" />' % (cname, value), 1)
 	ink = "#00" + t["ink"].lstrip("#").upper()
 	xml = re.sub(r'fill="#00[0-9A-Fa-f]{6}"', 'fill="%s"' % ink, xml)
 	tmp = skin + ".tmp"
@@ -2540,7 +2559,7 @@ def _grid_screens(level, kind):
 		<widget name="description" position="60,%(dy)d" size="1800,40" font="Regular;26" foregroundColor="ivorydim" backgroundColor="panel" valign="center" transparent="1" />
 ''' % dict(dy=110 + gh + 14)
 	out = '''	<screen name="PluginBrowserGrid" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">
-%(common)s		<widget source="pluginGrid" render="Listbox" position="60,110" size="%(gw)d,%(gh)d" conditional="pluginGrid" listOrientation="grid" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" transparent="1">
+%(common)s		<widget source="pluginGrid" render="Listbox" position="60,110" size="%(gw)d,%(gh)d" conditional="pluginGrid" listOrientation="grid" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1">
 			<convert type="TemplatedMultiContent">%(tpl)s</convert>
 		</widget>
 		<widget name="quickselect" position="60,110" size="%(gw)d,%(gh)d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />
@@ -2558,7 +2577,7 @@ def _grid_screens(level, kind):
 ''' % dict(common=common, gw=cols * cw, gh=gh, sh=1080, ky=1010, kd=1021, tpl=template % dict(vals, orient=""))
 	if kind == "vix":
 		out += '''	<screen name="PluginBrowser" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">
-%(common)s		<widget source="list" render="Listbox" position="60,110" size="%(gw)d,%(gh)d" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" transparent="1">
+%(common)s		<widget source="list" render="Listbox" position="60,110" size="%(gw)d,%(gh)d" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1">
 			<convert type="TemplatedMultiContent">%(tpl)s</convert>
 		</widget>
 		<widget name="key_red" position="88,%(ky)d" size="300,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />
@@ -2612,7 +2631,7 @@ def plugins_block(level):
 	<screen name="PluginBrowserList" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">
 		<eLabel position="0,0" size="1920,4" backgroundColor="crimson" />
 		<widget source="Title" render="Label" position="60,22" size="1800,56" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" />
-		<widget source="pluginList" render="Listbox" position="60,104" size="1800,%(listh)d" conditional="pluginList" listOrientation="vertical" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" transparent="1">
+		<widget source="pluginList" render="Listbox" position="60,104" size="1800,%(listh)d" conditional="pluginList" listOrientation="vertical" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1">
 			<convert type="TemplatedMultiContent">
 				{
 				"template":
@@ -3790,7 +3809,7 @@ def plan_auto_screen(parts, pos):
 		lows.append((n, k, bottom, h, "Regular;24" if last else "Regular;22", "smoke" if last else "ivorydim", "" if last else ' noWrap="1"'))
 	mainBottom = (bottom - 14) if below else (keysY - 20)
 	if lists:
-		out.append('<widget name="%s" position="%d,%d" size="%d,%d" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />' % (_xa(main), x, y + 6, w, mainBottom - y - 6))
+		out.append('<widget name="%s" position="%d,%d" size="%d,%d" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />' % (_xa(main), x, y + 6, w, mainBottom - y - 6))
 	else:
 		out.append('<widget name="%s" position="%d,%d" size="%d,%d" font="Regular;26" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2" />' % (_xa(main), x, y + 6, w, mainBottom - y - 6))
 	if below:
@@ -3967,8 +3986,8 @@ def _color_target(value, name=""):
 			return "key" + c  # colour keys keep their colour
 	if "select" in low or "cursor" in low or "focus" in low or "highlight" in low:
 		if "fg" in low or "fore" in low or "text" in low or "font" in low:
-			return "white"  # text on the selection bar
-		return "crimson"  # the selection bar is this skin's selection colour
+			return "selfg"  # text on the selection bar
+		return "selbg"  # the selection bar is this skin's selection colour
 	v = value.strip().lstrip("#")
 	if len(v) == 6:
 		v = "00" + v
@@ -4180,8 +4199,8 @@ def _restyle(elem, panel=False):
 			if is_list:
 				a["foregroundColor"] = "ivory"
 				a["backgroundColor"] = "panel"
-				a["foregroundColorSelected"] = "white"
-				a["backgroundColorSelected"] = "crimson"
+				a["foregroundColorSelected"] = "selfg"
+				a["backgroundColorSelected"] = "selbg"
 				a["transparent"] = "1"
 			elif "font" in a or render in ("Label", "FixedLabel", "VRunningText", "RunningText") or (not render and not a.get("pixmap") and not a.get("pixmaps")):
 				a["foregroundColor"] = "ivory" if title or "font" not in a or int((_FONT_SPEC.match(a["font"]) or [0, 0, "0"])[2]) >= 30 else "ivorydim"

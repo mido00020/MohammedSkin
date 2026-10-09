@@ -5,7 +5,7 @@
 		<widget source="global.CurrentTime" render="Label" position="1000,30" size="190,70" font="Title;42" halign="right" valign="center" foregroundColor="clockblue" backgroundColor="ink" transparent="1" zPosition="1">
 			<convert type="ClockToText">Format:%H:%M</convert>
 		</widget>
-		<widget source="menu" render="Listbox" position="40,140" size="1160,620" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/mnu_glass_sel.png" backgroundPixmap="/usr/share/enigma2/MohammedSkin/img/mnu_glass_row.png" backgroundColor="ink" foregroundColor="ivory" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2">
+		<widget source="menu" render="Listbox" position="40,140" size="1160,620" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/mnu_glass_sel.png" backgroundPixmap="/usr/share/enigma2/MohammedSkin/img/mnu_glass_row.png" backgroundColor="ink" foregroundColor="ivory" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2">
 			<convert type="TemplatedMultiContent">
 				{"template": [ MultiContentEntryText(pos = (64, 0), size = (1036, 62), flags = RT_HALIGN_LEFT | RT_VALIGN_CENTER, text = 0) ],
 				"fonts": [gFont("Regular", 31)],

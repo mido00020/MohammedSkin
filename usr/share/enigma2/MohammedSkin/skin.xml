@@ -16,6 +16,8 @@
 		<color name="smoke" value="#008C929C" />
 		<color name="brass" value="#00C9A66B" />
 		<color name="crimson" value="#00C8102E" />
+		<color name="selbg" value="#00C8102E" />
+		<color name="selfg" value="#00FFFFFF" />
 		<color name="ember" value="#00FF5A4E" />
 		<color name="gold" value="#00FFE2A0" />
 		<color name="clockblue" value="#002EC8FF" />
@@ -98,9 +100,9 @@
 		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
 		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
 		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
-		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
 	</screen>
 	<screen name="ButtonSetupSelect" position="center,center" size="1400,860" backgroundColor="transparent" flags="wfNoBorder">
@@ -109,9 +111,9 @@
 		<widget source="Title" render="Label" position="50,24" size="1300,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
 		<widget name="description" position="50,94" size="1300,72" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
 		<eLabel position="50,174" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="list" position="50,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="699,190" size="1,594" backgroundColor="line" zPosition="1" />
-		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="choosen" position="710,190" size="640,594" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="50,796" size="1300,1" backgroundColor="line" zPosition="1" />
 		<eLabel position="50,812" size="8,30" backgroundColor="keyred" zPosition="1" />
 		<widget name="key_red" position="68,806" size="240,42" font="Semi;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="center" noWrap="1" zPosition="1" />
@@ -147,7 +149,7 @@
 	<screen name="PluginBrowserList" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">
 		<eLabel position="0,0" size="1920,4" backgroundColor="crimson" />
 		<widget source="Title" render="Label" position="60,22" size="1800,56" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" />
-		<widget source="pluginList" render="Listbox" position="60,104" size="1800,750" conditional="pluginList" listOrientation="vertical" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" transparent="1">
+		<widget source="pluginList" render="Listbox" position="60,104" size="1800,750" conditional="pluginList" listOrientation="vertical" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1">
 			<convert type="TemplatedMultiContent">
 				{
 				"template":
@@ -813,7 +815,7 @@
 		<eLabel position="0,0" size="1200,4" backgroundColor="crimson" zPosition="1" />
 		<widget source="Title" render="Label" position="50,28" size="1100,68" font="Title;46" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
 		<eLabel position="50,110" size="1100,1" backgroundColor="line" zPosition="1" />
-		<widget source="menu" render="Listbox" position="50,130" size="1100,616" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2">
+		<widget source="menu" render="Listbox" position="50,130" size="1100,616" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2">
 			<convert type="TemplatedMultiContent">
 				{"template": [ MultiContentEntryText(pos = (30, 0), size = (1040, 56), flags = RT_HALIGN_LEFT | RT_VALIGN_CENTER, text = 0) ],
 				"fonts": [gFont("Regular", 30)],
@@ -830,7 +832,7 @@
 		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
 		<widget source="Title" render="Label" position="50,28" size="1300,68" font="Title;46" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
 		<eLabel position="50,110" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="config" position="50,130" size="1300,520" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="config" position="50,130" size="1300,520" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="50,664" size="1300,1" backgroundColor="line" zPosition="1" />
 		<widget name="description" position="50,676" size="1300,92" font="Regular;24" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="2" />
 		<widget name="footnote" conditional="footnote" position="50,770" size="1300,26" font="Regular;19" foregroundColor="smoke" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
@@ -855,7 +857,7 @@
 		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
 		<widget source="Title" render="Label" position="50,28" size="1300,68" font="Title;46" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
 		<eLabel position="50,110" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="config" position="50,130" size="1300,520" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="config" position="50,130" size="1300,520" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="50,668" size="1300,1" backgroundColor="line" zPosition="1" />
 		<widget name="description" position="50,684" size="1300,80" font="Regular;24" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="2" />
 		<widget source="introduction" render="Label" position="50,764" size="1300,30" font="Regular;22" foregroundColor="smoke" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
@@ -879,7 +881,7 @@
 	<screen name="VideoEnhancementPreview" position="center,820" size="1300,220" backgroundColor="transparent" flags="wfNoBorder">
 		<eLabel position="0,0" size="1300,220" backgroundColor="panel" zPosition="-1" />
 		<eLabel position="0,0" size="1300,4" backgroundColor="crimson" zPosition="1" />
-		<widget name="config" position="30,20" size="1240,100" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="config" position="30,20" size="1240,100" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<widget source="introduction" render="Label" position="30,124" size="1240,36" font="Regular;24" halign="center" foregroundColor="gold" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
 		<eLabel position="30,178" size="18,18" backgroundColor="keyred" zPosition="1" />
 		<widget name="key_red" objectTypes="key_red,Label,Button" position="58,168" size="300,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" zPosition="2" noWrap="1" />
@@ -896,7 +898,7 @@
 		<eLabel position="0,0" size="1400,4" backgroundColor="crimson" zPosition="1" />
 		<widget source="Title" render="Label" position="50,28" size="1300,68" font="Title;46" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
 		<eLabel position="50,110" size="1300,1" backgroundColor="line" zPosition="1" />
-		<widget name="config" position="50,130" size="1300,520" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="crimson" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="config" position="50,130" size="1300,520" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 		<eLabel position="50,668" size="1300,1" backgroundColor="line" zPosition="1" />
 		<widget source="description" render="Label" position="50,684" size="1300,100" font="Regular;24" foregroundColor="smoke" backgroundColor="panel" transparent="1" valign="top" zPosition="2" />
 		<eLabel position="50,814" size="18,18" backgroundColor="keyred" zPosition="1" />
@@ -978,7 +980,7 @@
 		<widget name="detailslabel" position="330,116" size="1330,380" font="Regular;27" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2" />
 		<widget name="castlabel" position="40,516" size="1620,310" font="Regular;26" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" />
 		<widget name="extralabel" position="40,116" size="1620,710" font="Regular;27" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="3" />
-		<widget name="menu" position="40,116" size="1620,710" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="white" backgroundColorSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="4" />
+		<widget name="menu" position="40,116" size="1620,710" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="selfg" backgroundColorSelected="selbg" transparent="1" scrollbarMode="showOnDemand" zPosition="4" />
 		<widget name="statusbar" position="40,836" size="1620,32" font="Regular;23" foregroundColor="smoke" backgroundColor="panel" transparent="1" noWrap="1" zPosition="2" />
 		<eLabel position="40,892" size="18,18" backgroundColor="keyred" zPosition="5" />
 		<widget name="key_red" objectTypes="key_red,Label,Button" position="68,884" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="5" noWrap="1" />
@@ -998,28 +1000,28 @@
 		<eLabel position="0,0" size="1920,4" backgroundColor="crimson" zPosition="3" />
 		<widget name="icon" pixmaps="/usr/share/enigma2/MohammedSkin/img/msg_question.png,/usr/share/enigma2/MohammedSkin/img/msg_info.png,/usr/share/enigma2/MohammedSkin/img/msg_warning.png,/usr/share/enigma2/MohammedSkin/img/msg_error.png,/usr/share/enigma2/MohammedSkin/img/msg_info.png" position="20,24" size="64,64" alphatest="blend" zPosition="1" />
 		<widget name="text" position="110,20" size="960,280" font="Regular;30" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
-		<widget name="list" position="110,316" size="960,130" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="list" position="110,316" size="960,130" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 	</screen>
 
 	<screen name="MessageBoxSimple" position="center,center" size="1100,470" backgroundColor="panel" flags="wfNoBorder">
 		<eLabel position="0,0" size="1920,4" backgroundColor="crimson" zPosition="3" />
 		<widget name="icon" pixmaps="/usr/share/enigma2/MohammedSkin/img/msg_question.png,/usr/share/enigma2/MohammedSkin/img/msg_info.png,/usr/share/enigma2/MohammedSkin/img/msg_warning.png,/usr/share/enigma2/MohammedSkin/img/msg_error.png,/usr/share/enigma2/MohammedSkin/img/msg_info.png" position="20,24" size="64,64" alphatest="blend" zPosition="1" />
 		<widget name="text" position="110,20" size="960,280" font="Regular;30" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
-		<widget name="list" position="110,316" size="960,130" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="list" position="110,316" size="960,130" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 	</screen>
 
 	<screen name="ChoiceBox" position="center,center" size="1160,800" backgroundColor="panel" flags="wfNoBorder">
 		<eLabel position="0,0" size="1920,4" backgroundColor="crimson" zPosition="3" />
 		<widget name="text" position="30,20" size="1100,136" font="Semi;27" foregroundColor="ivory" backgroundColor="panel" transparent="1" valign="top" zPosition="1" />
 		<eLabel position="30,166" size="1100,1" backgroundColor="line" zPosition="1" />
-		<widget name="list" position="30,180" size="1100,600" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="list" position="30,180" size="1100,600" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 	</screen>
 
 	<screen name="ChannelContextMenu" position="center,center" size="1160,840" backgroundColor="panel" flags="wfNoBorder">
 		<eLabel position="0,0" size="1160,4" backgroundColor="crimson" zPosition="3" />
 		<widget source="Title" render="Label" position="30,18" size="1100,60" font="Title;40" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
 		<eLabel position="30,88" size="1100,1" backgroundColor="line" zPosition="1" />
-		<widget name="menu" position="30,104" size="1100,700" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="white" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
+		<widget name="menu" position="30,104" size="1100,700" selectionPixmap="/usr/share/enigma2/MohammedSkin/img/sel_menu.png" backgroundColor="panel" foregroundColor="ivory" foregroundColorSelected="selfg" scrollbarMode="showOnDemand" transparent="1" zPosition="2" />
 	</screen>
 
 </skin>
