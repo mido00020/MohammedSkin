@@ -6,6 +6,7 @@
 #   mode="hour"    frame follows hours + minutes
 #   mode="cycle"   frames play in a loop (running lights)
 #   mode="bounce"  frames play forwards then backwards (0 1 2 3 2 1 0 ...): a soft glow up and down
+#   mode="once"    frames play once each time the screen appears (or the channel changes), then the last one stays
 #   cache="1"      keep the decoded frames in memory (only for a few small frames): no decoding while it plays
 #
 #   frames="/usr/share/enigma2/MohammedSkin/clock/sec_%03d.png"  count="240"
@@ -66,7 +67,7 @@ class MohammedFrames(Renderer):
 		return U.settings().get("clock_smooth", True)
 
 	def period(self):
-		if self.mode in ("cycle", "bounce"):
+		if self.mode in ("cycle", "bounce", "once"):
 			return self.interval or 90
 		if self.mode == "second" and self.smooth():
 			return self.interval or 250
@@ -75,6 +76,9 @@ class MohammedFrames(Renderer):
 	def frame_index(self, now=None):
 		t = time() if now is None else now
 		lt = localtime(t)
+		if self.mode == "once":
+			self.k = min(self.k + 1, self.count - 1)
+			return self.k
 		if self.mode == "cycle":
 			self.k = (self.k + 1) % self.count
 			return self.k
@@ -108,6 +112,8 @@ class MohammedFrames(Renderer):
 					self.instance.setPixmap(ptr)
 			except Exception as e:
 				print("[MohammedFrames] %s" % e)
+		if self.mode == "once" and self.k >= self.count - 1:
+			return  # played: the last frame stays, no timer
 		if self.mode == "second" and not self.smooth():
 			ms = int((1 - (time() % 1)) * 1000) + 5  # line up with the start of the next second
 			self.timer.start(ms, True)
@@ -117,7 +123,23 @@ class MohammedFrames(Renderer):
 	# ------------------------------------------------------------ lifecycle
 
 	def changed(self, what):
-		pass  # driven by our own timer
+		if self.mode != "once" or not self.visible:
+			return
+		try:  # a new channel while the bar is still shown: light it up again (only then, not on every update)
+			import NavigationInstance
+			ref = NavigationInstance.instance.getCurrentlyPlayingServiceReference()
+			ref = ref.toString() if ref else ""
+		except Exception:
+			return
+		if ref != getattr(self, "last_ref", ref):
+			self.restart()
+		self.last_ref = ref
+
+	def restart(self):
+		self.timer.stop()
+		self.k = -1
+		self.index = -1
+		self.tick()
 
 	def postWidgetCreate(self, instance):
 		self.index = -1
@@ -132,6 +154,8 @@ class MohammedFrames(Renderer):
 		Renderer.onShow(self)
 		self.visible = True
 		self.index = -1
+		if self.mode == "once":
+			self.k = -1
 		self.tick()
 
 	def onHide(self):

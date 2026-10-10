@@ -94,6 +94,8 @@ AR = {
 	"Language used for TMDB searches.": u"اللغة المستخدمة في البحث عن البوسترات.",
 	"Show posters in the infobars and channel list.": u"إظهار البوسترات في الإنفوبار وقائمة القنوات.",
 	"Show backdrops behind the event.": u"إظهار الخلفيات ورا البرنامج.",
+	"14  Emblem - glowing lines": u"14  الشعار - خطوط مضيئة", "Backdrop above the infobar": u"خلفية البرنامج فوق الإنفوبار",
+	"Shows the programme's backdrop at the top of the screen while the infobar is shown (infobar 14). Saving restarts the GUI.": u"يعرض خلفية البرنامج أعلى الشاشة مع ظهور الإنفوبار (الإنفوبار 14). الحفظ يعيد تشغيل الواجهة.",
 	"Fit plugin windows to the screen": u"تكييف نوافذ البلقنات مع السكن", "Plugin windows that have no design in this skin get one in the skin's style automatically; windows with pictures keep their own look, enlarged to the screen. Works after the next GUI restart.": u"نوافذ البلقنات اللي ما لها تصميم في السكن تاخذ ستايل السكن تلقائي، والنوافذ اللي فيها صور تحتفظ بشكلها وتتكبر على الشاشة. يشتغل بعد إعادة تشغيل الواجهة.",
 	"Size of the channel names, numbers and event text in the channel list. Saving restarts the GUI.": u"حجم أسماء القنوات وأرقامها ونص البرامج في القائمة. الحفظ يعيد تشغيل الواجهة.",
 	"Height of each channel row: compact shows more channels, large and extra large show fewer and bigger. Saving restarts the GUI.": u"ارتفاع كل صف: المضغوط يعرض قنوات أكثر، والكبير قنوات أقل وأكبر. الحفظ يعيد تشغيل الواجهة.",

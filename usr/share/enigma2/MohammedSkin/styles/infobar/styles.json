@@ -13,7 +13,8 @@
   "capsule",
   "arch",
   "glass",
-  "curve"
+  "curve",
+  "emblem"
  ],
  "labels": {
   "classic": "Classic",
@@ -29,6 +30,7 @@
   "capsule": "10  Compact - capsule backdrop",
   "arch": "11  Clock arch - backdrop on the left",
   "glass": "12  Glass panel - round channel badge",
-  "curve": "13  Golden curve - running lights"
+  "curve": "13  Golden curve - running lights",
+  "emblem": "14  Emblem - glowing lines"
  }
 }

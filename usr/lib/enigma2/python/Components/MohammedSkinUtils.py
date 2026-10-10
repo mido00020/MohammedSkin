@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.57"
+SKIN_VERSION = "2.1.58"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True,  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": True,  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -2321,6 +2321,8 @@ def _chan_row(snippet):
 
 
 def _tune_infobar(snippet, base):
+	if not settings().get("ib_backdrop", True):  # setup: backdrop above the infobar off
+		snippet = re.sub(r"[ \t]*<!-- IBBACKDROP START -->.*?<!-- IBBACKDROP END -->\n?", "", snippet, flags=re.S)
 	snippet = _weather_place(snippet)
 	snippet = _chan_row(snippet)
 	level = tune_value("ib_alpha", IB_ALPHA)
