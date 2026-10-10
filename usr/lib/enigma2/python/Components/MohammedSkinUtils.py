@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.56"
+SKIN_VERSION = "2.1.57"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4136,12 +4136,41 @@ def _wh(e):
 		return 0, 0
 
 
+_OVERLAY_WORDS = ("subtitle", "scart", "standby", "infobar", "volume", "mute", "pvrstate", "timeshiftstate", "pip", "display",
+	"summary", "resolutionlabel", "unhandledkey", "rdsinfo", "videowindow", "screensaver", "dimmer", "fullscreen", "seekbar",
+	"bufferindicator", "lcd", "vfd", "oled", "clock", "notification", "toast", "osd3d", "dish", "permanent", "player",
+	"quickzap", "numberzap", "videomode", "preview")
+
+
+def _has_background(elem, depth=0):
+	"""Does the window paint a background (its own colour, a big picture or box, or one in a panel it uses)?
+	Transparent windows that only float text over the TV picture must stay transparent."""
+	bg = elem.attrib.get("backgroundColor", "")
+	if depth == 0 and bg != "transparent" and not bg.lower().startswith("#ff"):
+		return True  # no colour given: the window style paints it, so it has a background
+	W, H = _wh(elem)
+	if not W and elem.attrib.get("position", "").strip() == "fill":
+		W, H = 1920, 1080
+	for e in elem:
+		w, h = _wh(e)
+		if e.tag in ("eLabel", "ePixmap") and not e.attrib.get("text"):
+			if (W and H and w >= W * 0.6 and h >= H * 0.4) or (not W and w >= 600 and h >= 300):
+				if e.tag == "ePixmap" or not e.attrib.get("backgroundColor", "").lower().startswith("#ff"):
+					return True
+		if e.tag == "panel" and depth < 4:
+			pe = _borrow["screens"].get(e.attrib.get("name", ""))
+			if pe is not None and _has_background(pe, depth + 1):
+				return True
+	return False
+
+
 def _restyle(elem, panel=False):
 	"""The image skin's window with its layout kept (positions, sizes, widgets, font sizes) and this skin's
 	look: its background, accent line, fonts and theme colours; the image skin's own graphics are left out."""
 	W, H = _wh(elem)
 	if not W and elem.attrib.get("position", "").strip() == "fill":
 		W, H = [int(v) for v in (_borrow.get("res") or "1920,1080").split(",")]
+	backed = panel or _has_background(elem)  # decided before the image skin's own background is taken out
 	if not panel:
 		elem.attrib["backgroundColor"] = "transparent"
 		elem.attrib["flags"] = "wfNoBorder"
@@ -4210,7 +4239,7 @@ def _restyle(elem, panel=False):
 			for k in ("borderColor", "shadowColor"):
 				a.pop(k, None)
 			continue
-	if not panel and W and H:
+	if not panel and W and H and backed:
 		from xml.etree.ElementTree import Element
 		elem.insert(0, Element("eLabel", {"position": "0,0", "size": "%d,%d" % (W, H), "backgroundColor": "panel", "zPosition": "-1"}))
 		elem.insert(1, Element("eLabel", {"position": "0,0", "size": "%d,4" % W, "backgroundColor": "crimson", "zPosition": "1"}))
@@ -4255,6 +4284,8 @@ def borrowed_window(names):
 		if not _borrow["ready"]:
 			return None
 	for n in names:
+		if [w for w in _OVERLAY_WORDS if w in n.lower()]:
+			return None  # windows over the TV picture keep their own (transparent) design
 		if n in _borrow["screens"]:
 			return n if _register_borrowed(n) else None
 	return None
@@ -4286,7 +4317,8 @@ def install_auto_windows():
 			if not isinstance(names, list):
 				names = [names]
 			small = desktop.size().width() < 1000
-			if not small and "Summary" not in screen.__class__.__name__:
+			overlay = [w for w in _OVERLAY_WORDS for n in names + [screen.__class__.__name__] if w in n.lower()]
+			if not small and not overlay:
 				if not _ours(names):
 					own = [n for n in names if n == "Setup" and _ours([n])]
 					if own:  # settings screens: this skin's settings window (with its keys)
