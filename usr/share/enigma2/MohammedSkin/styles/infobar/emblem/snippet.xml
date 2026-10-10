@@ -152,8 +152,8 @@
 			<convert type="MohammedBox">IP</convert>
 		</widget>
 		<!-- IBBACKDROP START -->
-		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="18" position="570,44" size="780,440" zPosition="2" />
-		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibe_bdframe.png" position="562,36" size="796,456" alphatest="blend" zPosition="3" />
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" position="0,0" size="1920,330" zPosition="2" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibe_bdframe.png" position="0,0" size="1920,354" alphatest="blend" zPosition="3" />
 		<!-- IBBACKDROP END -->
 		<!-- widgets some images ask for; hidden -->
 		<widget name="key_red" objectTypes="key_red,Label,Button" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
