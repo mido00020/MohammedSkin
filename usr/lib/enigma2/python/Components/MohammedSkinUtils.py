@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.61"
+SKIN_VERSION = "2.1.62"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4242,7 +4242,13 @@ def _restyle(elem, panel=False):
 				a.get("source", "") in ("Frontend", "session.FrontendStatus", "FrontendStatus") or \
 				re.search(r"(?i)snr|agc|ber|signal", a.get("name", ""))
 			if render in ("Progress", "PositionGauge", "") and signal and (render or a.get("pixmap") or "Bar" in a.get("name", "") or "bar" in a.get("name", "")):
-				continue  # signal meters (signal finder, tuner screens) keep the image's own colours and bars
+				# signal meters (signal finder, tuner screens): the classic amber bar on every image and theme
+				for k in ("pixmap", "backgroundPixmap", "sliderPixmap"):
+					a.pop(k, None)
+				a["foregroundColor"] = "#00FFB000"
+				a["backgroundColor"] = "#00302C28"
+				a.pop("transparent", None)
+				continue
 			if render == "Progress" or render == "PositionGauge":
 				a.pop("pixmap", None)
 				a["foregroundColor"] = "crimson"
