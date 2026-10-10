@@ -257,7 +257,7 @@ class MohammedSkinSetup(Screen):
 			("strict", t("Strict (also nudity, R and TV-MA)"))], default=U.adult_level())
 		self.backdrops = ConfigYesNo(default=bool(s.get("backdrops", True)))
 		self.fitScreens = ConfigYesNo(default=bool(s.get("fit_screens", True)))
-		self.ibBackdrop = ConfigYesNo(default=bool(s.get("ib_backdrop", True)))
+		self.ibBackdrop = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_BACKDROP], default=U.ib_backdrop())
 		self.startBackdrop = self.ibBackdrop.value
 		self.uiLang = ConfigSelection(choices=list(UI_LANGS), default=L)
 		self.helptext = {
@@ -298,7 +298,7 @@ class MohammedSkinSetup(Screen):
 			id(self.plLayout): "Plugin list (Menu > Plugins) as tiles side by side or as a list. The grid needs a recent image (OpenViX / OpenBH 6.7+ or OpenATV). Saving restarts the GUI.",
 			id(self.logo3d): "When a channel has no event, no poster was found or the poster is hidden, show its logo on a 3D card instead.",
 			id(self.uiLang): "Language of this setup screen. Saving switches it at once.",
-			id(self.ibBackdrop): "Shows the programme's backdrop at the top of the screen while the infobar is shown (infobar 14). Saving restarts the GUI.",
+			id(self.ibBackdrop): "The programme's backdrop at the top of the screen while the infobar is shown (infobar 14): a wide band, a box in the middle, left or right, or off. Saving restarts the GUI.",
 			id(self.fitScreens): "Plugin windows that have no design in this skin get one in the skin's style automatically; windows with pictures keep their own look, enlarged to the screen. Works after the next GUI restart.",
 			id(self.logoStyle): "What a channel with no programme or no poster shows: a 3D card, its logo filling the whole place over its own colours, or the logo on a dark background.",
 			id(self.posterStore): "In memory: posters are fetched again after every restart (nothing is written to the box). Kept: they are saved on the hard disk or USB stick and shown at once next time.",

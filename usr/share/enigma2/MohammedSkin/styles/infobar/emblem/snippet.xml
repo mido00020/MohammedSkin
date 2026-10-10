@@ -151,9 +151,21 @@
 		<widget source="session.CurrentService" render="Label" position="1714,990" size="152,30" font="Regular;19" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedBox">IP</convert>
 		</widget>
-		<!-- IBBACKDROP START -->
-		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" position="0,0" size="1920,330" zPosition="2" />
-		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibe_bdframe.png" position="0,0" size="1920,354" alphatest="blend" zPosition="3" />
+		<!-- IBBACKDROP START (band) -->
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" position="0,0" size="1920,250" zPosition="2" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibe_bdframe.png" position="0,0" size="1920,274" alphatest="blend" zPosition="3" />
+		<!-- IBBACKDROP END -->
+		<!-- IBBACKDROP START (center) -->
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="16" position="756,24" size="408,220" zPosition="2" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibe_bdbox.png" position="750,18" size="420,232" alphatest="blend" zPosition="3" />
+		<!-- IBBACKDROP END -->
+		<!-- IBBACKDROP START (left) -->
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="16" position="42,24" size="408,220" zPosition="2" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibe_bdbox.png" position="36,18" size="420,232" alphatest="blend" zPosition="3" />
+		<!-- IBBACKDROP END -->
+		<!-- IBBACKDROP START (right) -->
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="16" position="1470,24" size="408,220" zPosition="2" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibe_bdbox.png" position="1464,18" size="420,232" alphatest="blend" zPosition="3" />
 		<!-- IBBACKDROP END -->
 		<!-- widgets some images ask for; hidden -->
 		<widget name="key_red" objectTypes="key_red,Label,Button" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
