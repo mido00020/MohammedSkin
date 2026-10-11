@@ -1,0 +1,17 @@
+{
+ "_help": "HDR channels. transponders: [orbital position in tenths of a degree (13.0E = 130, 30.0W = 3300), frequency MHz, polarization H or V]. names: words that mark an HDR channel in its name. Add your own in /etc/enigma2/mohammedskin_hdr.json (same format).",
+ "transponders": [
+  [
+   130,
+   12380,
+   "V"
+  ]
+ ],
+ "names": [
+  "HDR",
+  "HDR10",
+  "HLG",
+  "UHD HDR",
+  "DOLBY VISION"
+ ]
+}

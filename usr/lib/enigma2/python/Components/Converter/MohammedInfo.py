@@ -142,9 +142,58 @@ class MohammedInfo(Poll, Converter):
 		except Exception:
 			return -1
 
+	_hdr_lists = None
+
+	def _hdr_list(self):
+		"""The HDR transponders and channel-name words: the skin's own list plus the user's (/etc/enigma2/mohammedskin_hdr.json)."""
+		if MohammedInfo._hdr_lists is not None:
+			return MohammedInfo._hdr_lists
+		import json
+		import os
+		tps, names = [], []
+		for path in ("/usr/share/enigma2/MohammedSkin/hdr.json", "/etc/enigma2/mohammedskin_hdr.json"):
+			try:
+				if os.path.exists(path):
+					d = json.load(open(path))
+					for t in d.get("transponders", []):
+						tps.append((int(t[0]), int(t[1]), str(t[2]).upper()[:1]))
+					for n in d.get("names", []):
+						names.append(str(n).upper())
+			except Exception:
+				pass
+		MohammedInfo._hdr_lists = (tps, names)
+		return MohammedInfo._hdr_lists
+
+	def _hdr_by_list(self, info):
+		"""True when the playing satellite transponder is on the HDR list, or the channel name has one of the listed words."""
+		tps, names = self._hdr_list()
+		try:
+			name = " " + (info.getName() or "").upper().replace("-", " ").replace("_", " ") + " "
+		except Exception:
+			name = ""
+		for n in names:
+			if (" " + n + " ") in name:
+				return True
+		if not tps:
+			return False
+		try:
+			from Components.Converter.MohammedTransponder import tuner_of, mhz, SAT_POL
+			tp = info.getInfoObject(iServiceInformation.sTransponderData)
+			if not tp or tuner_of(tp) != "DVB-S":
+				return False
+			orb = int(tp.get("orbital_position"))
+			f = int(mhz(tp.get("frequency"), "DVB-S") or 0)
+			pol = SAT_POL.get(tp.get("polarization"), "")
+		except Exception:
+			return False
+		for o, fr, pl in tps:
+			if o == orb and abs(fr - f) <= 2 and pl == pol:
+				return True
+		return False
+
 	def _hdr(self):
-		"""HDR10 / HLG / Dolby Vision of the playing picture: the decoder's gamma where the image reports it,
-		otherwise the channel name ("... UHD HDR")."""
+		"""HDR10 / HLG / Dolby Vision of the playing picture: the decoder's gamma where the image reports it, otherwise the
+		HDR transponder / channel list (an image such as the Vu+ OpenViX gives no HDR information at all)."""
 		info = self._info()
 		if not info:
 			return False
@@ -155,13 +204,9 @@ class MohammedInfo(Poll, Converter):
 				g = info.getInfo(key)
 			except Exception:
 				g = -1
-		if g is not None and g >= 0:
-			return g > 0 and self._height() > 0
-		try:
-			name = (info.getName() or "").upper()
-		except Exception:
-			name = ""
-		return " HDR" in " " + name.replace("-", " ").replace("_", " ") and self._height() >= 1072
+		if g is not None and g > 0 and self._height() > 0:
+			return True
+		return self._hdr_by_list(info) and self._height() >= 1072
 
 	def _dolby(self):
 		s = self._service()
