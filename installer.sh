@@ -147,7 +147,8 @@ shutil.rmtree(stage, ignore_errors=True)
 os.makedirs(stage)
 host = os.environ.get("MS_HOST", "raw.githubusercontent.com")
 path0 = "/mido00020/MohammedSkin/%s/" % new["commit"]
-conn = [None]
+import threading
+TL = threading.local()
 
 
 def connect(verify):
@@ -172,31 +173,41 @@ def fetch_one(p):
 				if hashlib.sha1(data).hexdigest() == files[p][1]:
 					return data
 				continue
-			if conn[0] is None:
-				conn[0] = connect(attempt < 2)
-			conn[0].request("GET", path0 + quote(p), headers={"Connection": "keep-alive", "User-Agent": "MohammedSkin"})
-			r = conn[0].getresponse()
+			if getattr(TL, "c", None) is None:
+				TL.c = connect(attempt < 2)
+			TL.c.request("GET", path0 + quote(p), headers={"Connection": "keep-alive", "User-Agent": "MohammedSkin"})
+			r = TL.c.getresponse()
 			data = r.read()
 			if r.status == 200 and hashlib.sha1(data).hexdigest() == files[p][1]:
 				return data
 		except Exception:
 			pass
 		try:
-			conn[0].close()
+			TL.c.close()
 		except Exception:
 			pass
-		conn[0] = None
+		TL.c = None
 		time.sleep(1)
-	raise SystemExit("download failed: " + p)
+	raise RuntimeError("download failed: " + p)
 
 
-for i, p in enumerate(get):
+def grab(p):
 	data = fetch_one(p)
 	d = os.path.join(stage, p)
 	os.makedirs(os.path.dirname(d), exist_ok=True)
 	open(d, "wb").write(data)
-	if (i + 1) % 25 == 0:
-		print("  %d / %d" % (i + 1, len(get)))
+
+
+from concurrent.futures import ThreadPoolExecutor
+done = 0
+try:
+	with ThreadPoolExecutor(max_workers=6) as ex:
+		for _ in ex.map(grab, get):
+			done += 1
+			if done % 50 == 0:
+				print("  %d / %d" % (done, len(get)))
+except Exception as e:
+	raise SystemExit(str(e))
 # everything is here and checked: put it in place
 for p in get:
 	if p.startswith("CONTROL/"):
