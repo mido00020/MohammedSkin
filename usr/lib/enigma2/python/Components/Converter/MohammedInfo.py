@@ -3,6 +3,7 @@
 #
 # With session.CurrentService:
 #   Resolution  -> "1080p"          IsHD / IsUHD / IsDolby / IsCrypted / IsWide (boolean)
+#   IsSD / Is720 / Is1080 / Is4K / IsHDR -> boolean, the quality row of the infobars
 #   Aspect      -> "16:9" / "4:3"
 #   Number      -> channel number of the playing service
 # With session.Event_Now / Event_Next / ServiceEvent:
@@ -141,6 +142,27 @@ class MohammedInfo(Poll, Converter):
 		except Exception:
 			return -1
 
+	def _hdr(self):
+		"""HDR10 / HLG / Dolby Vision of the playing picture: the decoder's gamma where the image reports it,
+		otherwise the channel name ("... UHD HDR")."""
+		info = self._info()
+		if not info:
+			return False
+		g = -1
+		key = getattr(iServiceInformation, "sGamma", None)
+		if key is not None:
+			try:
+				g = info.getInfo(key)
+			except Exception:
+				g = -1
+		if g is not None and g >= 0:
+			return g > 0 and self._height() > 0
+		try:
+			name = (info.getName() or "").upper()
+		except Exception:
+			name = ""
+		return " HDR" in " " + name.replace("-", " ").replace("_", " ") and self._height() >= 1072
+
 	def _dolby(self):
 		s = self._service()
 		try:
@@ -183,6 +205,19 @@ class MohammedInfo(Poll, Converter):
 		if t in ("IsHD", "IsUHD"):
 			h = self._height()
 			return h >= 2160 if t == "IsUHD" else 720 <= h < 2160
+		if t in ("IsSD", "Is720", "Is1080", "Is4K"):  # the quality row: exactly one of them lights up
+			h = self._height()
+			if h <= 0:
+				return False
+			if t == "Is4K":
+				return h >= 2152
+			if t == "Is1080":
+				return 1072 <= h < 2152
+			if t == "Is720":
+				return 712 <= h < 1072
+			return h < 712
+		if t == "IsHDR":
+			return self._hdr()
 		if t == "IsDolby":
 			return self._dolby()
 		info = self._info()

@@ -258,7 +258,11 @@ class MohammedSkinSetup(Screen):
 		self.backdrops = ConfigYesNo(default=bool(s.get("backdrops", True)))
 		self.fitScreens = ConfigYesNo(default=bool(s.get("fit_screens", True)))
 		self.ibBackdrop = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_BACKDROP], default=U.ib_backdrop())
-		self.startBackdrop = self.ibBackdrop.value
+		self.ibLed = ConfigYesNo(default=bool(s.get("ib_led", True)))
+		self.ibMeterColor = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_COLOR], default=U._choice("ib_meter_color", U.IB_METER_COLOR, "classic"))
+		self.ibMeterShape = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_SHAPE], default=U._choice("ib_meter_shape", U.IB_METER_SHAPE, "line"))
+		self.menuBg = ConfigSelection(choices=[(n, t(l)) for n, l in U.MENU_BG], default=U._choice("menu_bg", U.MENU_BG, "off"))
+		self.startBackdrop = (self.ibBackdrop.value, self.ibLed.value, self.ibMeterColor.value, self.ibMeterShape.value, self.menuBg.value)
 		self.uiLang = ConfigSelection(choices=list(UI_LANGS), default=L)
 		self.helptext = {
 			id(self.theme): "Use LEFT / RIGHT to see each colour theme. Saving a new theme restarts the GUI.",
@@ -298,7 +302,11 @@ class MohammedSkinSetup(Screen):
 			id(self.plLayout): "Plugin list (Menu > Plugins) as tiles side by side or as a list. The grid needs a recent image (OpenViX / OpenBH 6.7+ or OpenATV). Saving restarts the GUI.",
 			id(self.logo3d): "When a channel has no event, no poster was found or the poster is hidden, show its logo on a 3D card instead.",
 			id(self.uiLang): "Language of this setup screen. Saving switches it at once.",
-			id(self.ibBackdrop): "The programme's backdrop at the top of the screen while the infobar is shown (infobar 14): a wide band, a box in the middle, left or right, or off. Saving restarts the GUI.",
+			id(self.menuBg): "A drawn background in the theme colours behind the main menu and its submenus (no photos), or off to see the TV picture. Saving restarts the GUI.",
+			id(self.ibMeterColor): "Colour of the SNR and AGC bars in the infobars: classic, the theme colour, yellow, or signal colours that run from red to green. Saving restarts the GUI.",
+			id(self.ibMeterShape): "Shape of the SNR and AGC bars in the infobars: a rounded line or a row of blocks. Saving restarts the GUI.",
+			id(self.ibLed): "A glowing line along the top of the infobar that lights up once, like an LED strip, each time the bar appears. Saving restarts the GUI.",
+			id(self.ibBackdrop): "The programme's backdrop at the top of the screen while the infobar is shown (every infobar style): a wide band, a box in the middle, left or right, or off. Saving restarts the GUI.",
 			id(self.fitScreens): "Plugin windows that have no design in this skin get one in the skin's style automatically; windows with pictures keep their own look, enlarged to the screen. Works after the next GUI restart.",
 			id(self.logoStyle): "What a channel with no programme or no poster shows: a 3D card, its logo filling the whole place over its own colours, or the logo on a dark background.",
 			id(self.posterStore): "In memory: posters are fetched again after every restart (nothing is written to the box). Kept: they are saved on the hard disk or USB stick and shown at once next time.",
@@ -308,9 +316,9 @@ class MohammedSkinSetup(Screen):
 		}
 		E = lambda label, cfg: (t(label), cfg)
 		self.groups = [
-			[E("Skin colour theme", self.theme), E("Menu style", self.menuStyle), E("Arabic text font", self.arText), E("Arabic title font", self.arTitle),
+			[E("Skin colour theme", self.theme), E("Menu style", self.menuStyle), E("Main menu background", self.menuBg), E("Arabic text font", self.arText), E("Arabic title font", self.arTitle),
 				E("Fit plugin windows to the screen", self.fitScreens)],
-			[E("Infobar style", self.ibxStyle), E("Infobar transparency", self.ibAlpha), E("Channel logo and name size", self.ibChan), E("Backdrop above the infobar", self.ibBackdrop), E("Second infobar style", self.sibStyle),
+			[E("Infobar style", self.ibxStyle), E("Infobar transparency", self.ibAlpha), E("Channel logo and name size", self.ibChan), E("Backdrop above the infobar", self.ibBackdrop), E("Light line on the infobar", self.ibLed), E("Signal bars colour", self.ibMeterColor), E("Signal bars shape", self.ibMeterShape), E("Second infobar style", self.sibStyle),
 				E("Classic infobar poster", self.ibStyle), E("Show rating stars", self.rating), E("3D channel logo when no poster", self.logo3d)],
 			[E("Channel list style", self.chStyle), E("Channel list text size", self.chFont), E("Channel list rows", self.chRows), E("Channel list picture", self.chPreview), E("Programme name colour", self.eventColor),
 				E("Plugin list layout", self.plLayout), E("Plugin list text size", self.plFont)],
@@ -692,7 +700,7 @@ class MohammedSkinSetup(Screen):
 				"weather": self.weather.value, "weather_city": self.weatherCity.value.strip(), "weather_units": self.weatherUnits.value,
 				"weather_mode": self.weatherLoc.value, "weather_lat": self.pick.get("lat"), "weather_lon": self.pick.get("lon"),
 				"weather_place_en": self.pick.get("en") or "", "weather_place_ar": self.pick.get("ar") or "",
-				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value,
+				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value, "ib_led": self.ibLed.value, "ib_meter_color": self.ibMeterColor.value, "ib_meter_shape": self.ibMeterShape.value, "menu_bg": self.menuBg.value,
 				"weather_pos": self.weatherPos.value, "pl_layout": self.plLayout.value, "logo_style": self.logoStyle.value, "poster_store": self.posterStore.value,
 				"ui_lang": self.uiLang.value, "tr_lang": self.trLang.value, "tr_service": self.trService.value, "tr_key": self.trKey.value.strip(), "tr_region": self.trRegion.value.strip()})
 			self.setPluginLayout()
@@ -728,7 +736,7 @@ class MohammedSkinSetup(Screen):
 				raise Exception("infobar style files are missing")
 			newTune = (self.chFont.value, self.chRows.value, self.plFont.value, self.ibAlpha.value) != self.startTune \
 				or (self.weatherPos.value, self.plLayout.value, self.ibChan.value, self.chPreview.value, self.eventColor.value) != self.startPlace \
-				or self.ibBackdrop.value != self.startBackdrop
+				or (self.ibBackdrop.value, self.ibLed.value, self.ibMeterColor.value, self.ibMeterShape.value, self.menuBg.value) != self.startBackdrop
 			if newTune or newTheme:
 				U.apply_tuning()  # also re-makes the tuned pictures in the new colour theme
 			newFonts = (self.arText.value, self.arTitle.value) != self.startFonts

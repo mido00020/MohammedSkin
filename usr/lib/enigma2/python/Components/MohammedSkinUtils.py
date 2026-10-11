@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.63"
+SKIN_VERSION = "2.1.64"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True, "ib_backdrop": "band",  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "off",  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -1353,10 +1353,13 @@ def recolor_png(src, dst, target):
 	s = Image.composite(s.point(lambda x: min(255, int(x * ts / float(max(rs, 1))))), s, mask)
 	v = Image.composite(v.point(lambda x: min(255, int(x * (0.55 + 0.45 * tv / float(max(rv, 1)))))), v, mask)
 	out = Image.merge("HSV", (h, s, v)).convert("RGB")
-	out.putalpha(alpha)
 	if not os.path.isdir(os.path.dirname(dst)):
 		os.makedirs(os.path.dirname(dst))
-	out.save(dst + ".part", "PNG", compress_level=1)
+	if dst.endswith(".jpg"):
+		out.save(dst + ".part", "JPEG", quality=85)
+	else:
+		out.putalpha(alpha)
+		out.save(dst + ".part", "PNG", compress_level=1)
 	os.rename(dst + ".part", dst)
 
 
@@ -1387,7 +1390,7 @@ def make_theme(name, base=SKIN_DIR, progress=None):
 		fn = os.path.basename(sp)
 		if fn.startswith("preview."):
 			continue
-		if fn.endswith(".png"):
+		if fn.endswith(".png") or fn.startswith("menubg_"):
 			# light themes keep the selection bars darker so the white text on them stays readable
 			recolor_png(sp, dp, t.get("sel_accent", t["accent"]) if "sel" in fn else t["accent"])
 		else:
@@ -2333,7 +2336,190 @@ def ib_backdrop():
 	return v if v in [n for n, l in IB_BACKDROP] else "band"
 
 
+IB_METER_COLOR = (("classic", "Classic (red to blue)"), ("theme", "Theme colour"), ("amber", "Yellow (amber)"), ("signal", "Signal colours (red to green)"))
+IB_METER_SHAPE = (("line", "Line"), ("blocks", "Blocks"))
+_METER_FILL = re.compile(r'(pixmap="[^"]*/img/)(?:ibx_)?meter_(\d+)\.png(")')
+_METER_TRACK = re.compile(r'(<ePixmap pixmap="[^"]*/img/)(?:ibx_)?meter_track_(\d+)\.png(" position=")(\d+),(\d+)(" size=")(\d+),6(")')
+
+
+def _choice(key, table, default):
+	v = settings().get(key, default)
+	return v if v in [n for n, l in table] else default
+
+
+def _ib_meters(snippet):
+	"""SNR / AGC bars of the infobars in the chosen colour and shape (pictures made for every width)."""
+	color = _choice("ib_meter_color", IB_METER_COLOR, "classic")
+	shape = _choice("ib_meter_shape", IB_METER_SHAPE, "line")
+	if (color, shape) == ("classic", "line"):
+		return snippet
+	snippet = _METER_FILL.sub(lambda m: "%smeter_%s_%s_%s.png%s" % (m.group(1), color, shape, m.group(2), m.group(3)), snippet)
+	if shape == "blocks":  # the blocks track is as tall as the bar
+		snippet = _METER_TRACK.sub(lambda m: "%smeter_track_blocks_%s.png%s%s,%d%s%s,14%s" % (m.group(1), m.group(2), m.group(3), m.group(4),
+			int(m.group(5)) - 4, m.group(6), m.group(7), m.group(8)), snippet)
+	return snippet
+
+
+_BR_W, _BR_H = 196, 26
+_RECT = re.compile(r'<(?:widget|ePixmap|eLabel)\b([^>]*?)position="(\d+),(\d+)" size="(\d+),(\d+)"')
+
+
+def _bitrate_spot(snippet, lock, bw=_BR_W, bh=_BR_H, bottom=1076):
+	"""A free place (bw x bh) near the picture tags: right of the anchor (x, y, w, h), then on the rows just
+	under or over it, sliding along until nothing of the bar is in the way."""
+	_BR_W, _BR_H = bw, bh
+	lx, ly, lw, lh = [int(v) for v in lock]
+	rects = []
+	for m in _RECT.finditer(snippet):
+		x, y, w, h = [int(v) for v in m.groups()[1:]]
+		tail = snippet[m.end():m.end() + 200].split(">", 1)[0]
+		if (w >= 1000 and "font=" not in tail) or y >= 1080 or re.search(r"_bg[^/]*\.png|scrim|IBBACKDROP", m.group(1)) or \
+				('kind="backdrop"' in m.group(1) and w >= 400):
+			continue  # the bar's own background and hidden widgets
+		fs = re.search(r'font="\w+;(\d+)"', snippet[m.end():m.end() + 200])
+		big = 16 if fs and int(fs.group(1)) >= 40 else 0  # big titles reach below their box
+		rects.append((x - 6, y - 2, x + w + 6, y + h + 2 + big))
+
+	def free(x, y):
+		if x < 20 or x + _BR_W > 1900 or y < 700 or y + _BR_H > bottom:
+			return False
+		for (a, b, c, d) in rects:
+			if x < c and a < x + _BR_W and y < d and b < y + _BR_H:
+				return False
+		return True
+	cy = ly + (lh - _BR_H) // 2
+	for dy in (0, lh + 8, -(_BR_H + 8), 2 * (lh + 8), -2 * (_BR_H + 8), 3 * (lh + 8)):
+		for dx in range(0, 700, 10):
+			for x in (lx + lw + 10 + dx, lx - _BR_W - 10 - dx):
+				if free(x, cy + dy):
+					return x, cy + dy
+	for y in range(bottom - _BR_H, 760, -6):  # anywhere free on the bar, lowest first
+		for x in range(40, 1700, 10):
+			if free(x, y):
+				return x, y
+	return None
+
+
+MENU_BG = (("off", "Off (TV picture)"), ("orbit", "Orbit and satellites"), ("waves", "Signal waves"), ("aurora", "Aurora"), ("honeycomb", "Honeycomb"))
+
+
+def _tune_menu(snippet, base):
+	"""Main menu background: the menu window becomes full screen with a drawn background in the theme colours
+	behind it; everything of the menu keeps its place (moved by the window's old offset)."""
+	bg = _choice("menu_bg", MENU_BG, "off")
+	if bg == "off":
+		return snippet
+	m = re.search(r'<screen name="Menu" position="center,center" size="(\d+),(\d+)"', snippet)
+	if not m:
+		return snippet
+	w, h = int(m.group(1)), int(m.group(2))
+	ox, oy = (1920 - w) // 2, (1080 - h) // 2
+	head_end = snippet.index(">", m.start()) + 1
+	body_end = snippet.rfind("</screen>")
+	body = re.sub(r'position="(\d+),(\d+)"', lambda p: 'position="%d,%d"' % (int(p.group(1)) + ox, int(p.group(2)) + oy), snippet[head_end:body_end])
+	head = snippet[m.start():head_end].replace('position="center,center" size="%d,%d"' % (w, h), 'position="0,0" size="1920,1080"')
+	body = body.replace('backgroundColor="panel"', 'backgroundColor="ink"')  # solid, so the picture shows behind it and not the TV
+	pic = '\n\t\t<ePixmap pixmap="%s/img/menubg_%s.jpg" position="0,0" size="1920,1080" zPosition="-5" />' % (SKIN_DIR, bg)
+	return snippet[:m.start()] + head + pic + body + snippet[body_end:]
+
+
+QUALITY = (("sd", "IsSD"), ("720", "Is720"), ("1080", "Is1080"), ("4k", "Is4K"), ("hdr", "IsHDR"))
+_OLD_RES = re.compile(r'[ \t]*<widget source="session.CurrentService" render="Pixmap" pixmap="[^"]*/img/tag_hd\.png" position="(\d+),(\d+)"[^>]*>\s*'
+	r'<convert type="MohammedInfo">IsHD</convert>.*?</widget>\s*'
+	r'<widget source="session.CurrentService" render="Pixmap" pixmap="[^"]*/img/tag_uhd\.png".*?</widget>\s*'
+	r'(?:<ePixmap pixmap="[^"]*/img/tag_frame70\.png"[^>]*/>\s*'
+	r'<widget source="session.CurrentService" render="Label"[^>]*>\s*<convert type="MohammedInfo">Resolution</convert>\s*</widget>\n?)?', re.S)
+
+
+def _ib_quality(snippet, base, add):
+	"""The quality row on every infobar: SD 720 1080 4K HDR, the playing one lit (HDR in red). It takes the
+	place of the old HD badge and resolution text, or the nearest free place next to them."""
+	try:
+		with open(os.path.join(base, "styles", "infobar", "quality.json")) as f:
+			q = json.load(f)
+	except Exception:
+		return snippet, add
+	m = _OLD_RES.search(snippet)
+	if not m:
+		return snippet, add
+	x0, y0 = int(m.group(1)), int(m.group(2))
+	snippet = snippet[:m.start()] + snippet[m.end():]
+	widths = dict(q["items"])
+	gap, h = q["gap"], q["h"]
+	total = sum(widths.values()) + gap * (len(widths) - 1)
+	bar = re.search(r'/img/(ib_scrim|ibx_\w+?_bg)\.png', snippet)
+	spot = None
+	if not (bar and bar.group(1) in q.get("compact", ())):
+		spot = _bitrate_spot(snippet + add, (x0 - 10, y0, 0, h), total, h)
+	o = "\t\t<!-- IBQUALITY START -->\n"
+	if not spot:  # compact: only the playing quality lit, and HDR beside it
+		cell = max(w for k, w in widths.items() if k != "hdr")
+		for key, cond in QUALITY:
+			w = widths.get(key, 44)
+			x = x0 + cell + gap if key == "hdr" else x0 + cell - w  # the lit one right next to HDR
+			o += ('\t\t<widget source="session.CurrentService" render="Pixmap" pixmap="%s/img/q_%s_on.png" position="%d,%d" size="%d,%d" alphatest="blend" zPosition="7">\n'
+				'\t\t\t<convert type="MohammedInfo">%s</convert>\n\t\t\t<convert type="ConditionalShowHide" />\n\t\t</widget>\n') % (SKIN_DIR, key, x, y0, w, h, cond)
+		return snippet, add + o + "\t\t<!-- IBQUALITY END -->\n"
+	x, y = spot
+	for key, cond in QUALITY:
+		w = widths.get(key, 44)
+		o += '\t\t<ePixmap pixmap="%s/img/q_%s_off.png" position="%d,%d" size="%d,%d" alphatest="blend" zPosition="6" />\n' % (SKIN_DIR, key, x, y, w, h)
+		o += ('\t\t<widget source="session.CurrentService" render="Pixmap" pixmap="%s/img/q_%s_on.png" position="%d,%d" size="%d,%d" alphatest="blend" zPosition="7">\n'
+			'\t\t\t<convert type="MohammedInfo">%s</convert>\n\t\t\t<convert type="ConditionalShowHide" />\n\t\t</widget>\n') % (SKIN_DIR, key, x, y, w, h, cond)
+		x += w + gap
+	return snippet, add + o + "\t\t<!-- IBQUALITY END -->\n"
+
+
+def _ib_extras(snippet, base):
+	"""Every infobar gets the backdrop blocks (the setup keeps the chosen shape) and, when switched on,
+	the LED line that lights up once along the top edge of its bar."""
+	end = snippet.rfind("</screen>")
+	if end < 0:
+		return snippet
+	add = ""
+	if "IBBACKDROP START" not in snippet:
+		try:
+			with open(os.path.join(base, "styles", "infobar", "backdrop.xml")) as f:
+				add += f.read()
+		except Exception:
+			pass
+	if settings().get("ib_led", True) and "IBLED" not in snippet and "render=\"MohammedFrames\" mode=\"once\"" not in snippet:
+		try:
+			with open(os.path.join(base, "styles", "infobar", "led.json")) as f:
+				edges = json.load(f)
+		except Exception:
+			edges = {}
+		m = re.search(r'/img/((?:ib_scrim|ibx_\w+?_bg))\.png', snippet)
+		y = edges.get(m.group(1)) if m else None
+		if y:
+			add += ('\t\t<!-- IBLED START -->\n\t\t<widget source="session.CurrentService" render="MohammedFrames" mode="once" '
+				'frames="%s/img/ibled_%%02d.png" count="12" interval="45" cache="1" position="0,%d" size="1920,24" alphatest="blend" zPosition="3" />\n'
+				'\t\t<!-- IBLED END -->\n') % (SKIN_DIR, y - 12)
+	if "IBQUALITY" not in snippet:
+		snippet, add = _ib_quality(snippet, base, add)
+	if "MohammedBitrate" not in snippet:  # the bitrate, right after the picture tags (next to the lock)
+		m = re.search(r'pixmap="[^"]*/img/(?:icon_lock|st_lock_on|tag_lock)[^"]*\.png" position="(\d+),(\d+)" size="(\d+),(\d+)"', snippet)
+		bottom = 1076
+		try:
+			with open(os.path.join(base, "styles", "infobar", "quality.json")) as f:
+				bar = re.search(r'/img/(ib_scrim|ibx_\w+?_bg)\.png', snippet)
+				bottom = json.load(f).get("bottom", {}).get(bar.group(1) if bar else "", 1076)
+		except Exception:
+			pass
+		spot = _bitrate_spot(snippet + add, m.groups(), bottom=bottom) if m else None
+		if spot:
+			x, y = spot
+			add += ('\t\t<widget source="session.CurrentService" render="Label" position="%d,%d" size="%d,%d" font="Semi;18" valign="center" '
+				'foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="7">'
+				'<convert type="MohammedBitrate">Both</convert></widget>\n') % (x, y, _BR_W, _BR_H)
+	end = snippet.rfind("</screen>")
+	line_start = snippet.rfind("\n", 0, end) + 1
+	return snippet[:line_start] + add + snippet[line_start:]
+
+
 def _tune_infobar(snippet, base):
+	snippet = _ib_extras(snippet, base)
+	snippet = _ib_meters(snippet)
 	shape = ib_backdrop()  # setup: backdrop above the infobar (a shape, or off): keep only that block
 
 	def keep(m):
@@ -2511,6 +2697,8 @@ def tune_snippet(kind, snippet, base=SKIN_DIR):
 			return _tune_infobar(snippet, base)
 		if kind == "channels":
 			return _tune_channels(snippet, base)
+		if kind == "menu":
+			return _tune_menu(snippet, base)
 	except Exception as e:
 		print("[MohammedSkin] tune %s: %s" % (kind, e))
 	return snippet
@@ -2706,6 +2894,7 @@ def apply_plugin_fonts(base=SKIN_DIR):
 def apply_tuning(base=SKIN_DIR):
 	"""Put the size / transparency choices into skin.xml for the styles in use now."""
 	apply_style("channels", current_style("channels", base), base)
+	apply_style("menu", current_style("menu", base), base)  # the main menu background
 	apply_infobar(current_style("infobar", base), base)
 	apply_plugin_fonts(base)
 	return True
@@ -3871,7 +4060,7 @@ def auto_window(screen, names):
 	"""The name of an automatic window for this screen (registered in the skin), or None."""
 	cls = screen.__class__
 	tag = (cls.__module__, cls.__name__, tuple(names))
-	if tag in _auto_off:
+	if tag in _auto_off or [n for n in names if n.startswith(_CORE_PREFIXES)]:
 		return None
 	if _ours(names):
 		return None
@@ -3966,6 +4155,9 @@ def ensure_keys(screen, names):
 # image skin's colours and fonts turned into this skin's colours and fonts.
 # ---------------------------------------------------------------------------------------------
 
+_CORE_PREFIXES = ("PluginBrowser", "PluginDownloadBrowser", "ChannelSelection", "InfoBar", "SecondInfoBar", "Menu", "menu_",
+	"EPGSelection", "GraphMultiEPG", "GraphicalEPG", "MovieSelection", "MoviePlayer", "EventView", "MessageBox", "ChoiceBox",
+	"Volume", "Mute", "Standby", "SimpleChannelSelection", "SlimChannelSelection")
 _borrow = {"ready": False, "screens": {}, "thread": None, "dir": ""}
 _OUR_FONTS = {"Regular": "moh-regular.otf", "Semi": "moh-semibold.otf", "Title": "moh-title.otf", "Fixed": "moh-mono.ttf",
 	"Console": "moh-mono.ttf"}
@@ -4316,6 +4508,8 @@ def borrowed_window(names):
 	for n in names:
 		if [w for w in _OVERLAY_WORDS if w in n.lower()]:
 			return None  # windows over the TV picture keep their own (transparent) design
+		if n.startswith(_CORE_PREFIXES):
+			return None  # core screens whose code reads the skin itself (the plugin browser looks for "list"): never swapped
 		if n in _borrow["screens"]:
 			return n if _register_borrowed(n) else None
 	return None
