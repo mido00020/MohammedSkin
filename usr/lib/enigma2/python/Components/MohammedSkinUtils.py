@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.64"
+SKIN_VERSION = "2.1.65"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "off",  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True,  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -442,7 +442,7 @@ def _tmdb_names(d):
 	return [n for n in out if n]
 
 
-def src_tmdb(q, year, kind, arabic=False):
+def src_tmdb(q, year, kind, arabic=False, hint=None):
 	"""TMDB search in Arabic and English; every candidate is checked against all of its titles, so a
 	programme only gets a poster that really is its own."""
 	key = tmdb_key()
@@ -495,6 +495,8 @@ def src_tmdb(q, year, kind, arabic=False):
 			sc += 2.5
 		elif _years_clash(year, ry):
 			sc -= 4
+		elif not year and hint and ry:  # a year named in the guide text: a soft hint only
+			sc += 1.5 if ry == hint else (-1.0 if _years_clash(hint, ry) else 0)
 		if kind == "film" and r.get("media_type") == "movie" or kind == "series" and r.get("media_type") == "tv":
 			sc += 1
 		if arabic and r.get("original_language") == "ar":
@@ -932,41 +934,49 @@ def fanart_backdrop(tmdb_id, tmdb_type):
 	return None
 
 
-def lookup(title, year, kind, arabic=False, extra=()):
-	"""Ask the sources in a sensible order until a poster that really matches is found."""
+LOOKUP_BUDGET = 14  # seconds for one programme: after that the channel logo is shown (looked again later)
+
+
+def lookup(title, year, kind, arabic=False, extra=(), hint=None):
+	"""Ask the sources in a sensible order until a poster that really matches is found: TMDB with every
+	spelling of the title first (it checks all names of a programme), the other sources after it with the
+	main spelling only - they are less exact and each one costs time."""
 	if adult_level() not in ("off", "channels") and (title.lower() in _blocklist["titles"] or adult_text(title)):
 		return BLOCKED
-	tm = lambda q, y, k: src_tmdb(q, y, k, arabic)
+	start = time.time()
+	tm = lambda q, y, k: src_tmdb(q, y, k, arabic, hint)
 	if _ARABIC.search(title) or (arabic and tmdb_key()):
-		order = [tm, src_omdb]  # Arabic channels: TMDB knows the Arabic titles; the others only slow it down
+		others = [src_omdb]  # Arabic channels: TMDB knows the Arabic titles; the others only slow it down
 	elif kind == "series":
-		order = [tm, src_tvmaze, src_imdb, src_omdb, src_itunes]
+		others = [src_tvmaze, src_imdb, src_omdb, src_itunes]
 	else:
-		order = [tm, src_itunes, src_imdb, src_omdb, src_tvmaze]
+		others = [src_itunes, src_imdb, src_omdb, src_tvmaze]
 	queries = query_variants(title, arabic)
-	for e in extra or ():  # e.g. the Arabic name an Arabic channel gives in the short description
+	for e in extra or ():  # e.g. the Arabic name of the programme, or the one in the short description
 		if e and e not in queries:
 			queries.append(e)
-	for q in queries:
-		for src in order:
-			try:
-				r = src(q, year, kind)
-			except Exception:
-				r = None
-			if r and r.get("blocked"):
-				return BLOCKED  # same title elsewhere would show the same picture: stop here
-			if r and r.get("poster"):
-				if not r.get("backdrop") and settings().get("backdrops", True):
-					b = fanart_backdrop(r.get("tmdb"), r.get("tmdb_type"))
-					if b:
-						r["backdrop"] = b
-				if "scenes" not in r and r.get("tmdb") and settings().get("backdrops", True):
-					skip = (r.get("backdrop") or "").split("/t/p/w1280")[-1] or None
-					try:
-						r["scenes"] = tmdb_scenes(r.get("tmdb"), r.get("tmdb_type"), skip)
-					except Exception:
-						r["scenes"] = []
-				return add_rating(r, q, year)
+	steps = [(tm, q) for q in queries] + [(src, queries[0]) for src in others]
+	for src, q in steps:
+		if time.time() - start > LOOKUP_BUDGET:
+			break
+		try:
+			r = src(q, year, kind)
+		except Exception:
+			r = None
+		if r and r.get("blocked"):
+			return BLOCKED  # same title elsewhere would show the same picture: stop here
+		if r and r.get("poster"):
+			if not r.get("backdrop") and settings().get("backdrops", True):
+				b = fanart_backdrop(r.get("tmdb"), r.get("tmdb_type"))
+				if b:
+					r["backdrop"] = b
+			if "scenes" not in r and r.get("tmdb") and settings().get("backdrops", True):
+				skip = (r.get("backdrop") or "").split("/t/p/w1280")[-1] or None
+				try:
+					r["scenes"] = tmdb_scenes(r.get("tmdb"), r.get("tmdb_type"), skip)
+				except Exception:
+					r["scenes"] = []
+			return add_rating(r, q, year)
 	return None
 
 
@@ -1000,6 +1010,8 @@ def cached(key):
 		e = _memo.get(key)
 	if e is None:
 		return None
+	if e.get("partial"):
+		return e
 	if e.get("poster") is None and time.time() - e["t"] > NEGATIVE_TTL:
 		return None
 	for k in ("poster", "backdrop", "poster_ar"):
@@ -1011,13 +1023,13 @@ def cached(key):
 	return e
 
 
-def _work(key, title, year, kind, arabic=False, extra=()):
+def _work(key, title, year, kind, arabic=False, extra=(), hint=None):
 	entry = {"poster": None, "backdrop": None, "scenes": [], "kind": kind, "t": time.time(),
 		"rating": None, "votes": 0, "rating_src": "", "year": year or "", "genres": []}
 	try:
 		if not os.path.isdir(CACHE_DIR):
 			os.makedirs(CACHE_DIR)
-		r = lookup(title, year, kind, arabic, extra)
+		r = lookup(title, year, kind, arabic, extra, hint)
 		if r and r.get("blocked"):
 			entry["blocked"] = True
 			r = None
@@ -1044,6 +1056,20 @@ def _work(key, title, year, kind, arabic=False, extra=()):
 			for t in threads:
 				t.daemon = True
 				t.start()
+			# the poster (and the Arabic one) first: shown at once, the backdrop and scenes follow when they are there
+			first = [t for t, j in zip(threads, jobs) if j[0] in ("poster", "poster_ar")]
+			for t in first:
+				t.join(TIMEOUT + 4)
+			if done.get("poster") and len(threads) > len(first):
+				part = dict(entry, partial=True)
+				for k in ("poster", "poster_ar"):
+					if done.get(k):
+						part[k] = done[k]
+				with _lock:
+					_memo[key] = part
+					cbs = list(_inflight.get(key, []))
+				for cb in cbs:
+					_deliver(cb, part)
 			for t in threads:
 				t.join(TIMEOUT + 4)
 			for k in ("poster", "backdrop", "poster_ar"):
@@ -1076,7 +1102,7 @@ def _save_index(force=False):
 	_index_saved[0] = now
 	try:
 		with _lock:
-			data = {"v": SKIN_VERSION, "e": dict((k, v) for k, v in _memo.items() if v.get("poster") or v.get("blocked"))}
+			data = {"v": SKIN_VERSION, "e": dict((k, v) for k, v in _memo.items() if (v.get("poster") or v.get("blocked")) and not v.get("partial"))}
 		tmp = os.path.join(CACHE_DIR, "index.json.part")
 		with open(tmp, "w") as f:
 			json.dump(data, f)
@@ -1140,20 +1166,51 @@ def no_event_title(title):
 	return len(t) < 2 or bool(_NO_EVENT.match(t))
 
 
-def request(title, year, kind, callback, arabic=False, extra=()):
-	"""Fetch art for title in the background; callback(entry) runs on the GUI thread."""
+WORKERS = 3          # lookups at the same time
+QUEUE_MAX = 40       # older waiting lookups are dropped (the channel list moved on; they are asked again when seen)
+_queue = []
+_queue_cv = threading.Condition()
+_workers = [0]
+
+
+def _worker():
+	while True:
+		with _queue_cv:
+			while not _queue:
+				_queue_cv.wait(60)
+			job = _queue.pop()  # the newest first: the programme on screen now
+		try:
+			_work(*job)
+		except Exception:
+			pass
+
+
+def request(title, year, kind, callback, arabic=False, extra=(), hint=None):
+	"""Fetch art for title in the background; callback(entry) runs on the GUI thread (again when the
+	backdrop and scenes arrive after the poster)."""
 	key = cache_key(title, year)
 	e = cached(key)
-	if e is not None:
+	if e is not None and not e.get("partial"):
 		return e
 	with _lock:
 		if key in _inflight:
 			_inflight[key].append(callback)
-			return None
+			return e
+		if e is not None:  # finished meanwhile
+			return _memo.get(key, e)
 		_inflight[key] = [callback]
-	t = threading.Thread(target=_work, args=(key, title, year, kind, arabic, tuple(extra or ())))
-	t.daemon = True
-	t.start()
+	with _queue_cv:
+		_queue.append((key, title, year, kind, arabic, tuple(extra or ()), hint))
+		while len(_queue) > QUEUE_MAX:
+			old = _queue.pop(0)
+			with _lock:
+				_inflight.pop(old[0], None)
+		if _workers[0] < WORKERS:
+			_workers[0] += 1
+			t = threading.Thread(target=_worker)
+			t.daemon = True
+			t.start()
+		_queue_cv.notify()
 	return None
 
 
@@ -2336,8 +2393,9 @@ def ib_backdrop():
 	return v if v in [n for n, l in IB_BACKDROP] else "band"
 
 
-IB_METER_COLOR = (("classic", "Classic (red to blue)"), ("theme", "Theme colour"), ("amber", "Yellow (amber)"), ("signal", "Signal colours (red to green)"))
-IB_METER_SHAPE = (("line", "Line"), ("blocks", "Blocks"))
+IB_METER_COLOR = (("classic", "Classic (red to blue)"), ("theme", "Theme colour"), ("amber", "Yellow (amber)"), ("signal", "Signal colours (red to green)"),
+	("green", "Green"), ("blue", "Blue"), ("white", "White"))
+IB_METER_SHAPE = (("line", "Line"), ("blocks", "Blocks"), ("dots", "Dots"), ("steps", "Rising bars"))
 _METER_FILL = re.compile(r'(pixmap="[^"]*/img/)(?:ibx_)?meter_(\d+)\.png(")')
 _METER_TRACK = re.compile(r'(<ePixmap pixmap="[^"]*/img/)(?:ibx_)?meter_track_(\d+)\.png(" position=")(\d+),(\d+)(" size=")(\d+),6(")')
 
@@ -2354,8 +2412,8 @@ def _ib_meters(snippet):
 	if (color, shape) == ("classic", "line"):
 		return snippet
 	snippet = _METER_FILL.sub(lambda m: "%smeter_%s_%s_%s.png%s" % (m.group(1), color, shape, m.group(2), m.group(3)), snippet)
-	if shape == "blocks":  # the blocks track is as tall as the bar
-		snippet = _METER_TRACK.sub(lambda m: "%smeter_track_blocks_%s.png%s%s,%d%s%s,14%s" % (m.group(1), m.group(2), m.group(3), m.group(4),
+	if shape != "line":  # blocks, dots and bars: the dim track has the same shape and is as tall as the bar
+		snippet = _METER_TRACK.sub(lambda m: "%smeter_track_%s_%s.png%s%s,%d%s%s,14%s" % (m.group(1), shape, m.group(2), m.group(3), m.group(4),
 			int(m.group(5)) - 4, m.group(6), m.group(7), m.group(8)), snippet)
 	return snippet
 
@@ -2401,12 +2459,13 @@ def _bitrate_spot(snippet, lock, bw=_BR_W, bh=_BR_H, bottom=1076):
 
 
 MENU_BG = (("off", "Off (TV picture)"), ("orbit", "Orbit and satellites"), ("waves", "Signal waves"), ("aurora", "Aurora"), ("honeycomb", "Honeycomb"))
+MENU_BG_DEFAULT = "orbit"
 
 
 def _tune_menu(snippet, base):
 	"""Main menu background: the menu window becomes full screen with a drawn background in the theme colours
 	behind it; everything of the menu keeps its place (moved by the window's old offset)."""
-	bg = _choice("menu_bg", MENU_BG, "off")
+	bg = _choice("menu_bg", MENU_BG, MENU_BG_DEFAULT)
 	if bg == "off":
 		return snippet
 	m = re.search(r'<screen name="Menu" position="center,center" size="(\d+),(\d+)"', snippet)
@@ -2699,6 +2758,8 @@ def tune_snippet(kind, snippet, base=SKIN_DIR):
 			return _tune_channels(snippet, base)
 		if kind == "menu":
 			return _tune_menu(snippet, base)
+		if kind == "sib":
+			return _ib_meters(snippet)
 	except Exception as e:
 		print("[MohammedSkin] tune %s: %s" % (kind, e))
 	return snippet
@@ -2873,6 +2934,10 @@ def apply_plugin_fonts(base=SKIN_DIR):
 	"""Write the plugin list size into skin.xml (font aliases + PLUGINS block)."""
 	level = tune_value("pl_font", PL_FONT)
 	block, f0, f1, rowh = plugins_block(level)
+	bg = _choice("menu_bg", MENU_BG, MENU_BG_DEFAULT)
+	if bg != "off":  # the same drawn background as the main menu behind the plugin list
+		block = re.sub(r'(<screen name="PluginBrowser\w*"[^>]*>)', lambda m: m.group(1) +
+			'\n\t\t<ePixmap pixmap="%s/img/menubg_%s.jpg" position="0,0" size="1920,1080" zPosition="-5" />' % (SKIN_DIR, bg), block)
 	skin = os.path.join(base, "skin.xml")
 	with open(skin) as f:
 		xml = f.read()
@@ -2895,6 +2960,7 @@ def apply_tuning(base=SKIN_DIR):
 	"""Put the size / transparency choices into skin.xml for the styles in use now."""
 	apply_style("channels", current_style("channels", base), base)
 	apply_style("menu", current_style("menu", base), base)  # the main menu background
+	apply_style("sib", current_style("sib", base), base)  # the signal bars of the second infobar
 	apply_infobar(current_style("infobar", base), base)
 	apply_plugin_fonts(base)
 	return True
@@ -3667,6 +3733,16 @@ def reapply_all(base=SKIN_DIR, log=print):
 	key, fam, _ = adapt_image(base)
 	log("MohammedSkin: image %s (%s family)" % (IMAGE_NAMES.get(key, "unknown"), fam))
 	s = settings()
+	if not s.get("menu_bg_v2"):  # 2.1.64 saved the menu background as off before anyone could see it: on once
+		try:
+			d = dict(s)
+			if d.get("menu_bg", "off") == "off":
+				d["menu_bg"] = MENU_BG_DEFAULT
+			d["menu_bg_v2"] = True
+			save_settings(d)
+			s = settings()
+		except Exception:
+			pass
 	ib = s.get("infobar_style", "classic")
 	if ib != "classic":
 		log("MohammedSkin: re-applying infobar style %s" % ib)
@@ -3696,29 +3772,185 @@ def reapply_all(base=SKIN_DIR, log=print):
 
 # ---------------------------------------------------------------- rating / year / genre of an event
 
-def event_entry(event, callback=None):
+# DVB content (genre) of a programme: news and sports never have a film poster - the channel logo is shown
+# for them and nothing is looked up (fewer wrong pictures, less waiting for the others)
+_SKIP_GENRES = (0x2, 0x4)
+_NEWS_TITLE = re.compile(u"^(?:\u0646\u0634\u0631\u0629|\u0645\u0648\u062c\u0632|\u0627\u0644\u0646\u0634\u0631\u0629|\u0627\u0644\u0645\u0648\u062c\u0632|"
+	u"\u0627\u0644\u0623\u062e\u0628\u0627\u0631|\u0623\u062e\u0628\u0627\u0631|\u0627\u062e\u0628\u0627\u0631|\u0645\u0628\u0627\u0631\u0627\u0629)(?:\\s|$)|"
+	u"^(?:news|nachrichten|tagesschau|journal|telediario|notiziario|haberler)(?:\\s|$)|\\b(?:live|direct)\\s*:\\s*\\S+\\s+(?:vs?\\.?|-)\\s+\\S", re.I | re.U)
+_DESC_YEAR = re.compile(r"(?<!\d)((?:19[3-9]|20[0-4])\d)(?!\d)")
+
+
+def event_genre(event):
+	"""DVB content level 1 of the event (0x1 film/drama, 0x2 news, 0x4 sports ...) or None."""
+	for name in ("getGenreDataList", "getGenreData"):
+		f = getattr(event, name, None)
+		if f is None:
+			continue
+		try:
+			g = f()
+		except Exception:
+			continue
+		try:
+			if isinstance(g, (list, tuple)):
+				if g and isinstance(g[0], (list, tuple)):
+					return int(g[0][0])
+				continue
+			if g is not None and hasattr(g, "getLevel1"):
+				return int(g.getLevel1())
+		except Exception:
+			pass
+	return None
+
+
+def skip_event(event, title):
+	"""News and sports: no poster to find. Only clear cases are skipped."""
+	if _NEWS_TITLE.search(title or ""):
+		return True
+	return event_genre(event) in _SKIP_GENRES
+
+
+def desc_year(event):
+	"""The year the guide text names, when it names exactly one (e.g. 'Drama, USA 2019')."""
+	try:
+		text = event.getShortDescription() or ""
+	except Exception:
+		return None
+	try:
+		text = text.decode("utf-8", "ignore")
+	except AttributeError:
+		pass
+	years = set(_DESC_YEAR.findall(text[:300]))
+	return years.pop() if len(years) == 1 else None
+
+
+def english_title(event, ref):
+	"""The English title of an event whose title is Arabic, when the channel also sends one in English
+	(the guide keeps every language; the image shows only the one chosen in its language setup).
+	The image's own EPG language is put back at once, so nothing else changes."""
+	if ref is None or not settings().get("epg_english", True):
+		return None
+	try:
+		name = event.getEventName() or ""
+		eid = event.getEventId()
+		begin = event.getBeginTime()
+	except Exception:
+		return None
+	try:
+		name = name.decode("utf-8", "ignore")
+	except AttributeError:
+		pass
+	if not _ARABIC.search(name):
+		return None
+	try:
+		from Components.config import config
+		lang = config.autolanguage.audio_epglanguage.value
+		alt = config.autolanguage.audio_epglanguage_alternative.value
+		from enigma import eServiceEvent, eEPGCache
+	except Exception:
+		return None  # this image has no EPG language setting: leave it as it is
+	en = None
+	try:
+		eServiceEvent.setEPGLanguage("eng")
+		eServiceEvent.setEPGLanguageAlternative("eng")
+		epg = eEPGCache.getInstance()
+		ev = None
+		try:
+			ev = epg.lookupEventId(ref, eid) if eid else None
+		except Exception:
+			ev = None
+		if ev is None and begin:
+			try:
+				ev = epg.lookupEventTime(ref, begin + 1)
+			except Exception:
+				ev = None
+		en = ev.getEventName() if ev is not None else None
+	except Exception:
+		en = None
+	finally:
+		try:
+			eServiceEvent.setEPGLanguage(lang)
+			eServiceEvent.setEPGLanguageAlternative(alt)
+		except Exception:
+			pass
+	try:
+		en = en.decode("utf-8", "ignore")
+	except AttributeError:
+		pass
+	if en and not _ARABIC.search(en) and len(en.strip()) >= 2:
+		return en.strip()
+	return None
+
+
+_qcache = {}
+
+
+def event_query(event, ref=None, chname=""):
+	"""What to look up for an EPG event, the same for posters, backdrops, scenes and ratings:
+	{"title", "year", "hint", "kind", "key", "arabic", "extra"} or None (no programme, news or sports)."""
+	if event is None:
+		return None
+	try:
+		name = event.getEventName() or ""
+		eid = event.getEventId()
+	except Exception:
+		return None
+	rs = ref.toString() if ref is not None and hasattr(ref, "toString") else ""
+	ck = (rs, eid, name, settings().get("epg_english", True))
+	q = _qcache.get(ck)
+	if q is not None:
+		return q or None
+	title, year = clean_title(name)
+	q = {}
+	if not no_event_title(title) and not no_event_title(name) and not skip_event(event, title):
+		arabic = arabic_channel(ref, chname) or bool(_ARABIC.search(title))
+		extra = []
+		en = english_title(event, ref)
+		if en:
+			et, ey = clean_title(en)
+			if et and not no_event_title(et):
+				extra.append(title)  # the Arabic name is tried too when the English one finds nothing
+				title, year = et, year or ey
+		if arabic and not _ARABIC.search(title):
+			alt = arabic_alt_title(event)
+			if alt and alt not in extra:
+				extra.append(alt)
+		q = {"title": title, "year": year, "hint": None if year else desc_year(event), "kind": guess_kind(event),
+			"key": cache_key(title, year), "arabic": arabic, "extra": tuple(extra)}
+	if len(_qcache) > 400:
+		_qcache.clear()
+	_qcache[ck] = q
+	return q or None
+
+
+def source_ref(source):
+	"""The channel a source shows: the one in the channel list (ServiceEvent), else None (= the one playing)."""
+	ref = getattr(source, "service", None)
+	try:
+		from enigma import eServiceReference
+		return ref if isinstance(ref, eServiceReference) else None
+	except Exception:
+		return None
+
+
+def event_entry(event, callback=None, ref=None):
 	"""Cached lookup entry (poster, rating, year, genres) for an EPG event. When it is not known yet the
 	lookup starts in the background and callback() runs on the GUI thread once it is."""
 	if event is None:
 		return None
-	try:
-		title, year = clean_title(event.getEventName() or "")
-	except Exception:
-		return None
-	if no_event_title(title):
-		return None
-	key = cache_key(title, year)
-	e = cached(key)
-	if e is not None or callback is None:
-		return e
-	arabic = bool(_ARABIC.search(title))
-	if not arabic:
+	if ref is None:
 		try:
 			import NavigationInstance
-			arabic = arabic_channel(NavigationInstance.instance.getCurrentlyPlayingServiceReference())
+			ref = NavigationInstance.instance.getCurrentlyPlayingServiceReference()
 		except Exception:
-			pass
-	return request(title, year, guess_kind(event), lambda entry: callback(), arabic=arabic)
+			ref = None
+	q = event_query(event, ref)
+	if q is None:
+		return None
+	e = cached(q["key"])
+	if callback is None or (e is not None and not e.get("partial")):
+		return e
+	return request(q["title"], q["year"], q["kind"], lambda entry: callback(), arabic=q["arabic"], extra=q["extra"], hint=q["hint"]) or e
 
 
 def rating_of(entry):

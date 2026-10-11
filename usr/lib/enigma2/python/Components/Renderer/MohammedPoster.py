@@ -167,25 +167,25 @@ class MohammedPoster(Renderer):
 		if U.adult_event(event, chname):
 			self.showLogo()
 			return
-		name = event.getEventName() if event else ""
-		title, year = U.clean_title(name)
-		if U.no_event_title(title) or U.no_event_title(name):
+		q = U.event_query(event, ref, chname)  # the same title for posters, backdrops, scenes and ratings
+		if q is None:  # no programme, or news / sports: the channel logo
 			self.showLogo()
 			return
-		self.arabic = self.kind == "poster" and U.want_arabic_poster(ref, chname, title)
-		self.arabic_ctx = U.arabic_channel(ref, chname) or bool(U._ARABIC.search(title))
-		key = U.cache_key(title, year)
+		key = q["key"]
+		self.arabic = self.kind == "poster" and U.want_arabic_poster(ref, chname, q["extra"][0] if q["extra"] else q["title"])
 		if key == self.current and self.shown:
 			return
 		self.current = key
+		self.query = q
 		entry = U.cached(key)
 		if entry is not None:
 			self.timer.stop()
 			self.showEntry(entry, key)
-			return
-		self.hide()
-		self.extra = (U.arabic_alt_title(event),) if self.arabic_ctx and not U._ARABIC.search(title) else ()
-		self.pending = (title, year, U.guess_kind(event), key)
+			if not entry.get("partial"):
+				return
+		else:
+			self.hide()
+		self.pending = (q["title"], q["year"], q["kind"], key)
 		self.timer.stop()
 		self.timer.start(self.delay, True)
 
@@ -206,7 +206,8 @@ class MohammedPoster(Renderer):
 		self.pending = None
 		if key != self.current:
 			return
-		entry = U.request(title, year, kind, lambda e, k=key: self.onResult(k, e), arabic=getattr(self, "arabic_ctx", False), extra=getattr(self, "extra", ()))
+		q = getattr(self, "query", None) or {}
+		entry = U.request(title, year, kind, lambda e, k=key: self.onResult(k, e), arabic=q.get("arabic", False), extra=q.get("extra", ()), hint=q.get("hint"))
 		if entry is not None:
 			self.showEntry(entry, key)
 
@@ -232,6 +233,10 @@ class MohammedPoster(Renderer):
 		else:
 			path = (getattr(self, "arabic", False) and entry.get("poster_ar")) or entry.get("poster")
 		if not path:
+			if entry.get("partial"):  # the poster is there, the backdrop and scenes are still coming
+				if self.kind != "poster":
+					self.hide()
+				return
 			if self.kind in ("poster", "backdrop") and entry.get("t") is not None:
 				self.current = None
 				self.showLogo()

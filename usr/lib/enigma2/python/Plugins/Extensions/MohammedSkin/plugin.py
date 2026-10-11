@@ -95,7 +95,7 @@ def build_skin(lang):
 	a('<ePixmap pixmap="%ssetup_frame.png" position="%d,150" size="636,368" alphatest="blend" zPosition="2" />' % (IMG, X(1230, 636)))
 	a('<widget name="preview" position="%d,160" size="616,347" zPosition="3" />' % X(1240, 616))
 	a('<widget source="themename" render="Label" position="%d,526" size="616,44" font="%s;30" halign="%s" valign="center" foregroundColor="#00F2ECE2" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1240, 616), fs, h, ink))
-	a('<widget source="themehint" render="Label" position="%d,572" size="616,32" font="Regular;22" halign="%s" valign="center" foregroundColor="#00968C84" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1240, 616), h, ink))
+	a('<widget source="themehint" render="Label" position="%d,570" size="616,62" font="Regular;22" halign="%s" valign="top" foregroundColor="#00B4AAA0" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1240, 616), h, ink))
 	a('<ePixmap pixmap="%ssetup_card_%s.png" position="%d,636" size="616,226" alphatest="blend" zPosition="2" />' % (IMG, side, X(1240, 616)))
 	a('<widget source="help" render="Label" position="%d,652" size="560,196" font="Regular;25" halign="%s" valign="top" foregroundColor="#00D2CCC4" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1268, 560), h, ink))
 	# keys
@@ -261,7 +261,8 @@ class MohammedSkinSetup(Screen):
 		self.ibLed = ConfigYesNo(default=bool(s.get("ib_led", True)))
 		self.ibMeterColor = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_COLOR], default=U._choice("ib_meter_color", U.IB_METER_COLOR, "classic"))
 		self.ibMeterShape = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_SHAPE], default=U._choice("ib_meter_shape", U.IB_METER_SHAPE, "line"))
-		self.menuBg = ConfigSelection(choices=[(n, t(l)) for n, l in U.MENU_BG], default=U._choice("menu_bg", U.MENU_BG, "off"))
+		self.menuBg = ConfigSelection(choices=[(n, t(l)) for n, l in U.MENU_BG], default=U._choice("menu_bg", U.MENU_BG, U.MENU_BG_DEFAULT))
+		self.epgEnglish = ConfigYesNo(default=bool(s.get("epg_english", True)))
 		self.startBackdrop = (self.ibBackdrop.value, self.ibLed.value, self.ibMeterColor.value, self.ibMeterShape.value, self.menuBg.value)
 		self.uiLang = ConfigSelection(choices=list(UI_LANGS), default=L)
 		self.helptext = {
@@ -302,9 +303,10 @@ class MohammedSkinSetup(Screen):
 			id(self.plLayout): "Plugin list (Menu > Plugins) as tiles side by side or as a list. The grid needs a recent image (OpenViX / OpenBH 6.7+ or OpenATV). Saving restarts the GUI.",
 			id(self.logo3d): "When a channel has no event, no poster was found or the poster is hidden, show its logo on a 3D card instead.",
 			id(self.uiLang): "Language of this setup screen. Saving switches it at once.",
-			id(self.menuBg): "A drawn background in the theme colours behind the main menu and its submenus (no photos), or off to see the TV picture. Saving restarts the GUI.",
-			id(self.ibMeterColor): "Colour of the SNR and AGC bars in the infobars: classic, the theme colour, yellow, or signal colours that run from red to green. Saving restarts the GUI.",
-			id(self.ibMeterShape): "Shape of the SNR and AGC bars in the infobars: a rounded line or a row of blocks. Saving restarts the GUI.",
+			id(self.menuBg): "A drawn background in the theme colours behind the main menu, its submenus and the plugin list (no photos), or off to see the TV picture. Saving restarts the GUI.",
+			id(self.epgEnglish): "Many Arabic channels send each programme's title in Arabic and in English. Yes: posters and ratings are looked up with the English title (much more exact), the Arabic one is tried after it. What you read on screen does not change.",
+			id(self.ibMeterColor): "Colour of the SNR and AGC bars in the infobars and the second infobar. Saving restarts the GUI.",
+			id(self.ibMeterShape): "Shape of the SNR and AGC bars in the infobars and the second infobar: a line, blocks, dots or rising bars - each piece stands apart. Saving restarts the GUI.",
 			id(self.ibLed): "A glowing line along the top of the infobar that lights up once, like an LED strip, each time the bar appears. Saving restarts the GUI.",
 			id(self.ibBackdrop): "The programme's backdrop at the top of the screen while the infobar is shown (every infobar style): a wide band, a box in the middle, left or right, or off. Saving restarts the GUI.",
 			id(self.fitScreens): "Plugin windows that have no design in this skin get one in the skin's style automatically; windows with pictures keep their own look, enlarged to the screen. Works after the next GUI restart.",
@@ -313,6 +315,34 @@ class MohammedSkinSetup(Screen):
 			id(self.eventColor): "Colour of the programme name next to each channel in the channel list. Saving restarts the GUI.",
 			id(self.chPreview): "Posters: the programme poster. Live TV picture: the channel playing now, as big as the style allows. Saving restarts the GUI.",
 			id(self.ibChan): "Size of the channel logo, number and name above the compact capsule infobar. It grows upwards, never into the bar. Saving restarts the GUI.",
+		}
+		Y, N = True, False
+		self.valuehint = {  # what the chosen value does: shown under the preview while LEFT / RIGHT change it
+			id(self.menuBg): {"off": "No picture: the TV stays visible behind the menu.", "orbit": "Satellites on their orbits and a dish sending its signal.",
+				"waves": "Glowing signal waves running across the screen.", "aurora": "Soft northern lights in the theme colours.", "honeycomb": "A honeycomb of glowing cells, a few of them lit."},
+			id(self.ibBackdrop): {"band": "A wide strip across the top of the screen.", "center": "A framed picture at the top, in the middle.",
+				"left": "A framed picture at the top left.", "right": "A framed picture at the top right.", "off": "No backdrop: only the infobar."},
+			id(self.ibLed): {Y: "The line lights up from the middle outwards each time the bar opens, then stays softly lit.", N: "No light line on the infobar."},
+			id(self.ibMeterShape): {"line": "One smooth rounded line.", "blocks": "Separate rounded blocks with a gap between each.",
+				"dots": "Separate round dots.", "steps": "Bars that rise from left to right, like a phone's signal."},
+			id(self.ibMeterColor): {"classic": "Red at the start, blue when the signal is strong.", "theme": "The colour of the skin theme you chose.",
+				"amber": "Orange to yellow.", "signal": "Red when weak, yellow in the middle, green when strong.", "green": "Green.", "blue": "Blue.", "white": "White and silver."},
+			id(self.fitScreens): {Y: "Plugins without a design here get the skin's look, at full screen size.", N: "Plugins keep their own small windows."},
+			id(self.rating): {Y: "Stars, rating, year and genre of films and series.", N: "No stars, rating, year or genre."},
+			id(self.posters): {Y: "Programme posters in the infobars and channel list.", N: "No posters: the channel logo is shown instead."},
+			id(self.backdrops): {Y: "Backdrop and scenes of the programme behind the second infobar.", N: "No backdrops or scenes."},
+			id(self.logo3d): {Y: "No poster: the channel logo is shown in its place.", N: "No poster: the place stays empty."},
+			id(self.epgEnglish): {Y: "English title first, then the Arabic one (more exact posters).", N: "Only the title shown on screen is used."},
+			id(self.posterStore): {"ram": "Nothing is written to the box; fetched again after a restart.", "disk": "Saved on the hard disk or USB: shown at once next time."},
+			id(self.arPosters): {"auto": "Arabic poster on Nilesat, Arabsat and Badr channels.", "always": "Arabic poster on every channel when there is one.", "off": "Always the English poster."},
+			id(self.translate): {Y: "Titles and descriptions are translated to the language below.", N: "Everything stays in the language the channel sends."},
+			id(self.trService): {"auto": "Free, no key needed.", "microsoft": "Uses your own Microsoft key (set below).", "deepl": "Uses your own DeepL key (set below)."},
+			id(self.smooth): {"smooth": "The seconds hand glides.", "tick": "The seconds hand jumps once a second (lighter for slow boxes)."},
+			id(self.weather): {Y: "Weather card in the infobars.", N: "No weather."},
+			id(self.weatherLoc): {"auto": "Found from your internet connection.", "list": "The city you picked from the list (press OK).", "city": "The city you typed below."},
+			id(self.chPreview): {"poster": "The programme poster next to the list.", "live": "The channel playing now, live, next to the list."},
+			id(self.plLayout): {"grid": "Tiles side by side.", "list": "One plugin under the other."},
+			id(self.adult): {"off": "Nothing is hidden.", "normal": "Adult and erotic titles are hidden.", "strict": "Also nudity, R and TV-MA titles."},
 		}
 		E = lambda label, cfg: (t(label), cfg)
 		self.groups = [
@@ -326,7 +356,7 @@ class MohammedSkinSetup(Screen):
 			[E("Show weather", self.weather), E("Weather position", self.weatherPos), E("Weather location", self.weatherLoc),
 				E("Weather city (typed)", self.weatherCity), E("Weather units", self.weatherUnits), E("Weather language", self.weatherLang)],
 			[E("Show posters", self.posters), E("Show backdrops", self.backdrops)] + ([E("Hide adult posters", self.adult)] if U.is_owner() else []) +
-				[E("Arabic posters", self.arPosters), E("Channel logo style", self.logoStyle), E("Store posters", self.posterStore), E("Search language", self.language)],
+				[E("Arabic posters", self.arPosters), E("English EPG titles for posters", self.epgEnglish), E("Channel logo style", self.logoStyle), E("Store posters", self.posterStore), E("Search language", self.language)],
 			[E("Translate events", self.translate), E("Translate to", self.trLang), E("Translation service", self.trService),
 				E("Translation key", self.trKey), E("Microsoft key region", self.trRegion)],
 			[E("TMDB API key", self.tmdb), E("OMDb API key", self.omdb), E("Fanart.tv API key", self.fanart)],
@@ -529,8 +559,12 @@ class MohammedSkinSetup(Screen):
 			self["themehint"].text = self.t("LEFT / RIGHT to change")
 		else:
 			path = U.theme_preview(theme)
-			self["themename"].text = self.theme.getText()
+			self["themename"].text = self.valueText(cur[1]) if cur else self.theme.getText()
 			self["themehint"].text = self.t("LEFT / RIGHT to change")
+		if cur and id(cur[1]) in self.valuehint:  # what this choice does
+			hint = self.valuehint[id(cur[1])].get(cur[1].value)
+			if hint:
+				self["themehint"].text = self.t(hint)
 		if path == self.previewPath:
 			return
 		self.previewPath = path
@@ -543,6 +577,10 @@ class MohammedSkinSetup(Screen):
 	def extraPreviews(self):
 		"""Option -> (preview folder, picture name, hint) for the size, font, transparency and weather lines."""
 		ib, ch = self.ibxStyle.value, self.chStyle.value
+		th = self.theme.value if self.theme.value in U.SHIPPED_THEMES else "red"
+		mc, ms = self.ibMeterColor.value, self.ibMeterShape.value
+		meters = ("meters", "theme_%s_%s" % (ms, th) if mc == "theme" else "%s_%s" % (mc, ms), "")
+		yn = lambda c: "yes" if c.value else "no"
 		lang = ("ar" if self.weatherLang.value == "ar" else "en") if self.weatherPos.value == "top_right" else "ar"  # previews exist in Arabic and English
 		weather = ("weather", "%s_%s_%s" % (ib, lang, self.weatherPos.value), "Weather in the first infobar")
 		logo = ("logo3d", ib, "Channels with no event, no poster or a hidden poster show a 3D channel logo")
@@ -559,6 +597,21 @@ class MohammedSkinSetup(Screen):
 			id(self.adult): logo, id(self.logo3d): logo,
 			id(self.logoStyle): ("logostyle", self.logoStyle.value, "LEFT / RIGHT to change"),
 			id(self.arPosters): ("arposter", "sample", "Arabic poster from TMDB on Arabic channels"),
+			id(self.menuBg): ("menubg", "%s_%s" % (self.menuBg.value, th), ""),
+			id(self.ibBackdrop): ("backdrop", "%s_%s" % (ib, self.ibBackdrop.value), ""),
+			id(self.ibLed): ("led", "%s_%s" % (ib, yn(self.ibLed)), ""),
+			id(self.ibMeterColor): meters, id(self.ibMeterShape): meters,
+			id(self.fitScreens): ("fit", yn(self.fitScreens), ""),
+			id(self.rating): ("rating", yn(self.rating), ""),
+			id(self.posters): ("posters", "posters_" + yn(self.posters), ""),
+			id(self.backdrops): ("posters", "backdrops_" + yn(self.backdrops), ""),
+			id(self.chPreview): ("chpreview", "%s_%s" % (ch, self.chPreview.value), ""),
+			id(self.eventColor): ("evcolor", self.eventColor.value, ""),
+			id(self.epgEnglish): ("posters", "posters_yes", ""), id(self.posterStore): ("posters", "posters_yes", ""),
+			id(self.language): ("posters", "posters_yes", ""),
+			id(self.translate): ("rating", "yes", ""), id(self.trLang): ("rating", "yes", ""), id(self.trService): ("rating", "yes", ""),
+			id(self.trKey): ("rating", "yes", ""), id(self.trRegion): ("rating", "yes", ""),
+			id(self.tmdb): ("posters", "backdrops_yes", ""), id(self.omdb): ("posters", "posters_yes", ""), id(self.fanart): ("posters", "backdrops_yes", ""),
 		}
 
 	def isTop(self):
@@ -700,7 +753,7 @@ class MohammedSkinSetup(Screen):
 				"weather": self.weather.value, "weather_city": self.weatherCity.value.strip(), "weather_units": self.weatherUnits.value,
 				"weather_mode": self.weatherLoc.value, "weather_lat": self.pick.get("lat"), "weather_lon": self.pick.get("lon"),
 				"weather_place_en": self.pick.get("en") or "", "weather_place_ar": self.pick.get("ar") or "",
-				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value, "ib_led": self.ibLed.value, "ib_meter_color": self.ibMeterColor.value, "ib_meter_shape": self.ibMeterShape.value, "menu_bg": self.menuBg.value,
+				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value, "ib_led": self.ibLed.value, "ib_meter_color": self.ibMeterColor.value, "ib_meter_shape": self.ibMeterShape.value, "menu_bg": self.menuBg.value, "menu_bg_v2": True, "epg_english": self.epgEnglish.value,
 				"weather_pos": self.weatherPos.value, "pl_layout": self.plLayout.value, "logo_style": self.logoStyle.value, "poster_store": self.posterStore.value,
 				"ui_lang": self.uiLang.value, "tr_lang": self.trLang.value, "tr_service": self.trService.value, "tr_key": self.trKey.value.strip(), "tr_region": self.trRegion.value.strip()})
 			self.setPluginLayout()

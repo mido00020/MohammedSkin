@@ -82,7 +82,7 @@ class MohammedInfo(Poll, Converter):
 	def _entry(self):
 		if not U.settings().get("rating", True):
 			return None
-		return U.event_entry(getattr(self.source, "event", None), self._ready)
+		return U.event_entry(getattr(self.source, "event", None), self._ready, U.source_ref(self.source))
 
 	def _ready(self):
 		if not self.dead:

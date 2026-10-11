@@ -58,12 +58,12 @@ class MohammedStars(Renderer):
 		if what[0] == self.CHANGED_CLEAR or not U.settings().get("rating", True):
 			self.hideStars()
 			return
-		entry = U.event_entry(self.getEvent(), self.ready)
+		entry = U.event_entry(self.getEvent(), self.ready, U.source_ref(self.source))
 		self.showEntry(entry)
 
 	def ready(self):
 		if self.instance:
-			self.showEntry(U.event_entry(self.getEvent()))
+			self.showEntry(U.event_entry(self.getEvent(), None, U.source_ref(self.source)))
 
 	def showEntry(self, entry):
 		rating = U.rating_of(entry) if entry else 0
