@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.79"
+SKIN_VERSION = "2.1.80"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4528,21 +4528,19 @@ def ensure_keys(screen, names):
 
 
 # ---------------------------------------------------------------------------------------------
-# Windows from the image's own skin: every image (OpenViX, OpenBh, OpenATV, PurE2, EGAMI) ships a
-# default full HD skin that has a window for each of its own screens and plugins, with the right
-# widget names for that image. A window this skin has no design for is taken from there, with the
-# image skin's colours and fonts turned into this skin's colours and fonts.
+# System windows: screens this skin has no dedicated design for are built on the fly,
+# keeping each screen's layout and applying this skin's colours, fonts and key icons.
 # ---------------------------------------------------------------------------------------------
 
 _CORE_PREFIXES = ("PluginBrowser", "PluginDownloadBrowser", "ChannelSelection", "InfoBar", "SecondInfoBar", "Menu", "menu_",
 	"EPGSelection", "GraphMultiEPG", "GraphicalEPG", "MovieSelection", "MoviePlayer", "EventView", "MessageBox", "ChoiceBox",
 	"Volume", "Mute", "Standby", "SimpleChannelSelection", "SlimChannelSelection")
-_borrow = {"ready": False, "screens": {}, "thread": None, "dir": ""}
+_win = {"ready": False, "screens": {}, "thread": None, "dir": ""}
 _OUR_FONTS = {"Regular": "moh-regular.otf", "Semi": "moh-semibold.otf", "Title": "moh-title.otf", "Fixed": "moh-mono.ttf",
 	"Console": "moh-mono.ttf"}
 
 
-def _image_default_skin():
+def _base_path():
 	try:
 		import skin as S
 		name = getattr(S, "DEFAULT_SKIN", "") or ""
@@ -4600,7 +4598,7 @@ def _color_target(value, name=""):
 	return "line" if light < 0.38 else "smoke"
 
 
-def _read_image_skin(path):
+def _read_base(path):
 	from xml.etree.ElementTree import parse
 	base = os.path.dirname(path) + "/"
 	screens, colors, fonts, aliases = {}, {}, {}, {}
@@ -4613,19 +4611,19 @@ def _read_image_skin(path):
 		try:
 			root = parse(f).getroot()
 		except Exception as e:
-			print("[MohammedSkin] image skin %s: %s" % (f, e))
+			print("[MohammedSkin] windows %s: %s" % (f, e))
 			continue
-		for out in root.findall("output"):  # the size the image skin is drawn for (HD skins are scaled up)
+		for out in root.findall("output"):  # the size the system is drawn for (HD skins are scaled up)
 			if out.attrib.get("id", "0") == "0":
 				r = out.find("resolution")
-				if r is not None and r.attrib.get("xres") and not _borrow.get("res"):
-					_borrow["res"] = "%s,%s" % (r.attrib["xres"], r.attrib.get("yres", "720"))
+				if r is not None and r.attrib.get("xres") and not _win.get("res"):
+					_win["res"] = "%s,%s" % (r.attrib["xres"], r.attrib.get("yres", "720"))
 		for inc in root.findall("include"):
 			fn = inc.attrib.get("filename", "")
 			if fn:
 				if fn.startswith("/"):
 					todo.append(fn)
-				else:  # relative: next to the skin first, then from the skin folder (Magic-HD-Night: "MHD-Common/CommonSkin.xml")
+				else:  # relative: next to the skin first, then from the skin folder (included files)
 					todo.append(base + fn if os.path.isfile(base + fn) else os.path.dirname(base.rstrip("/")) + "/" + fn)
 		for c in root.iter("color"):
 			if c.attrib.get("name") and c.attrib.get("value") and "," not in c.attrib["value"]:
@@ -4644,28 +4642,28 @@ def _read_image_skin(path):
 	return base, screens, colors, fonts, aliases
 
 
-def _load_borrow():
+def _load_win():
 	try:
-		path = _image_default_skin()
+		path = _base_path()
 		if not path:
 			return
-		base, screens, colors, fonts, aliases = _read_image_skin(path)
-		_borrow.update({"dir": base, "screens": screens, "colors": colors, "fonts": fonts, "aliases": aliases})
-		print("[MohammedSkin] image skin %s: %d windows ready" % (path, len(screens)))
+		base, screens, colors, fonts, aliases = _read_base(path)
+		_win.update({"dir": base, "screens": screens, "colors": colors, "fonts": fonts, "aliases": aliases})
+		print("[MohammedSkin] windows %s: %d ready" % (path, len(screens)))
 	except Exception as e:
-		print("[MohammedSkin] image skin: %s" % e)
+		print("[MohammedSkin] windows: %s" % e)
 	finally:
-		_borrow["ready"] = True
+		_win["ready"] = True
 
 
-def _borrow_styles():
-	"""Once, on the GUI thread: the image skin's colour and font names, in this skin's colours and fonts."""
-	if _borrow.get("styled"):
+def _win_styles():
+	"""Once, on the GUI thread: the system's colour and font names, in this skin's colours and fonts."""
+	if _win.get("styled"):
 		return
-	_borrow["styled"] = True
+	_win["styled"] = True
 	try:
 		import skin as S
-		for name, value in _borrow.get("colors", {}).items():
+		for name, value in _win.get("colors", {}).items():
 			if name in S.colors:
 				continue
 			target = _color_target(value, name)
@@ -4682,20 +4680,20 @@ def _borrow_styles():
 			from enigma import addFont
 		except Exception:
 			addFont = None
-		for name, scale in _borrow.get("fonts", {}).items():
+		for name, scale in _win.get("fonts", {}).items():
 			if addFont and name not in _OUR_FONTS and name not in ("Replacement", "Subtitlefont", "ArTitle", "ArText", "ArTextBold"):
 				try:
 					addFont(_our_font_file(name), name, int(scale) if str(scale).isdigit() else 100, False, 0)
 				except Exception:
 					pass
-		for name, a in _borrow.get("aliases", {}).items():
+		for name, a in _win.get("aliases", {}).items():
 			if name not in S.fonts:
 				try:
 					S.fonts[name] = (a["font"], int(a.get("size", 20)), int(a.get("height", 25)), int(a.get("width", 18)))
 				except Exception:
 					pass
 	except Exception as e:
-		print("[MohammedSkin] image skin styles: %s" % e)
+		print("[MohammedSkin] window styles: %s" % e)
 
 
 _KEYPIX = re.compile(r"(?i)(?:^|[/_-])(red|green|yellow|blue)\d*(?:[_-]?(?:button|key|small|big|hd|fhd|panel|off|on|dot|btn|round|circle))?\.(?:png|svg)$")
@@ -4750,19 +4748,19 @@ def _has_background(elem, depth=0):
 				if e.tag == "ePixmap" or not e.attrib.get("backgroundColor", "").lower().startswith("#ff"):
 					return True
 		if e.tag == "panel" and depth < 4:
-			pe = _borrow["screens"].get(e.attrib.get("name", ""))
+			pe = _win["screens"].get(e.attrib.get("name", ""))
 			if pe is not None and _has_background(pe, depth + 1):
 				return True
 	return False
 
 
 def _restyle(elem, panel=False):
-	"""The image skin's window with its layout kept (positions, sizes, widgets, font sizes) and this skin's
-	look: its background, accent line, fonts and theme colours; the image skin's own graphics are left out."""
+	"""The system's window with its layout kept (positions, sizes, widgets, font sizes) and this skin's
+	look: its background, accent line, fonts and theme colours; the system's own graphics are left out."""
 	W, H = _wh(elem)
 	if not W and elem.attrib.get("position", "").strip() == "fill":
-		W, H = [int(v) for v in (_borrow.get("res") or "1920,1080").split(",")]
-	backed = panel or _has_background(elem)  # decided before the image skin's own background is taken out
+		W, H = [int(v) for v in (_win.get("res") or "1920,1080").split(",")]
+	backed = panel or _has_background(elem)  # decided before the system's own background is taken out
 	if not panel:
 		elem.attrib["backgroundColor"] = "transparent"
 		elem.attrib["flags"] = "wfNoBorder"
@@ -4781,14 +4779,14 @@ def _restyle(elem, panel=False):
 				dot = {"position": "%d,%d" % (x + 2, y + max(0, (h - d) // 2)), "size": "%d,%d" % (d, d),
 					"backgroundColor": "key" + m.group(1).lower(), "zPosition": "1"}
 				if e.attrib.get("objectTypes"):
-					dot["objectTypes"] = e.attrib["objectTypes"]  # shown only where the image skin showed its picture
+					dot["objectTypes"] = e.attrib["objectTypes"]  # shown only where the system showed its picture
 				from xml.etree.ElementTree import Element
 				elem.append(Element("eLabel", dot))
 			continue
 		if tag == "eLabel":
 			big = (W and H and w >= W * 0.6 and h >= H * 0.4) or (panel and not W and w >= 600 and h >= 300)
 			if big and not e.attrib.get("text"):
-				elem.remove(e)  # the image skin's window background: ours comes instead
+				elem.remove(e)  # the system's window background: ours comes instead
 				continue
 			if e.attrib.get("text"):
 				e.attrib["font"] = _our_font(e.attrib.get("font", "Regular;24"))
@@ -4797,9 +4795,9 @@ def _restyle(elem, panel=False):
 				e.attrib["transparent"] = "1"
 			elif (h and h <= 4) or (w and w <= 4):
 				e.attrib["backgroundColor"] = "line"  # thin lines
-			else:  # boxes and bars: this skin's panel, or its accent where the image skin had a coloured bar
+			else:  # boxes and bars: this skin's panel, or its accent where the system had a coloured bar
 				c = e.attrib.get("backgroundColor", "")
-				val = _borrow.get("colors", {}).get(c, c if c.startswith("#") else "")
+				val = _win.get("colors", {}).get(c, c if c.startswith("#") else "")
 				e.attrib["backgroundColor"] = "crimson" if val and _color_target(val, c) == "crimson" else "panel"
 			for a in ("backgroundPixmap", "pixmap"):
 				e.attrib.pop(a, None)
@@ -4811,7 +4809,7 @@ def _restyle(elem, panel=False):
 				a["font"] = _our_font(a["font"], title)
 			render = a.get("render", "")
 			km = _KEYPIX.search(a.get("pixmap", "")) if render == "Pixmap" else None
-			if km:  # the image skin's colour key picture (shown while the key has text): this skin's dot in that colour
+			if km:  # the system's colour key picture (shown while the key has text): this skin's dot in that colour
 				a["pixmap"] = SKIN_DIR + "/img/keydot_%s.png" % km.group(1).lower()
 				a["alphatest"] = "blend"
 				continue
@@ -4876,58 +4874,58 @@ def _restyle(elem, panel=False):
 	return elem
 
 
-def _register_borrowed(name):
-	"""Put the image skin's window (and the panels it uses) where the skin reader finds it."""
+def _register_win(name):
+	"""Put the system's window (and the panels it uses) where the skin reader finds it."""
 	import skin as S
 	from copy import deepcopy
-	src = _borrow["screens"].get(name)
+	src = _win["screens"].get(name)
 	if src is None:
 		return False
-	_borrow_styles()
+	_win_styles()
 	elem = _restyle(deepcopy(src))
-	# the panels it uses come from the image skin too, under their own names (other windows keep theirs)
+	# the panels it uses come from the system too, under their own names (other windows keep theirs)
 	todo = [elem]
 	while todo:
 		e = todo.pop()
 		for p in e.iter("panel"):
 			pn = p.attrib.get("name")
-			if pn and pn in _borrow["screens"] and not pn.startswith("msimg_"):
+			if pn and pn in _win["screens"] and not pn.startswith("msimg_"):
 				new = "msimg_" + pn
 				p.attrib["name"] = new
 				if new not in S.domScreens:
-					pe = _restyle(deepcopy(_borrow["screens"][pn]), panel=True)
-					S.domScreens[new] = (pe, _borrow["dir"])
+					pe = _restyle(deepcopy(_win["screens"][pn]), panel=True)
+					S.domScreens[new] = (pe, _win["dir"])
 					todo.append(pe)
-	res = _borrow.get("res")
+	res = _win.get("res")
 	if res and res != "1920,1080":
 		for e in [elem] + [S.domScreens[k][0] for k in list(S.domScreens) if k.startswith("msimg_")]:
 			e.attrib.setdefault("resolution", res)
-	S.domScreens[name] = (elem, _borrow["dir"])
+	S.domScreens[name] = (elem, _win["dir"])
 	return True
 
 
-def borrowed_window(names):
-	if not _borrow["ready"]:
-		th = _borrow.get("thread")
+def system_window(names):
+	if not _win["ready"]:
+		th = _win.get("thread")
 		if th is not None:
 			th.join(10)
-		if not _borrow["ready"]:
+		if not _win["ready"]:
 			return None
 	for n in names:
 		if [w for w in _OVERLAY_WORDS if w in n.lower()]:
 			return None  # windows over the TV picture keep their own (transparent) design
 		if n.startswith(_CORE_PREFIXES):
 			return None  # core screens whose code reads the skin itself (the plugin browser looks for "list"): never swapped
-		if n in _borrow["screens"]:
-			return n if _register_borrowed(n) else None
+		if n in _win["screens"]:
+			return n if _register_win(n) else None
 	return None
 
 
-def start_image_skin():
-	if _borrow.get("thread") is None and not _borrow["ready"]:
-		_borrow["thread"] = threading.Thread(target=_load_borrow, name="MohammedSkinImageSkin")
-		_borrow["thread"].daemon = True
-		_borrow["thread"].start()
+def start_windows():
+	if _win.get("thread") is None and not _win["ready"]:
+		_win["thread"] = threading.Thread(target=_load_win, name="MohammedSkinWindows")
+		_win["thread"].daemon = True
+		_win["thread"].start()
 
 
 _reader = []
@@ -4956,7 +4954,7 @@ def install_auto_windows():
 					if own:  # settings screens: this skin's settings window (with its keys)
 						ensure_keys(screen, own)
 						return orig(screen, skin, own + names, desktop)
-					got = borrowed_window(names)  # the image's own skin has this window
+					got = system_window(names)  # the system has this window
 					if got:
 						ensure_keys(screen, [got])
 						return orig(screen, skin, names, desktop)
@@ -4968,7 +4966,7 @@ def install_auto_windows():
 			print("[MohammedSkin] auto window: %s" % e)
 		return orig(screen, skin, names, desktop)
 
-	start_image_skin()
+	start_windows()
 	S.readSkin = readSkin
 	for mod in list(sys.modules.values()):
 		try:
