@@ -794,8 +794,8 @@
 	</screen>
 
 	<!-- ============================================================ Volume / mute -->
-	<screen name="Volume" position="center,80" size="520,96" backgroundColor="transparent" flags="wfNoBorder" zPosition="9">
-		<eLabel position="0,0" size="520,96" backgroundColor="panel" zPosition="-1" />
+	<screen name="Volume" position="center,80" size="520,96" backgroundColor="#08060304" flags="wfNoBorder" zPosition="9">
+		<eLabel position="0,0" size="520,96" backgroundColor="#08060304" zPosition="0" />
 		<eLabel position="0,0" size="520,3" backgroundColor="crimson" zPosition="1" />
 		<eLabel text="Volume" position="50,16" size="300,32" font="Semi;22" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/vol_track.png" position="50,60" size="420,8" alphatest="blend" zPosition="1" />
