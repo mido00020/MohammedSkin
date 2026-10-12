@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.67"
+SKIN_VERSION = "2.1.68"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True,  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True, "date_format": "skin",  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -2750,18 +2750,52 @@ def _tune_channels(snippet, base):
 	return _list_extras(re.sub(r'<widget name="list"[^>]*serviceItemHeight="\d+"[^>]*/>', tune_list, snippet), base)
 
 
+# The date in the infobars, the second infobar and the channel lists. Every choice has a long form (for the places made
+# for a whole date) and a short form (for the narrow places that had no year), so nothing gets cut off.
+DATE_FORMAT = (("skin", "Skin default"), ("ymd", "Year / month / day"), ("dmy", "Day / month / year"), ("dots", "Day.month.year"),
+	("iso", "ISO"), ("us", "Month / day / year"), ("text", "Day month year"))
+DATE_PATTERNS = {"ymd": ("%Y/%m/%d %a", "%m/%d %a"), "dmy": ("%d/%m/%Y %a", "%d/%m %a"), "dots": ("%a %d.%m.%Y", "%a %d.%m"),
+	"iso": ("%Y-%m-%d", "%m-%d"), "us": ("%a %m/%d/%Y", "%a %m/%d"), "text": ("%d %b %Y", "%a %d %b")}
+_DATE_RE = re.compile(r'(<convert type="ClockToText">Format:)(%a %d\.%m\.%Y|%A %e %B|%a %e %B|%a %d\.%m|%a %d %b)(</convert>)')
+
+
+def date_example(key):
+	"""Today's date written in that choice (shown in the setup list)."""
+	import time
+	pat = DATE_PATTERNS.get(key)
+	if not pat:
+		return ""
+	try:
+		return time.strftime(pat[0])
+	except Exception:
+		return pat[0]
+
+
+def _dates(snippet):
+	pat = DATE_PATTERNS.get(_choice("date_format", DATE_FORMAT, "skin"))
+	if not pat:
+		return snippet
+	return _DATE_RE.sub(lambda m: m.group(1) + (pat[1] if m.group(2) in ("%a %d.%m", "%a %d %b") else pat[0]) + m.group(3), snippet)
+
+
+
 def tune_snippet(kind, snippet, base=SKIN_DIR):
 	try:
 		if kind == "infobar":
-			return _tune_infobar(snippet, base)
-		if kind == "channels":
-			return _tune_channels(snippet, base)
-		if kind == "menu":
-			return _tune_menu(snippet, base)
-		if kind == "sib":
-			return _ib_meters(snippet)
+			snippet = _tune_infobar(snippet, base)
+		elif kind == "channels":
+			snippet = _tune_channels(snippet, base)
+		elif kind == "menu":
+			snippet = _tune_menu(snippet, base)
+		elif kind == "sib":
+			snippet = _ib_meters(snippet)
 	except Exception as e:
 		print("[MohammedSkin] tune %s: %s" % (kind, e))
+	try:
+		if kind in ("infobar", "channels", "sib", "menu"):
+			snippet = _dates(snippet)
+	except Exception as e:
+		print("[MohammedSkin] dates %s: %s" % (kind, e))
 	return snippet
 
 

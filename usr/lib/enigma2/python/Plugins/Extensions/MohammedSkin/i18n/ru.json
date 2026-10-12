@@ -321,5 +321,8 @@
 "Uses your own DeepL key (set below).": "Использует ваш ключ DeepL (ниже).",
 "Uses your own Microsoft key (set below).": "Использует ваш ключ Microsoft (ниже).",
 "Weather card in the infobars.": "Карточка погоды в инфопанелях.",
-"White and silver.": "Белый и серебро."
+"White and silver.": "Белый и серебро.",
+"Date format": "Формат даты",
+"Skin default": "По умолчанию скина",
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Как записывается дата в инфобарах, втором инфобаре и списках каналов. В узких местах она показывается без года, чтобы ничего не обрезалось. Сохранение перезапускает интерфейс."
 }

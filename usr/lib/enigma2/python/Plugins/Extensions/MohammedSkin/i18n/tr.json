@@ -321,5 +321,8 @@
 "Uses your own DeepL key (set below).": "Kendi DeepL anahtarınızı kullanır (aşağıda).",
 "Uses your own Microsoft key (set below).": "Kendi Microsoft anahtarınızı kullanır (aşağıda).",
 "Weather card in the infobars.": "Bilgi çubuklarında hava durumu kartı.",
-"White and silver.": "Beyaz ve gümüş."
+"White and silver.": "Beyaz ve gümüş.",
+"Date format": "Tarih biçimi",
+"Skin default": "Skin varsayılanı",
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Tarihin bilgi çubuklarında, ikinci bilgi çubuğunda ve kanal listelerinde nasıl yazılacağı. Dar yerlerde hiçbir şey kesilmesin diye yıl olmadan gösterilir. Kaydetmek arayüzü yeniden başlatır."
 }

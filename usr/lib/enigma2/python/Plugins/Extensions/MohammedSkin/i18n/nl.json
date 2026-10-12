@@ -321,5 +321,8 @@
 "Uses your own DeepL key (set below).": "Gebruikt je eigen DeepL-sleutel (hieronder).",
 "Uses your own Microsoft key (set below).": "Gebruikt je eigen Microsoft-sleutel (hieronder).",
 "Weather card in the infobars.": "Weerkaart in de infobalken.",
-"White and silver.": "Wit en zilver."
+"White and silver.": "Wit en zilver.",
+"Date format": "Datumnotatie",
+"Skin default": "Standaard van de skin",
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Hoe de datum wordt geschreven in de infobars, de tweede infobar en de zenderlijsten. Op smalle plekken staat hij zonder jaar, zodat er niets wordt afgesneden. Opslaan herstart de GUI."
 }

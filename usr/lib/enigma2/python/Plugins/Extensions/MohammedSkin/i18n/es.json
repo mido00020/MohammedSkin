@@ -321,5 +321,8 @@
 "Uses your own DeepL key (set below).": "Usa tu propia clave de DeepL (abajo).",
 "Uses your own Microsoft key (set below).": "Usa tu propia clave de Microsoft (abajo).",
 "Weather card in the infobars.": "Tarjeta del tiempo en las infobars.",
-"White and silver.": "Blanco y plata."
+"White and silver.": "Blanco y plata.",
+"Date format": "Formato de fecha",
+"Skin default": "Predeterminado del skin",
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Cómo se escribe la fecha en las infobars, la segunda infobar y las listas de canales. En los sitios estrechos se muestra sin el año para que no se corte nada. Al guardar se reinicia la interfaz."
 }

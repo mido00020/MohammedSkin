@@ -321,5 +321,8 @@
 "Uses your own DeepL key (set below).": "使用你自己的 DeepL 密钥（在下方设置）。",
 "Uses your own Microsoft key (set below).": "使用你自己的 Microsoft 密钥（在下方设置）。",
 "Weather card in the infobars.": "信息栏中的天气卡片。",
-"White and silver.": "白色和银色。"
+"White and silver.": "白色和银色。",
+"Date format": "日期格式",
+"Skin default": "皮肤默认",
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "信息栏、第二信息栏和频道列表中日期的写法。在较窄的位置不显示年份，以免被截断。保存后界面将重启。"
 }

@@ -321,5 +321,8 @@
 "Uses your own DeepL key (set below).": "از کلید DeepL شما استفاده می‌کند (پایین).",
 "Uses your own Microsoft key (set below).": "از کلید مایکروسافت شما استفاده می‌کند (پایین).",
 "Weather card in the infobars.": "کارت آب‌وهوا در اینفوبارها.",
-"White and silver.": "سفید و نقره‌ای."
+"White and silver.": "سفید و نقره‌ای.",
+"Date format": "قالب تاریخ",
+"Skin default": "پیش‌فرض اسکین",
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "نحوه نوشتن تاریخ در اینفوبارها، اینفوبار دوم و فهرست کانال‌ها. در جاهای باریک بدون سال نمایش داده می‌شود تا چیزی بریده نشود. ذخیره رابط را دوباره راه‌اندازی می‌کند."
 }
