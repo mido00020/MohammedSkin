@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.77"
+SKIN_VERSION = "2.1.78"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4695,7 +4695,7 @@ def _borrow_styles():
 		print("[MohammedSkin] image skin styles: %s" % e)
 
 
-_KEYPIX = re.compile(r"(?i)(?:^|[/_-])(red|green|yellow|blue)(?:[_-]?(?:button|key|small|big|hd|fhd))?\.(?:png|svg)$")
+_KEYPIX = re.compile(r"(?i)(?:^|[/_-])(red|green|yellow|blue)(?:[_-]?(?:button|key|small|big|hd|fhd|panel))?\.(?:png|svg)$")
 _FONT_SPEC = re.compile(r"^\s*([^;]+);\s*(\d+)\s*$")
 _COLOR_ATTRS = ("foregroundColor", "backgroundColor", "foregroundColorSelected", "backgroundColorSelected", "borderColor",
 	"shadowColor", "scrollbarSliderForegroundColor", "scrollbarSliderBorderColor", "scrollbarBackgroundColor",
@@ -4777,6 +4777,8 @@ def _restyle(elem, panel=False):
 				d = 18
 				dot = {"position": "%d,%d" % (x + 2, y + max(0, (h - d) // 2)), "size": "%d,%d" % (d, d),
 					"backgroundColor": "key" + m.group(1).lower(), "zPosition": "1"}
+				if e.attrib.get("objectTypes"):
+					dot["objectTypes"] = e.attrib["objectTypes"]  # shown only where the image skin showed its picture
 				from xml.etree.ElementTree import Element
 				elem.append(Element("eLabel", dot))
 			continue
@@ -4805,6 +4807,11 @@ def _restyle(elem, panel=False):
 			if "font" in a:
 				a["font"] = _our_font(a["font"], title)
 			render = a.get("render", "")
+			km = _KEYPIX.search(a.get("pixmap", "")) if render == "Pixmap" else None
+			if km:  # the image skin's colour key picture (shown while the key has text): this skin's dot in that colour
+				a["pixmap"] = SKIN_DIR + "/img/keydot_%s.png" % km.group(1).lower()
+				a["alphatest"] = "blend"
+				continue
 			is_list = render in _LIST_RENDERS or a.get("name") in ("list", "config", "menu", "filelist", "entries", "menulist") or "itemHeight" in a
 			for k in ("selectionPixmap", "selectionPixmapLarge", "backgroundPixmap", "scrollbarSliderPicture", "scrollbarbackgroundPicture",
 					"scrollbarBackgroundPicture", "sliderPixmap", "itemCornerRadius", "itemCornerRadiusSelected", "cornerRadius"):
