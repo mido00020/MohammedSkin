@@ -324,5 +324,9 @@
 "White and silver.": "Blanc et argent.",
 "Date format": "Format de la date",
 "Skin default": "Par défaut du skin",
-"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Comment la date est écrite dans les infobars, la deuxième infobar et les listes de chaînes. Aux endroits étroits, elle s'affiche sans l'année pour que rien ne soit coupé. L'enregistrement redémarre l'interface."
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Comment la date est écrite dans les infobars, la deuxième infobar et les listes de chaînes. Aux endroits étroits, elle s'affiche sans l'année pour que rien ne soit coupé. L'enregistrement redémarre l'interface.",
+"Infobar texts language": "Langue des textes de l'infobar",
+"Weather forecast (4 days)": "Prévisions météo (4 jours)",
+"Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Langue des petits mots que l'infobar écrit lui-même : En cours, Ensuite à, Suivant, Film, Série, min. Les titres et descriptions viennent de la chaîne. L'enregistrement redémarre l'interface.",
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Affiche les quatre jours suivants (jour, icône, maximale et minimale) en bas de la deuxième infobar. L'enregistrement redémarre l'interface."
 }

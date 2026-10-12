@@ -324,5 +324,9 @@
 "White and silver.": "Білий і срібло.",
 "Date format": "Формат дати",
 "Skin default": "Типовий для скіна",
-"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Як записується дата в інфобарах, другому інфобарі та списках каналів. У вузьких місцях вона показується без року, щоб нічого не обрізалося. Збереження перезапускає інтерфейс."
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Як записується дата в інфобарах, другому інфобарі та списках каналів. У вузьких місцях вона показується без року, щоб нічого не обрізалося. Збереження перезапускає інтерфейс.",
+"Infobar texts language": "Мова написів інфобара",
+"Weather forecast (4 days)": "Прогноз погоди (4 дні)",
+"Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Мова коротких слів, які інфобар пише сам: Зараз в ефірі, Далі о, Далі, Фільм, Серіал, хв. Назви й описи передач надходять від каналу. Збереження перезапускає GUI.",
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Показує наступні чотири дні (день, значок, максимум і мінімум) унизу другого інфобара. Збереження перезапускає GUI."
 }

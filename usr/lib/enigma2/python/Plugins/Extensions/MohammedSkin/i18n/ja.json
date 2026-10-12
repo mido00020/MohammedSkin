@@ -324,5 +324,9 @@
 "White and silver.": "白とシルバー。",
 "Date format": "日付の形式",
 "Skin default": "スキンの標準",
-"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "インフォバー、第2インフォバー、チャンネルリストでの日付の書き方。狭い場所では切れないように年を省略して表示します。保存するとGUIが再起動します。"
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "インフォバー、第2インフォバー、チャンネルリストでの日付の書き方。狭い場所では切れないように年を省略して表示します。保存するとGUIが再起動します。",
+"Infobar texts language": "インフォバーの文言の言語",
+"Weather forecast (4 days)": "天気予報（4日間）",
+"Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "インフォバーが自分で表示する短い言葉（放送中、次は、次、映画、シリーズ、分）の言語。番組名や説明はチャンネルから届きます。保存するとGUIが再起動します。",
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "第2インフォバーの下部に次の4日間（曜日、アイコン、最高・最低気温）を表示します。保存するとGUIが再起動します。"
 }

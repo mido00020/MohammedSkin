@@ -20,6 +20,7 @@ class MohammedWeatherIcon(Renderer):
 		Renderer.__init__(self)
 		self.pattern = "/usr/share/enigma2/MohammedSkin/weather/84/%s.png"
 		self.shown = None
+		self.day = 0
 		self.cb = self.weatherReady
 
 	def applySkin(self, desktop, parent):
@@ -27,6 +28,11 @@ class MohammedWeatherIcon(Renderer):
 		for (attrib, value) in self.skinAttributes:
 			if attrib == "icons":
 				self.pattern = value.strip()
+			elif attrib == "day":  # 1..4: the forecast days after today
+				try:
+					self.day = int(value)
+				except Exception:
+					self.day = 0
 			else:
 				attribs.append((attrib, value))
 		self.skinAttributes = attribs
@@ -50,7 +56,15 @@ class MohammedWeatherIcon(Renderer):
 			self.shown = None
 			self.instance.hide()
 			return
-		path = self.pattern % data.get("icon", "cloudy")
+		icon = data.get("icon", "cloudy")
+		if self.day:
+			try:
+				icon = data["fc"][self.day - 1][0]
+			except Exception:
+				self.shown = None
+				self.instance.hide()
+				return
+		path = self.pattern % icon
 		if path != self.shown:
 			try:
 				self.instance.setPixmap(LoadPixmap(path))

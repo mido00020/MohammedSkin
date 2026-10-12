@@ -33,6 +33,7 @@ from Components.Element import cached
 from enigma import iServiceInformation
 
 from Components import MohammedSkinUtils as U
+from Components import MohammedLabels as L
 
 WIDESCREEN = (3, 4, 7, 8, 0xB, 0xC, 0xF, 0x10)
 
@@ -312,11 +313,11 @@ class MohammedInfo(Poll, Converter):
 		if t == "Meta":
 			return self._meta()
 		if t.startswith("Text:"):
-			return t[5:] if getattr(self.source, "event", None) is not None else ""
+			return L.label(t[5:]) if getattr(self.source, "event", None) is not None else ""
 		if t.startswith("NoEventText:"):
-			return t[12:] if getattr(self.source, "event", None) is None else ""
+			return L.label(t[12:]) if getattr(self.source, "event", None) is None else ""
 		if t.startswith("NextText:"):
-			return t[9:] if self._next_event() is not None else ""
+			return L.label(t[9:]) if self._next_event() is not None else ""
 		if t == "NextTime":  # "18:00 - 19:45" of the next programme
 			ev = self._next_event()
 			try:
@@ -347,20 +348,20 @@ class MohammedInfo(Poll, Converter):
 			return ""
 		if t == "Kind":
 			k = U.guess_kind(event)
-			return {"film": "Film", "series": "Series"}.get(k, "")
+			return L.label({"film": "Film", "series": "Series"}.get(k, ""))
 		try:
 			begin, dur = event.getBeginTime(), event.getDuration()
 		except Exception:
 			return ""
 		if t == "Duration":
-			return "%d min" % (dur // 60) if dur > 0 else ""
+			return L.minutes(dur // 60) if dur > 0 else ""
 		if t == "Remaining":
 			left = begin + dur - int(time())
 			if dur <= 0 or left <= 0:
 				return ""
 			if left > dur:  # not started yet
-				return "%d min" % (dur // 60)
-			return "%d min left" % ((left + 59) // 60)
+				return L.minutes(dur // 60)
+			return L.minutes_left((left + 59) // 60)
 		return ""
 
 	text = property(getText)

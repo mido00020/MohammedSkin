@@ -324,5 +324,9 @@
 "White and silver.": "白色和银色。",
 "Date format": "日期格式",
 "Skin default": "皮肤默认",
-"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "信息栏、第二信息栏和频道列表中日期的写法。在较窄的位置不显示年份，以免被截断。保存后界面将重启。"
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "信息栏、第二信息栏和频道列表中日期的写法。在较窄的位置不显示年份，以免被截断。保存后界面将重启。",
+"Infobar texts language": "信息栏文字语言",
+"Weather forecast (4 days)": "天气预报（4天）",
+"Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "信息栏自己显示的小字（正在播放、接下来、下一个、电影、剧集、分钟）所用的语言。节目标题和说明来自频道。保存会重启界面。",
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "在第二信息栏底部显示接下来四天（星期、图标、最高和最低温度）。保存会重启界面。"
 }

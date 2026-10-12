@@ -324,5 +324,9 @@
 "White and silver.": "Wit en zilver.",
 "Date format": "Datumnotatie",
 "Skin default": "Standaard van de skin",
-"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Hoe de datum wordt geschreven in de infobars, de tweede infobar en de zenderlijsten. Op smalle plekken staat hij zonder jaar, zodat er niets wordt afgesneden. Opslaan herstart de GUI."
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "Hoe de datum wordt geschreven in de infobars, de tweede infobar en de zenderlijsten. Op smalle plekken staat hij zonder jaar, zodat er niets wordt afgesneden. Opslaan herstart de GUI.",
+"Infobar texts language": "Taal van de infobalk-teksten",
+"Weather forecast (4 days)": "Weersverwachting (4 dagen)",
+"Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Taal van de kleine woorden die de infobalk zelf schrijft: Nu bezig, Daarna om, Straks, Film, Serie, min. Titels en beschrijvingen komen van de zender. Opslaan herstart de GUI.",
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Toont de volgende vier dagen (dag, pictogram, hoogste en laagste temperatuur) onderaan de tweede infobalk. Opslaan herstart de GUI."
 }

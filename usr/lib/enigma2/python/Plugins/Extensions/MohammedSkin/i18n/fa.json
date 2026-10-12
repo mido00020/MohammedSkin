@@ -324,5 +324,9 @@
 "White and silver.": "سفید و نقره‌ای.",
 "Date format": "قالب تاریخ",
 "Skin default": "پیش‌فرض اسکین",
-"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "نحوه نوشتن تاریخ در اینفوبارها، اینفوبار دوم و فهرست کانال‌ها. در جاهای باریک بدون سال نمایش داده می‌شود تا چیزی بریده نشود. ذخیره رابط را دوباره راه‌اندازی می‌کند."
+"How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.": "نحوه نوشتن تاریخ در اینفوبارها، اینفوبار دوم و فهرست کانال‌ها. در جاهای باریک بدون سال نمایش داده می‌شود تا چیزی بریده نشود. ذخیره رابط را دوباره راه‌اندازی می‌کند.",
+"Infobar texts language": "زبان متن‌های اینفوبار",
+"Weather forecast (4 days)": "پیش‌بینی آب‌وهوا (۴ روز)",
+"Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "زبان کلمات کوچکی که اینفوبار خودش می‌نویسد: در حال پخش، سپس ساعت، بعدی، فیلم، سریال، دقیقه. عنوان و توضیح برنامه‌ها از کانال می‌آید. ذخیره، رابط را دوباره راه‌اندازی می‌کند.",
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "چهار روز بعد (روز، آیکون، بیشینه و کمینه) را پایین اینفوبار دوم نشان می‌دهد. ذخیره، رابط را دوباره راه‌اندازی می‌کند."
 }

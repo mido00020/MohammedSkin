@@ -3,6 +3,7 @@
 #
 #   <widget source="global.CurrentTime" render="Label" ...><convert type="MohammedWeather">Temp</convert></widget>
 #
+# DayName:1..4 | DayTemp:1..4 (forecast, the days after today)
 # Temp | Condition | City | MinMax | Humidity | Wind | Line (condition and city)
 # HasWeather (with ConditionalShowHide): weather switched on and known
 

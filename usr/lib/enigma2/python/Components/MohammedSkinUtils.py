@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.69"
+SKIN_VERSION = "2.1.70"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True, "date_format": "skin",  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True, "date_format": "skin", "label_lang": "en", "weather_forecast": True,  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -2779,6 +2779,20 @@ def _dates(snippet):
 
 
 
+def _sib_forecast(snippet):
+	"""Four small day tiles (day, icon, high / low) under the second infobar, written before the end mark of the weather block."""
+	if not settings().get("weather_forecast", True) or not settings().get("weather", True) or "<!-- WEATHER END -->" not in snippet:
+		return snippet
+	rows = []
+	for i in range(4):
+		x = 90 + i * 215
+		rows.append('\t\t<widget source="global.CurrentTime" render="MohammedWeatherIcon" day="%d" icons="/usr/share/enigma2/MohammedSkin/weather/60/%%s.png" position="%d,896" size="60,60" alphatest="blend" zPosition="3" />\n'
+			'\t\t<widget source="global.CurrentTime" render="Label" position="%d,894" size="140,32" font="Semi;22" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">DayName:%d</convert></widget>\n'
+			'\t\t<widget source="global.CurrentTime" render="Label" position="%d,926" size="140,30" font="Regular;22" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">DayTemp:%d</convert></widget>\n'
+			% (i + 1, x, x + 66, i + 1, x + 66, i + 1))
+	return snippet.replace("<!-- WEATHER END -->", "".join(rows) + "\t\t<!-- WEATHER END -->", 1)
+
+
 def tune_snippet(kind, snippet, base=SKIN_DIR):
 	try:
 		if kind == "infobar":
@@ -2788,9 +2802,14 @@ def tune_snippet(kind, snippet, base=SKIN_DIR):
 		elif kind == "menu":
 			snippet = _tune_menu(snippet, base)
 		elif kind == "sib":
-			snippet = _ib_meters(snippet)
+			snippet = _sib_forecast(_ib_meters(snippet))
 	except Exception as e:
 		print("[MohammedSkin] tune %s: %s" % (kind, e))
+	try:
+		from Components import MohammedLabels
+		snippet = MohammedLabels.translate_static(snippet)
+	except Exception as e:
+		print("[MohammedSkin] labels %s: %s" % (kind, e))
 	try:
 		if kind in ("infobar", "channels", "sib", "menu"):
 			snippet = _dates(snippet)
@@ -2997,7 +3016,25 @@ def apply_tuning(base=SKIN_DIR):
 	apply_style("sib", current_style("sib", base), base)  # the signal bars of the second infobar
 	apply_infobar(current_style("infobar", base), base)
 	apply_plugin_fonts(base)
+	apply_labels(base)
 	return True
+
+
+def apply_labels(base=SKIN_DIR):
+	"""The fixed words of skin.xml itself (Playing, Volume, ...) in the language of the infobar texts."""
+	try:
+		from Components import MohammedLabels
+		skin = os.path.join(base, "skin.xml")
+		with open(skin) as f:
+			xml = f.read()
+		new = MohammedLabels.translate_static(xml)
+		if new != xml:
+			tmp = skin + ".tmp"
+			with open(tmp, "w") as f:
+				f.write(new)
+			os.rename(tmp, skin)
+	except Exception as e:
+		print("[MohammedSkin] labels: %s" % e)
 
 
 # ---------------------------------------------------------------- Arabic fonts
@@ -3075,8 +3112,9 @@ WMO = {
 # weather words in the other languages of the setup (Arabic and English are in WMO above)
 WEATHER_LANGS = (("ar", u"العربية"), ("en", "English"), ("zh", u"简体中文"), ("uk", u"Українська"), ("ru", u"Русский"),
 	("de", "Deutsch"), ("fr", u"Français"), ("es", u"Español"), ("it", "Italiano"), ("pt", u"Português"),
-	("nl", "Nederlands"), ("pl", "Polski"), ("tr", u"Türkçe"), ("fa", u"فارسی"), ("ja", u"日本語"))
+	("nl", "Nederlands"), ("pl", "Polski"), ("tr", u"Türkçe"), ("fa", u"فارسی"), ("ja", u"日本語"), ("el", u"Ελληνικά"))
 WX_WORDS = {
+	"el": {"Clear": u"Αίθριος", "Mostly clear": u"Κυρίως αίθριος", "Partly cloudy": u"Λίγες νεφώσεις", "Cloudy": u"Συννεφιά", "Fog": u"Ομίχλη", "Drizzle": u"Ψιχάλες", "Freezing drizzle": u"Παγωμένες ψιχάλες", "Light rain": u"Ασθενής βροχή", "Rain": u"Βροχή", "Heavy rain": u"Ισχυρή βροχή", "Freezing rain": u"Παγωμένη βροχή", "Light snow": u"Ασθενής χιονόπτωση", "Snow": u"Χιόνι", "Heavy snow": u"Ισχυρή χιονόπτωση", "Snow grains": u"Κόκκοι χιονιού", "Showers": u"Βροχοπτώσεις", "Heavy showers": u"Ισχυρές βροχοπτώσεις", "Snow showers": u"Χιονοπτώσεις", "Thunderstorm": u"Καταιγίδα", "Humidity": u"Υγρασία"},
 	"zh": {"Clear": u"晴", "Mostly clear": u"大部晴朗", "Partly cloudy": u"多云", "Cloudy": u"阴", "Fog": u"雾", "Drizzle": u"毛毛雨", "Freezing drizzle": u"冻毛毛雨", "Light rain": u"小雨", "Rain": u"雨", "Heavy rain": u"大雨", "Freezing rain": u"冻雨", "Light snow": u"小雪", "Snow": u"雪", "Heavy snow": u"大雪", "Snow grains": u"米雪", "Showers": u"阵雨", "Heavy showers": u"强阵雨", "Snow showers": u"阵雪", "Thunderstorm": u"雷暴", "Humidity": u"湿度"},
 	"ja": {"Clear": u"快晴", "Mostly clear": u"おおむね晴れ", "Partly cloudy": u"晴れ時々曇り", "Cloudy": u"曇り", "Fog": u"霧", "Drizzle": u"霧雨", "Freezing drizzle": u"着氷性の霧雨", "Light rain": u"小雨", "Rain": u"雨", "Heavy rain": u"大雨", "Freezing rain": u"着氷性の雨", "Light snow": u"小雪", "Snow": u"雪", "Heavy snow": u"大雪", "Snow grains": u"霧雪", "Showers": u"にわか雨", "Heavy showers": u"強いにわか雨", "Snow showers": u"にわか雪", "Thunderstorm": u"雷雨", "Humidity": u"湿度"},
 	"uk": {"Clear": u"Ясно", "Mostly clear": u"Переважно ясно", "Partly cloudy": u"Мінлива хмарність", "Cloudy": u"Хмарно", "Fog": u"Туман", "Drizzle": u"Мряка", "Freezing drizzle": u"Крижана мряка", "Light rain": u"Невеликий дощ", "Rain": u"Дощ", "Heavy rain": u"Сильний дощ", "Freezing rain": u"Крижаний дощ", "Light snow": u"Невеликий сніг", "Snow": u"Сніг", "Heavy snow": u"Сильний сніг", "Snow grains": u"Снігова крупа", "Showers": u"Злива", "Heavy showers": u"Сильна злива", "Snow showers": u"Снігопад", "Thunderstorm": u"Гроза", "Humidity": u"Вологість"},
@@ -3090,6 +3128,27 @@ WX_WORDS = {
 	"pl": {"Clear": u"Bezchmurnie", "Mostly clear": u"Przeważnie bezchmurnie", "Partly cloudy": u"Częściowe zachmurzenie", "Cloudy": u"Pochmurno", "Fog": u"Mgła", "Drizzle": u"Mżawka", "Freezing drizzle": u"Marznąca mżawka", "Light rain": u"Słaby deszcz", "Rain": u"Deszcz", "Heavy rain": u"Ulewa", "Freezing rain": u"Marznący deszcz", "Light snow": u"Słaby śnieg", "Snow": u"Śnieg", "Heavy snow": u"Intensywny śnieg", "Snow grains": u"Śnieg ziarnisty", "Showers": u"Przelotne opady", "Heavy showers": u"Silne przelotne opady", "Snow showers": u"Przelotny śnieg", "Thunderstorm": u"Burza", "Humidity": u"Wilgotność"},
 	"tr": {"Clear": u"Açık", "Mostly clear": u"Çoğunlukla açık", "Partly cloudy": u"Parçalı bulutlu", "Cloudy": u"Bulutlu", "Fog": u"Sis", "Drizzle": u"Çisenti", "Freezing drizzle": u"Donan çisenti", "Light rain": u"Hafif yağmur", "Rain": u"Yağmur", "Heavy rain": u"Şiddetli yağmur", "Freezing rain": u"Donan yağmur", "Light snow": u"Hafif kar", "Snow": u"Kar", "Heavy snow": u"Yoğun kar", "Snow grains": u"Kar taneleri", "Showers": u"Sağanak", "Heavy showers": u"Kuvvetli sağanak", "Snow showers": u"Kar sağanağı", "Thunderstorm": u"Gök gürültülü fırtına", "Humidity": u"Nem"},
 	"fa": {"Clear": u"صاف", "Mostly clear": u"عمدتاً صاف", "Partly cloudy": u"نیمه ابری", "Cloudy": u"ابری", "Fog": u"مه", "Drizzle": u"نم‌نم باران", "Freezing drizzle": u"نم‌نم یخ‌زده", "Light rain": u"باران سبک", "Rain": u"باران", "Heavy rain": u"باران شدید", "Freezing rain": u"باران یخ‌زده", "Light snow": u"برف سبک", "Snow": u"برف", "Heavy snow": u"برف سنگین", "Snow grains": u"دانه‌های برف", "Showers": u"رگبار", "Heavy showers": u"رگبار شدید", "Snow showers": u"رگبار برف", "Thunderstorm": u"رعد و برق", "Humidity": u"رطوبت"},
+}
+
+
+# short day names, Monday first
+DAY_NAMES = {
+	"en": ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+	"ar": (u"الاثنين", u"الثلاثاء", u"الأربعاء", u"الخميس", u"الجمعة", u"السبت", u"الأحد"),
+	"el": (u"Δευ", u"Τρί", u"Τετ", u"Πέμ", u"Παρ", u"Σάβ", u"Κυρ"),
+	"zh": (u"周一", u"周二", u"周三", u"周四", u"周五", u"周六", u"周日"),
+	"uk": (u"Пн", u"Вт", u"Ср", u"Чт", u"Пт", u"Сб", u"Нд"),
+	"ru": (u"Пн", u"Вт", u"Ср", u"Чт", u"Пт", u"Сб", u"Вс"),
+	"de": (u"Mo", u"Di", u"Mi", u"Do", u"Fr", u"Sa", u"So"),
+	"fr": (u"Lun", u"Mar", u"Mer", u"Jeu", u"Ven", u"Sam", u"Dim"),
+	"es": (u"Lun", u"Mar", u"Mié", u"Jue", u"Vie", u"Sáb", u"Dom"),
+	"it": (u"Lun", u"Mar", u"Mer", u"Gio", u"Ven", u"Sab", u"Dom"),
+	"pt": (u"Seg", u"Ter", u"Qua", u"Qui", u"Sex", u"Sáb", u"Dom"),
+	"nl": (u"Ma", u"Di", u"Wo", u"Do", u"Vr", u"Za", u"Zo"),
+	"pl": (u"Pon", u"Wt", u"Śr", u"Czw", u"Pt", u"Sob", u"Nd"),
+	"tr": (u"Pzt", u"Sal", u"Çar", u"Per", u"Cum", u"Cmt", u"Paz"),
+	"fa": (u"دوشنبه", u"سه‌شنبه", u"چهارشنبه", u"پنجشنبه", u"جمعه", u"شنبه", u"یکشنبه"),
+	"ja": (u"月", u"火", u"水", u"木", u"金", u"土", u"日"),
 }
 
 
@@ -3142,6 +3201,24 @@ def _weather_location():
 	return loc
 
 
+def _forecast_days(daily):
+	"""[(icon, max, min, weekday 0-6)] for the four days after today."""
+	out = []
+	try:
+		import datetime
+		times, codes = daily.get("time") or [], daily.get("weather_code") or []
+		hi, lo = daily.get("temperature_2m_max") or [], daily.get("temperature_2m_min") or []
+		for i in range(1, min(5, len(times), len(codes), len(hi), len(lo))):
+			icon = WMO.get(int(codes[i] or 0), ("cloudy",))[0]
+			if icon in ("clear", "partly"):
+				icon += "_day"
+			y, m, d = [int(x) for x in times[i].split("-")]
+			out.append((icon, int(round(hi[i])), int(round(lo[i])), datetime.date(y, m, d).weekday()))
+	except Exception as e:
+		print("[MohammedSkin] forecast: %s" % e)
+	return out
+
+
 def _weather_work():
 	data = None
 	try:
@@ -3150,7 +3227,7 @@ def _weather_work():
 			s = settings()
 			unit = "&temperature_unit=fahrenheit&wind_speed_unit=mph" if s.get("weather_units") == "f" else ""
 			d = get_json("https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current=temperature_2m,weather_code,is_day,"
-				"relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&forecast_days=1&timezone=auto%s" % (loc[0], loc[1], unit))
+				"relative_humidity_2m,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=5&timezone=auto%s" % (loc[0], loc[1], unit))
 			cur = (d or {}).get("current") or {}
 			if cur.get("temperature_2m") is not None:
 				code = int(cur.get("weather_code") or 0)
@@ -3163,7 +3240,7 @@ def _weather_work():
 					"tmax": int(round((daily.get("temperature_2m_max") or [cur["temperature_2m"]])[0])),
 					"tmin": int(round((daily.get("temperature_2m_min") or [cur["temperature_2m"]])[0])),
 					"hum": cur.get("relative_humidity_2m"), "wind": cur.get("wind_speed_10m"),
-					"wunit": "mph" if s.get("weather_units") == "f" else "km/h"}
+					"wunit": "mph" if s.get("weather_units") == "f" else "km/h", "fc": _forecast_days(daily)}
 	except Exception as e:
 		print("[MohammedSkin] weather: %s" % e)
 	_weather["busy"] = False
@@ -3220,6 +3297,18 @@ def weather_text(kind, data=None):
 	lang = weather_lang()
 	ar = lang == "ar"
 	deg = u"°"
+	if kind.startswith("Day"):  # DayName:1 .. DayTemp:4 (the days after today), DayIcon:1 ..
+		try:
+			name, n = kind.split(":")
+			fc = data.get("fc") or []
+			day = fc[int(n) - 1]
+		except Exception:
+			return ""
+		if name == "DayName":
+			return DAY_NAMES.get(lang, DAY_NAMES["en"])[day[3]]
+		if name == "DayTemp":
+			return u"%d%s / %d%s" % (day[1], deg, day[2], deg)
+		return ""
 	if kind == "Temp":
 		return u"%d%s" % (data["temp"], deg)
 	cond = data["ar"] if ar else _wx_word(data["en"], lang)
