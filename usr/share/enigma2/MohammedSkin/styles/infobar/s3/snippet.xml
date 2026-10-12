@@ -63,7 +63,7 @@
 			<convert type="ConditionalShowHide" />
 		</widget>
 		<!-- transponder line: pulsing glow in the theme colour -->
-		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/ibx_tp_%02d.png" count="24" interval="70" position="540,975" size="560,44" alphatest="blend" zPosition="3" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/ibx_tp_%02d.png" count="24" interval="70" position="540,975" size="560,44" alphatest="blend" zPosition="3" cache="1" />
 		<widget source="session.CurrentService" render="Label" position="560,984" size="76,26" font="Semi;20" halign="center" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedTransponder">Orbital</convert>
 		</widget>
@@ -88,7 +88,7 @@
 		</widget>
 		<!-- DOTS OFFSET 100,-74 -->
 		<!-- DOTS START (normal) -->
-		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/dots_%02d.png" count="12" interval="90" position="880,782" size="360,30" alphatest="blend" zPosition="3" />
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/dots_%02d.png" count="12" interval="90" position="880,782" size="360,30" alphatest="blend" zPosition="3" cache="1" />
 		<!-- DOTS END -->
 		<!-- name of the image this box runs (OpenViX, OpenBlackHole, OpenATV, PurE2, EGAMI) -->
 		<widget source="global.CurrentTime" render="Label" position="840,778" size="440,38" font="Title;28" halign="center" valign="center" foregroundColor="neonred" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
