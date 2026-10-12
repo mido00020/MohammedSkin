@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.75"
+SKIN_VERSION = "2.1.76"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4840,6 +4840,25 @@ def _restyle(elem, panel=False):
 			for k in ("borderColor", "shadowColor"):
 				a.pop(k, None)
 			continue
+	try:  # colour key names without a picture of their own (EGAMI panels): a dot in the key's colour in front of the name
+		from xml.etree.ElementTree import Element
+		have = set(x.attrib.get("backgroundColor") for x in elem if x.tag == "eLabel")
+		for e in list(elem):
+			if e.tag != "widget":
+				continue
+			nm = (e.attrib.get("name") or e.attrib.get("source") or "").lower()
+			m = re.match(r"key_?(red|green|yellow|blue)$", nm)
+			if not m or "key" + m.group(1) in have or "position" not in e.attrib:
+				continue
+			x, y = [int(v) for v in e.attrib["position"].split(",")]
+			w, h = _wh(e)
+			if w and h and x >= 26:
+				e.attrib["position"] = "%d,%d" % (x + 0, y)
+				elem.append(Element("eLabel", {"position": "%d,%d" % (x - 24, y + max(0, (h - 18) // 2)), "size": "18,18",
+					"backgroundColor": "key" + m.group(1), "zPosition": "1"}))
+				have.add("key" + m.group(1))
+	except Exception as ex:
+		print("[MohammedSkin] key dots: %s" % ex)
 	if not panel and W and H and backed:
 		from xml.etree.ElementTree import Element
 		elem.insert(0, Element("eLabel", {"position": "0,0", "size": "%d,%d" % (W, H), "backgroundColor": "panel", "zPosition": "-1"}))
