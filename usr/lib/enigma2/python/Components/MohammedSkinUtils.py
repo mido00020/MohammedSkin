@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.78"
+SKIN_VERSION = "2.1.79"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4623,7 +4623,10 @@ def _read_image_skin(path):
 		for inc in root.findall("include"):
 			fn = inc.attrib.get("filename", "")
 			if fn:
-				todo.append(fn if fn.startswith("/") else base + fn)
+				if fn.startswith("/"):
+					todo.append(fn)
+				else:  # relative: next to the skin first, then from the skin folder (Magic-HD-Night: "MHD-Common/CommonSkin.xml")
+					todo.append(base + fn if os.path.isfile(base + fn) else os.path.dirname(base.rstrip("/")) + "/" + fn)
 		for c in root.iter("color"):
 			if c.attrib.get("name") and c.attrib.get("value") and "," not in c.attrib["value"]:
 				colors.setdefault(c.attrib["name"], c.attrib["value"])
@@ -4695,7 +4698,7 @@ def _borrow_styles():
 		print("[MohammedSkin] image skin styles: %s" % e)
 
 
-_KEYPIX = re.compile(r"(?i)(?:^|[/_-])(red|green|yellow|blue)(?:[_-]?(?:button|key|small|big|hd|fhd|panel))?\.(?:png|svg)$")
+_KEYPIX = re.compile(r"(?i)(?:^|[/_-])(red|green|yellow|blue)\d*(?:[_-]?(?:button|key|small|big|hd|fhd|panel|off|on|dot|btn|round|circle))?\.(?:png|svg)$")
 _FONT_SPEC = re.compile(r"^\s*([^;]+);\s*(\d+)\s*$")
 _COLOR_ATTRS = ("foregroundColor", "backgroundColor", "foregroundColorSelected", "backgroundColorSelected", "borderColor",
 	"shadowColor", "scrollbarSliderForegroundColor", "scrollbarSliderBorderColor", "scrollbarBackgroundColor",
@@ -4769,7 +4772,7 @@ def _restyle(elem, panel=False):
 		if tag == "ePixmap":
 			m = _KEYPIX.search(e.attrib.get("pixmap", ""))
 			elem.remove(e)
-			if m and w and h:  # a colour key picture becomes this skin's key dot
+			if m and w and h and max(w, h) <= 140:  # a colour key picture becomes this skin's key dot
 				try:
 					x, y = [int(v) for v in e.attrib.get("position", "0,0").split(",")]
 				except ValueError:
