@@ -5,9 +5,32 @@
 
 BASE="https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 
-echo "=============================================="
-echo "        MohammedSkin - online installer"
-echo "=============================================="
+# colours only on a real terminal (plain text when the output is piped or logged)
+if [ -t 1 ]; then
+	E=$(printf '\033')
+	R="$E[1;31m"; G="$E[1;32m"; Y="$E[1;33m"; B="$E[1;34m"; M="$E[1;35m"; C="$E[1;36m"; W="$E[1;37m"; N="$E[0m"
+else
+	R=""; G=""; Y=""; B=""; M=""; C=""; W=""; N=""
+fi
+ok() { echo "${G}[ OK ]${N} $*"; }
+info() { echo "${C}[ .. ]${N} $*"; }
+warn() { echo "${Y}[ !! ]${N} $*"; }
+err() { echo "${R}[ERR ]${N} $*"; }
+
+echo ""
+printf '%s\n' "$R"'  __  __       _                                          _ '"$N"
+printf '%s\n' "$Y"' |  \/  | ___ | |__   __ _ _ __ ___  _ __ ___   ___  __| |'"$N"
+printf '%s\n' "$G"' | |\/| |/ _ \| '\''_ \ / _` | '\''_ ` _ \| '\''_ ` _ \ / _ \/ _` |'"$N"
+printf '%s\n' "$C"' | |  | | (_) | | | | (_| | | | | | | | | | |  __/ (_| |'"$N"
+printf '%s\n' "$B"' |_|  |_|\___/|_| |_|\__,_|_| |_| |_|_| |_| |_|\___|\__,_|'"$N"
+printf '%s\n' "$M"'           ____  _  _____ _   _ '"$N"
+printf '%s\n' "$M"'          / ___|| |/ /_ _| \ | |'"$N"
+printf '%s\n' "$M"'          \___ \| '\'' / | ||  \| |'"$N"
+printf '%s\n' "$M"'           ___) | . \ | || |\  |'"$N"
+printf '%s\n' "$M"'          |____/|_|\_\___|_| \_|'"$N"
+echo ""
+echo "${W}        MohammedSkin - online installer${N}"
+echo "${C}  ----------------------------------------------${N}"
 
 # ---------------------------------------------------------------- which image is this?
 value() {
@@ -34,19 +57,19 @@ case "$(echo "$DISTRO" | tr 'A-Z' 'a-z' | tr -d ' _-')" in
 esac
 
 if [ -n "$IMAGE" ]; then
-	echo "Image: $IMAGE ${VERSION}  (supported)"
+	ok "Image: ${W}$IMAGE ${VERSION}${N}  (supported)"
 else
-	echo "Image: ${DISTRO:-unknown} ${VERSION}"
+	info "Image: ${DISTRO:-unknown} ${VERSION}"
 	echo "This image is not on the tested list. The skin adapts itself anyway,"
 	echo "the image name in the infobar is left out."
 fi
 
 if [ ! -d /usr/lib/enigma2/python ] || ! command -v opkg >/dev/null 2>&1; then
-	echo "ERROR: this does not look like an Enigma2 receiver (no enigma2 python or opkg)."
+	err "this does not look like an Enigma2 receiver (no enigma2 python or opkg)."
 	exit 1
 fi
 if ! command -v python3 >/dev/null 2>&1; then
-	echo "ERROR: python3 not found. MohammedSkin needs a Python 3 image."
+	err "python3 not found. MohammedSkin needs a Python 3 image."
 	exit 1
 fi
 
@@ -68,7 +91,7 @@ for d in /tmp /media/hdd /media/usb /media/mmc; do
 	[ -n "$f" ] && [ "$f" -gt 100000 ] && { WORK="$d"; break; }
 done
 if [ -z "$WORK" ]; then
-	echo "ERROR: not enough free memory or disk space to download the update (about 100 MB needed)."
+	err "not enough free memory or disk space to download the update (about 100 MB needed)."
 	echo "Free some space (or plug in a USB stick) and try again."
 	exit 1
 fi
@@ -77,23 +100,26 @@ OPKG_TMP="$WORK/mohammedskin-opkg"
 mkdir -p "$OPKG_TMP"
 
 FLASH=$(free_kb /usr/share/enigma2)
-echo "Free space: download area $(free_kb "$WORK") kB, receiver flash ${FLASH:-?} kB"
+info "Free space: download area $(free_kb "$WORK") kB, receiver flash ${FLASH:-?} kB"
 if [ -n "$FLASH" ] && [ "$FLASH" -lt 30000 ]; then
-	echo "WARNING: little free space on the receiver (${FLASH} kB). The update may not fit."
+	warn "little free space on the receiver (${FLASH} kB). The update may not fit."
 fi
 
 # ---------------------------------------------------------------- download
 
+FMODE=""
 fetch() {
 	rm -f "$2"
-	# with certificate check first; older boxes without certificates fall back
-	if wget -q "$1" -O "$2" 2>/dev/null && [ -s "$2" ]; then
+	# remember which way worked, so the next files do not repeat the ones that failed
+	if [ "$FMODE" != "nocheck" ] && wget -q -T 30 "$1" -O "$2" 2>/dev/null && [ -s "$2" ]; then
+		FMODE="check"
 		return 0
 	fi
-	if wget -q --no-check-certificate "$1" -O "$2" 2>/dev/null && [ -s "$2" ]; then
+	if wget -q -T 30 --no-check-certificate "$1" -O "$2" 2>/dev/null && [ -s "$2" ]; then
+		FMODE="nocheck"
 		return 0
 	fi
-	if command -v curl >/dev/null 2>&1 && curl -kfsSL "$1" -o "$2" && [ -s "$2" ]; then
+	if command -v curl >/dev/null 2>&1 && curl -kfsSL --max-time 120 "$1" -o "$2" && [ -s "$2" ]; then
 		return 0
 	fi
 	rm -f "$2"
@@ -105,7 +131,7 @@ if fetch "$BASE/version.txt" /tmp/mohammedskin_version.txt; then
 	VER=$(head -n 1 /tmp/mohammedskin_version.txt | tr -d '\r\n ')
 	rm -f /tmp/mohammedskin_version.txt
 fi
-echo "Latest version: ${VER:-unknown}"
+info "Latest version: ${W}${VER:-unknown}${N}"
 
 # ---------------------------------------------------------------- quick update
 # An installed skin keeps the list of its files (.manifest.json). Only the files that changed since
@@ -236,10 +262,10 @@ PY
 }
 
 if quick_update; then
-	echo "=============================================="
-	echo "  MohammedSkin ${VER} updated (changed files only)"
-	echo "=============================================="
-	echo "Restarting the GUI ..."
+	echo "${G}  ----------------------------------------------${N}"
+	echo "${G}  MohammedSkin ${VER} updated (changed files only)${N}"
+	echo "${G}  ----------------------------------------------${N}"
+	info "Restarting the GUI ..."
 	sync
 	sleep 1
 	killall -9 enigma2 >/dev/null 2>&1
@@ -247,15 +273,15 @@ if quick_update; then
 fi
 rm -rf "$WORK/mohammedskin-quick"
 
-echo "Downloading ..."
+info "Downloading the package ..."
 if ! fetch "$BASE/ipk/enigma2-skin-mohammedskin_all.ipk" "$IPK"; then
-	echo "ERROR: download failed. Check the internet connection."
+	err "download failed. Check the internet connection."
 	exit 1
 fi
 
 # ---------------------------------------------------------------- install
 
-echo "Checking the download ..."
+info "Checking the download ..."
 # the package must match the checksum published with it (a changed or broken file is refused)
 if fetch "$BASE/ipk/enigma2-skin-mohammedskin_all.ipk.sha256" /tmp/mohammedskin.sha256; then
 	WANT=$(head -c 64 /tmp/mohammedskin.sha256)
@@ -263,10 +289,10 @@ if fetch "$BASE/ipk/enigma2-skin-mohammedskin_all.ipk.sha256" /tmp/mohammedskin.
 	GOT=$(python3 -E -c "import hashlib,sys;h=hashlib.sha256();f=open(sys.argv[1],'rb');[h.update(b) for b in iter(lambda:f.read(1<<20),b'')];print(h.hexdigest())" "$IPK")
 	if [ "$WANT" != "$GOT" ]; then
 		rm -f "$IPK"
-		echo "ERROR: the downloaded package does not match its checksum. Try the update again in a few minutes."
+		err "the downloaded package does not match its checksum. Try the update again in a few minutes."
 		exit 1
 	fi
-	echo "Checksum OK"
+	ok "Checksum OK"
 fi
 # the download must be a whole package (a cut connection leaves half a file); the checksum above already proves it
 if [ -z "$GOT" ] && ! python3 -E - "$IPK" <<'PY'
@@ -292,7 +318,7 @@ if "control.tar.gz" not in names or not any(n.startswith("data.tar") for n in na
 PY
 then
 	rm -f "$IPK"
-	echo "ERROR: the download is incomplete (connection cut). Try the update again."
+	err "the download is incomplete (connection cut). Try the update again."
 	exit 1
 fi
 
@@ -347,11 +373,11 @@ sync
 INODES=$(df -Pi /usr/share/enigma2 2>/dev/null | awk 'NR==2 {print $4}')
 echo "Free files (inodes) on the receiver: ${INODES:-?}"
 if [ -n "$INODES" ] && [ "$INODES" -lt 6000 ] 2>/dev/null; then
-	echo "WARNING: the receiver can hold only $INODES more files (disk full of small files)."
+	warn "the receiver can hold only $INODES more files (disk full of small files)."
 	echo "Delete old images / plugins / picons you do not use, then try again."
 fi
 
-echo "Installing ..."
+info "Installing ..."
 LOG=/tmp/mohammedskin_update.log
 rm -f /usr/share/enigma2/MohammedSkin/.installed
 if opkg install --force-reinstall --force-overwrite --tmp-dir "$OPKG_TMP" "$IPK" >"$LOG" 2>&1 && [ -f /usr/share/enigma2/MohammedSkin/.installed ]; then
@@ -362,11 +388,11 @@ else
 	if ! python_install >>"$LOG" 2>&1; then
 		tail -n 5 "$LOG"
 		rm -rf "$IPK" "$OPKG_TMP"
-		echo "ERROR: installation failed. Free space now: $(free_kb /usr/share/enigma2) kB"
+		err "installation failed. Free space now: $(free_kb /usr/share/enigma2) kB"
 		echo "Details: $LOG"
 		exit 1
 	fi
-	echo "Installed directly (opkg was skipped)."
+	ok "Installed directly (opkg was skipped)."
 fi
 rm -rf "$IPK" "$OPKG_TMP"
 
@@ -380,14 +406,14 @@ fi
 # Pillow is optional (used for the clock and theme tools); try to add it quietly.
 opkg list-installed 2>/dev/null | grep -q '^python3-pillow ' || opkg install python3-pillow >/dev/null 2>&1
 
-echo "=============================================="
-echo "  MohammedSkin ${VER} installed successfully"
-[ -n "$IMAGE" ] && echo "  adapted to $IMAGE"
-echo "=============================================="
+echo "${G}  ----------------------------------------------${N}"
+echo "${G}  MohammedSkin ${VER} installed successfully${N}"
+[ -n "$IMAGE" ] && echo "${C}  adapted to $IMAGE${N}"
+echo "${G}  ----------------------------------------------${N}"
 
 # Restart the GUI here, also when the setup plugin started the update (NORESTART=1): older
 # versions of the plugin could crash while finishing the update, so we never hand back to them.
-echo "Restarting the GUI ..."
+info "Restarting the GUI ..."
 sync
 sleep 1
 killall -9 enigma2 >/dev/null 2>&1
