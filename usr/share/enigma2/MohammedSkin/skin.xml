@@ -74,12 +74,12 @@
 		<color name="LabelForeground" color="ivory" />
 		<color name="ListboxBackground" color="panel" />
 		<color name="ListboxForeground" color="ivory" />
-		<color name="ListboxSelectedBackground" color="crimson" />
-		<color name="ListboxSelectedForeground" color="white" />
+		<color name="ListboxSelectedBackground" color="selbg" />
+		<color name="ListboxSelectedForeground" color="selfg" />
 		<color name="ListboxMarkedBackground" color="brass" />
 		<color name="ListboxMarkedForeground" color="ink" />
-		<color name="ListboxMarkedAndSelectedBackground" color="ember" />
-		<color name="ListboxMarkedAndSelectedForeground" color="white" />
+		<color name="ListboxMarkedAndSelectedBackground" color="selbg" />
+		<color name="ListboxMarkedAndSelectedForeground" color="selfg" />
 		<color name="WindowTitleForeground" color="ivory" />
 		<color name="WindowTitleBackground" color="panel" />
 		<borderset name="bsWindow">
@@ -794,7 +794,7 @@
 	</screen>
 
 	<!-- ============================================================ Volume / mute -->
-	<screen name="Volume" position="center,80" size="520,96" backgroundColor="transparent" flags="wfNoBorder">
+	<screen name="Volume" position="center,80" size="520,96" backgroundColor="transparent" flags="wfNoBorder" zPosition="9">
 		<eLabel position="0,0" size="520,96" backgroundColor="panel" zPosition="-1" />
 		<eLabel position="0,0" size="520,3" backgroundColor="crimson" zPosition="1" />
 		<eLabel text="Volume" position="50,16" size="300,32" font="Semi;22" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="1" />
@@ -802,7 +802,7 @@
 		<widget name="Volume" position="50,60" size="420,8" pixmap="/usr/share/enigma2/MohammedSkin/img/vol_bar.png" transparent="1" zPosition="2" />
 		<widget name="VolumeText" conditional="VolumeText" position="370,16" size="100,32" font="Semi;22" halign="right" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="2" />
 	</screen>
-	<screen name="Mute" position="1784,184" size="96,96" backgroundColor="transparent" flags="wfNoBorder">
+	<screen name="Mute" position="1784,184" size="96,96" backgroundColor="transparent" flags="wfNoBorder" zPosition="9">
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/mute.png" position="0,0" size="96,96" alphatest="blend" />
 	</screen>
 

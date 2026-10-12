@@ -5,12 +5,12 @@
 		<color name="Foreground" color="ivory" />
 		<color name="ListboxBackground" color="panel" />
 		<color name="ListboxForeground" color="ivory" />
-		<color name="ListboxBackgroundSelected" color="crimson" />
-		<color name="ListboxForegroundSelected" color="white" />
+		<color name="ListboxBackgroundSelected" color="selbg" />
+		<color name="ListboxForegroundSelected" color="selfg" />
 		<color name="ListboxBackgroundMarked" color="brass" />
 		<color name="ListboxForegroundMarked" color="ink" />
-		<color name="ListboxBackgroundMarkedSelected" color="ember" />
-		<color name="ListboxForegroundMarkedSelected" color="white" />
+		<color name="ListboxBackgroundMarkedSelected" color="selbg" />
+		<color name="ListboxForegroundMarkedSelected" color="selfg" />
 		<color name="WindowTitleForeground" color="ivory" />
 		<color name="WindowTitleBackground" color="panel" />
 		<color name="ScrollbarForeground" color="crimson" />
@@ -72,7 +72,7 @@
 		<widget source="global.CurrentTime" render="Label" position="1460,74" size="400,30" font="Regular;24" halign="right" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1"><convert type="ClockToText">Format:%A %e %B</convert></widget>
 		<eLabel position="60,110" size="1800,1" backgroundColor="line" zPosition="1" />
 		<eLabel position="60,990" size="1800,1" backgroundColor="line" zPosition="1" />
-		<widget name="list" position="60,130" size="1100,840" EventFontSingle="Regular;28" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="selfg" backgroundColorSelected="selbg" EntryForegroundColor="ivory" EntryForegroundColorSelected="white" EntryBackgroundColor="panel" EntryBackgroundColorSelected="crimson" EntryForegroundColorNow="gold" EntryForegroundColorNowSelected="white" EntryBackgroundColorNow="panel" EntryBackgroundColorNowSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="2" />
+		<widget name="list" position="60,130" size="1100,840" EventFontSingle="Regular;28" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="selfg" backgroundColorSelected="selbg" EntryForegroundColor="ivory" EntryForegroundColorSelected="selfg" EntryBackgroundColor="panel" EntryBackgroundColorSelected="selbg" EntryForegroundColorNow="gold" EntryForegroundColorNowSelected="white" EntryBackgroundColorNow="panel" EntryBackgroundColorNowSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="2" />
 		<widget name="lab1" position="60,130" size="1100,840" font="Regular;32" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="3" />
 		<eLabel position="1196,128" size="304,444" backgroundColor="line" zPosition="1" />
 		<widget source="Event" render="MohammedPoster" kind="poster" delay="300" cornerRadius="12" fill="#00140C0C" position="1198,130" size="300,440" zPosition="2" />
@@ -113,7 +113,7 @@
 		<widget name="next_text" position="320,124" size="240,84" font="Semi;28" halign="center" valign="center" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="3" />
 		<widget name="more_text" position="580,124" size="240,84" font="Semi;28" halign="center" valign="center" foregroundColor="ivory" backgroundColor="panel" transparent="1" zPosition="3" />
 		<widget name="date" position="1400,140" size="460,50" font="Semi;28" halign="right" valign="center" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="2" />
-		<widget name="list" position="60,224" size="1800,750" EventFontMulti="Regular;28" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="selfg" backgroundColorSelected="selbg" EntryForegroundColor="ivory" EntryForegroundColorSelected="white" EntryBackgroundColor="panel" EntryBackgroundColorSelected="crimson" EntryForegroundColorNow="gold" EntryForegroundColorNowSelected="white" EntryBackgroundColorNow="panel" EntryBackgroundColorNowSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="2" />
+		<widget name="list" position="60,224" size="1800,750" EventFontMulti="Regular;28" foregroundColor="ivory" backgroundColor="panel" foregroundColorSelected="selfg" backgroundColorSelected="selbg" EntryForegroundColor="ivory" EntryForegroundColorSelected="selfg" EntryBackgroundColor="panel" EntryBackgroundColorSelected="selbg" EntryForegroundColorNow="gold" EntryForegroundColorNowSelected="white" EntryBackgroundColorNow="panel" EntryBackgroundColorNowSelected="crimson" transparent="1" scrollbarMode="showOnDemand" zPosition="2" />
 		<widget name="lab1" position="60,224" size="1800,750" font="Regular;32" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="panel" transparent="1" zPosition="3" />
 		<eLabel position="60,1020" size="18,18" backgroundColor="keyred" zPosition="5" />
 		<widget name="key_red" objectTypes="key_red,Label,Button" position="88,1012" size="200,34" font="Regular;24" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="5" noWrap="1" />

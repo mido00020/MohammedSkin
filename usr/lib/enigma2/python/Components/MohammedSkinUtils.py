@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.73"
+SKIN_VERSION = "2.1.74"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -2482,6 +2482,13 @@ MENU_BG_DEFAULT = "orbit"
 def _tune_menu(snippet, base):
 	"""Main menu background: the menu window becomes full screen with a drawn background in the theme colours
 	behind it; everything of the menu keeps its place (moved by the window's old offset)."""
+	try:  # a light theme colour makes the Ivory header light: dark title and clock on it
+		if "mnu_ivory_bg" in snippet:
+			acc = (load_themes(base).get(settings().get("theme", "red")) or {}).get("accent", "#C8102E").lstrip("#")
+			if (0.299 * int(acc[0:2], 16) + 0.587 * int(acc[2:4], 16) + 0.114 * int(acc[4:6], 16)) / 255.0 > 0.62:
+				snippet = re.sub(r'(<widget source="(?:Title|global\.CurrentTime)"[^>]*?foregroundColor=)"white"', r'\1"#00050506"', snippet)
+	except Exception:
+		pass
 	bg = _choice("menu_bg", MENU_BG, MENU_BG_DEFAULT)
 	if bg == "off":
 		return snippet
