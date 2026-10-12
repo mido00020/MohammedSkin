@@ -739,8 +739,8 @@
 			<convert type="ServicePosition">Position</convert>
 		</widget>
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/track_mp.png" position="250,993" size="1420,8" alphatest="blend" zPosition="2" />
-		<widget source="session.CurrentService" render="PositionGauge" position="240,986" size="1440,22" pointer="/usr/share/enigma2/MohammedSkin/img/pos_dot.png:11,0" transparent="1" zPosition="3">
-			<convert type="ServicePosition">Gauge</convert>
+		<widget source="session.CurrentService" render="Progress" pixmap="/usr/share/enigma2/MohammedSkin/img/mp_prog.png" position="250,993" size="1420,8" transparent="1" zPosition="3">
+			<convert type="ServicePosition">Position</convert>
 		</widget>
 		<widget source="session.CurrentService" render="Label" position="1690,982" size="140,30" font="Regular;21" halign="right" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="2">
 			<convert type="ServicePosition">Length</convert>
