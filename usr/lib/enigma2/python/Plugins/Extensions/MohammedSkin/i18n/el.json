@@ -328,5 +328,7 @@
 "Infobar texts language": "Γλώσσα κειμένων infobar",
 "Weather forecast (4 days)": "Πρόγνωση καιρού (4 ημέρες)",
 "Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Γλώσσα των μικρών λέξεων που γράφουν μόνα τους τα infobar: Τώρα, Μετά στις, Επόμενο, Ταινία, Σειρά, λεπτά. Οι τίτλοι και οι περιγραφές προέρχονται από το κανάλι. Η αποθήκευση κάνει επανεκκίνηση του GUI.",
-"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Εμφανίζει τις επόμενες τέσσερις ημέρες (ημέρα, εικονίδιο, μέγιστη και ελάχιστη) στο κάτω μέρος του δεύτερου infobar. Η αποθήκευση κάνει επανεκκίνηση του GUI."
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Εμφανίζει τις επόμενες τέσσερις ημέρες (ημέρα, εικονίδιο, μέγιστη και ελάχιστη) στο κάτω μέρος του δεύτερου infobar. Η αποθήκευση κάνει επανεκκίνηση του GUI.",
+"Dark backing behind signal bars": "Σκούρο φόντο πίσω από τις μπάρες σήματος",
+"A solid dark plate behind the SNR and AGC bars so they stay clean on every picture. On some images the soft edges of the bars let the video show through and look ragged. Saving restarts the GUI.": "Συμπαγής σκούρα πλάκα πίσω από τις μπάρες SNR και AGC ώστε να φαίνονται καθαρά σε κάθε εικόνα. Σε ορισμένα image οι απαλές άκρες των μπαρών αφήνουν το βίντεο να φαίνεται και δείχνουν οδοντωτές. Η αποθήκευση κάνει επανεκκίνηση του GUI."
 }

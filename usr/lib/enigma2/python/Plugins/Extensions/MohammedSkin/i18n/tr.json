@@ -328,5 +328,7 @@
 "Infobar texts language": "Infobar yazı dili",
 "Weather forecast (4 days)": "Hava tahmini (4 gün)",
 "Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Infobar'ın kendi yazdığı küçük sözcüklerin dili: Şimdi, Sonra, Sonraki, Film, Dizi, dk. Program adları ve açıklamaları kanaldan gelir. Kaydetmek arayüzü yeniden başlatır.",
-"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Sonraki dört günü (gün, simge, en yüksek ve en düşük) ikinci infobar'ın altında gösterir. Kaydetmek arayüzü yeniden başlatır."
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Sonraki dört günü (gün, simge, en yüksek ve en düşük) ikinci infobar'ın altında gösterir. Kaydetmek arayüzü yeniden başlatır.",
+"Dark backing behind signal bars": "Sinyal çubukları için koyu zemin",
+"A solid dark plate behind the SNR and AGC bars so they stay clean on every picture. On some images the soft edges of the bars let the video show through and look ragged. Saving restarts the GUI.": "SNR ve AGC çubuklarının arkasında düz koyu bir plaka; her görüntüde temiz kalırlar. Bazı imajlarda çubukların yumuşak kenarları videoyu geçirir ve pürüzlü görünür. Kaydetmek arayüzü yeniden başlatır."
 }

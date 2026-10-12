@@ -328,5 +328,7 @@
 "Infobar texts language": "Язык надписей инфобара",
 "Weather forecast (4 days)": "Прогноз погоды (4 дня)",
 "Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Язык коротких слов, которые инфобар пишет сам: Сейчас в эфире, Далее в, Далее, Фильм, Сериал, мин. Названия и описания передач приходят от канала. Сохранение перезапускает GUI.",
-"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Показывает следующие четыре дня (день, значок, максимум и минимум) внизу второго инфобара. Сохранение перезапускает GUI."
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Показывает следующие четыре дня (день, значок, максимум и минимум) внизу второго инфобара. Сохранение перезапускает GUI.",
+"Dark backing behind signal bars": "Тёмная подложка под шкалами сигнала",
+"A solid dark plate behind the SNR and AGC bars so they stay clean on every picture. On some images the soft edges of the bars let the video show through and look ragged. Saving restarts the GUI.": "Сплошная тёмная подложка под шкалами SNR и AGC, чтобы они были чёткими на любой картинке. В некоторых образах мягкие края шкал пропускают видео и выглядят рваными. Сохранение перезапускает GUI."
 }

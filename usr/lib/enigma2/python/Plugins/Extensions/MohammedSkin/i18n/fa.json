@@ -328,5 +328,7 @@
 "Infobar texts language": "زبان متن‌های اینفوبار",
 "Weather forecast (4 days)": "پیش‌بینی آب‌وهوا (۴ روز)",
 "Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "زبان کلمات کوچکی که اینفوبار خودش می‌نویسد: در حال پخش، سپس ساعت، بعدی، فیلم، سریال، دقیقه. عنوان و توضیح برنامه‌ها از کانال می‌آید. ذخیره، رابط را دوباره راه‌اندازی می‌کند.",
-"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "چهار روز بعد (روز، آیکون، بیشینه و کمینه) را پایین اینفوبار دوم نشان می‌دهد. ذخیره، رابط را دوباره راه‌اندازی می‌کند."
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "چهار روز بعد (روز، آیکون، بیشینه و کمینه) را پایین اینفوبار دوم نشان می‌دهد. ذخیره، رابط را دوباره راه‌اندازی می‌کند.",
+"Dark backing behind signal bars": "پس‌زمینه تیره پشت نوارهای سیگنال",
+"A solid dark plate behind the SNR and AGC bars so they stay clean on every picture. On some images the soft edges of the bars let the video show through and look ragged. Saving restarts the GUI.": "یک صفحه تیره و مات پشت نوارهای SNR و AGC تا روی هر تصویری تمیز بمانند. در برخی ایمیج‌ها لبه‌های نرم نوارها ویدیو را نشان می‌دهند و ناصاف دیده می‌شوند. ذخیره، رابط را دوباره راه‌اندازی می‌کند."
 }

@@ -328,5 +328,7 @@
 "Infobar texts language": "Taal van de infobalk-teksten",
 "Weather forecast (4 days)": "Weersverwachting (4 dagen)",
 "Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Taal van de kleine woorden die de infobalk zelf schrijft: Nu bezig, Daarna om, Straks, Film, Serie, min. Titels en beschrijvingen komen van de zender. Opslaan herstart de GUI.",
-"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Toont de volgende vier dagen (dag, pictogram, hoogste en laagste temperatuur) onderaan de tweede infobalk. Opslaan herstart de GUI."
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Toont de volgende vier dagen (dag, pictogram, hoogste en laagste temperatuur) onderaan de tweede infobalk. Opslaan herstart de GUI.",
+"Dark backing behind signal bars": "Donkere achtergrond achter de signaalbalken",
+"A solid dark plate behind the SNR and AGC bars so they stay clean on every picture. On some images the soft edges of the bars let the video show through and look ragged. Saving restarts the GUI.": "Een effen donkere plaat achter de SNR- en AGC-balken zodat ze op elk beeld netjes blijven. Bij sommige images laten de zachte randen van de balken het beeld doorschemeren en zien ze er rafelig uit. Opslaan herstart de GUI."
 }

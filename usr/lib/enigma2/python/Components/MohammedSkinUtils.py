@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.72"
+SKIN_VERSION = "2.1.73"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True, "date_format": "skin", "label_lang": "en", "weather_forecast": True,  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True, "date_format": "skin", "label_lang": "en", "ib_meter_back": True, "weather_forecast": True,  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -2409,8 +2409,25 @@ def _ib_meters(snippet):
 	"""SNR / AGC bars of the infobars in the chosen colour and shape (pictures made for every width)."""
 	color = _choice("ib_meter_color", IB_METER_COLOR, "classic")
 	shape = _choice("ib_meter_shape", IB_METER_SHAPE, "line")
-	if (color, shape) == ("classic", "line"):
-		return snippet
+	if (color, shape) != ("classic", "line"):
+		snippet = _ib_meters_shape(snippet, color, shape)
+	return _meter_back(snippet) if settings().get("ib_meter_back", True) else snippet
+
+
+_METER_WIDGET = re.compile(r'([ \t]*)(<widget source="session\.FrontendStatus" render="Progress" pixmap="[^"]*meter_[^"]*" position=")(\d+),(\d+)(" size=")(\d+),(\d+)(")')
+
+
+def _meter_back(snippet):
+	"""A solid dark plate behind every SNR / AGC bar. On some images (EGAMI for one) the soft edges of the bar pictures
+	let the video show through and look ragged; on the plate they are always clean."""
+	def one(m):
+		x, y, w, h = int(m.group(3)), int(m.group(4)), int(m.group(6)), int(m.group(7))
+		plate = '%s<eLabel position="%d,%d" size="%d,%d" backgroundColor="#18101015" zPosition="1" />\n' % (m.group(1), x - 5, y - 3, w + 10, h + 6)
+		return plate + m.group(0)
+	return _METER_WIDGET.sub(one, snippet)
+
+
+def _ib_meters_shape(snippet, color, shape):
 	snippet = _METER_FILL.sub(lambda m: "%smeter_%s_%s_%s.png%s" % (m.group(1), color, shape, m.group(2), m.group(3)), snippet)
 	if shape != "line":  # blocks, dots and bars: the dim track has the same shape and is as tall as the bar
 		snippet = _METER_TRACK.sub(lambda m: "%smeter_track_%s_%s.png%s%s,%d%s%s,14%s" % (m.group(1), shape, m.group(2), m.group(3), m.group(4),

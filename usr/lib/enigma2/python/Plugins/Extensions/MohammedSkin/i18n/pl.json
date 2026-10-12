@@ -328,5 +328,7 @@
 "Infobar texts language": "Język tekstów infobara",
 "Weather forecast (4 days)": "Prognoza pogody (4 dni)",
 "Language of the small words the infobars write themselves: Now playing, Then at, Next, Film, Series, min, min left. Programme titles and descriptions come from the channel. Saving restarts the GUI.": "Język małych słów, które infobar pisze sam: Teraz, Potem o, Następnie, Film, Serial, min. Tytuły i opisy pochodzą z kanału. Zapis restartuje GUI.",
-"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Pokazuje kolejne cztery dni (dzień, ikona, maksimum i minimum) na dole drugiego infobara. Zapis restartuje GUI."
+"Shows the next four days (day, icon, high and low) at the bottom of the second infobar. Saving restarts the GUI.": "Pokazuje kolejne cztery dni (dzień, ikona, maksimum i minimum) na dole drugiego infobara. Zapis restartuje GUI.",
+"Dark backing behind signal bars": "Ciemne tło pod paskami sygnału",
+"A solid dark plate behind the SNR and AGC bars so they stay clean on every picture. On some images the soft edges of the bars let the video show through and look ragged. Saving restarts the GUI.": "Pełna, ciemna płytka pod paskami SNR i AGC, aby były czytelne na każdym obrazie. W niektórych obrazach miękkie krawędzie pasków przepuszczają wideo i wyglądają postrzępione. Zapis restartuje GUI."
 }
