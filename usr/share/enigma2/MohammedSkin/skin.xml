@@ -761,6 +761,38 @@
 		<widget name="statusicon" conditional="statusicon" position="0,1100" size="48,48" pixmaps="/usr/share/enigma2/MohammedSkin/img/pvr_play.png,/usr/share/enigma2/MohammedSkin/img/pvr_pause.png,/usr/share/enigma2/MohammedSkin/img/pvr_stop.png,/usr/share/enigma2/MohammedSkin/img/pvr_forward.png,/usr/share/enigma2/MohammedSkin/img/pvr_backward.png,/usr/share/enigma2/MohammedSkin/img/pvr_slow.png,/usr/share/enigma2/MohammedSkin/img/pvr_blank.png" alphatest="blend" zPosition="-1" />
 	</screen>
 
+	<!-- ============================================================ Enhanced Movie Center player (progress bar without PositionGauge) -->
+	<screen name="EMCMediaCenter" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ib_scrim.png" position="0,650" size="1920,430" alphatest="blend" zPosition="0" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ib_rule.png" position="0,868" size="1920,2" alphatest="blend" zPosition="1" />
+		<eLabel text="Playing" position="90,824" size="400,34" font="Semi;24" foregroundColor="crimson" backgroundColor="ink" transparent="1" zPosition="2" />
+		<widget source="global.CurrentTime" render="Label" position="1640,792" size="210,76" font="Title;52" halign="right" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="2">
+			<convert type="ClockToText">Format:%H:%M</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="90,883" size="1740,85" font="Title;58" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="2">
+			<convert type="ServiceName">Name</convert>
+		</widget>
+		<widget source="Service" render="Label" position="90,982" size="140,30" font="Regular;21" foregroundColor="ivory" backgroundColor="ink" transparent="1" zPosition="2">
+			<convert type="EMCServicePosition">Position,ShowHours</convert>
+		</widget>
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/track_mp.png" position="250,993" size="1420,8" alphatest="blend" zPosition="2" />
+		<widget source="Service" render="Progress" pixmap="/usr/share/enigma2/MohammedSkin/img/mp_prog.png" position="250,993" size="1420,8" transparent="1" zPosition="3">
+			<convert type="EMCServicePosition">Position</convert>
+		</widget>
+		<widget source="Service" render="Label" position="1690,982" size="140,30" font="Regular;21" halign="right" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="2">
+			<convert type="EMCServicePosition">Length,ShowHours</convert>
+		</widget>
+		<widget source="Service" render="Label" position="1490,1030" size="340,30" font="Regular;19" halign="right" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="2">
+			<convert type="EMCServicePosition">Remaining,Negate,ShowHours</convert>
+		</widget>
+		<widget name="chapterLabel" position="500,1030" size="900,30" font="Regular;19" halign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="2" />
+		<widget name="audioLabel" position="90,1030" size="300,30" font="Regular;19" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="2" />
+		<widget name="subtitleLabel" position="400,1030" size="300,30" font="Regular;19" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="2" />
+		<widget name="anglePix" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/EnhancedMovieCenter/img_fhd/view.png" position="0,1100" size="20,20" alphatest="blend" zPosition="-1" />
+		<widget name="angleLabel" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />
+		<widget name="Cover" position="0,1100" size="20,20" alphatest="blend" zPosition="-1" />
+	</screen>
+
 	<!-- ============================================================ Volume / mute -->
 	<screen name="Volume" position="center,80" size="520,96" backgroundColor="transparent" flags="wfNoBorder">
 		<eLabel position="0,0" size="520,96" backgroundColor="panel" zPosition="-1" />
