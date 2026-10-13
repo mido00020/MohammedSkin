@@ -88,3 +88,134 @@ def translate_static(xml):
 			return m.group(0)
 		return m.group(1) + (en if lg == "en" else LABELS[en].get(lg, en)) + m.group(3)
 	return re.sub(r'(<eLabel text=")([^"]*)(")', one, xml)
+
+
+# --- room for the words of every language -----------------------------------------------------------------------------------
+# The boxes of the infobars are drawn for the English words. A longer word of another language ("Sonraki saat" for "Next at")
+# would be cut or run into the time next to it, so the box gets the width the word needs and what stands right of it on the
+# same row moves over by the same amount.
+
+_FONT_FILES = {"Regular": "moh-regular.otf", "Semi": "moh-semibold.otf", "Title": "moh-title.otf"}
+_font_cache = {}
+
+
+def _script(text):
+	for ch in text:
+		o = ord(ch)
+		if 0x0600 <= o <= 0x08FF:
+			return "arabic"
+		if o >= 0x2E80:
+			return "cjk"
+	return "latin"
+
+
+def text_width(text, font, size):
+	"""Width in pixels of the text in a skin font: measured with the font file when PIL is on the box, else estimated (generously)."""
+	sc = _script(text)
+	if sc == "cjk":
+		return int(len(text) * size * 1.05)
+	if sc == "arabic":
+		return int(len(text) * size * 0.58)
+	fn = _FONT_FILES.get(font, "moh-regular.otf")
+	try:
+		from PIL import ImageFont
+		key = (fn, size)
+		f = _font_cache.get(key)
+		if f is None:
+			f = _font_cache[key] = ImageFont.truetype(U.SKIN_DIR + "/fonts/" + fn, size)
+		return int(f.getlength(text)) + 2
+	except Exception:
+		up = sum(1 for c in text if c.isupper())
+		return int(((len(text) - up) * 0.56 + up * 0.7) * size) + 2
+
+
+def _sample(conv):
+	"""The longest text a converter of the skin can write in the chosen language (None when it is not a word of ours)."""
+	import re
+	m = re.match(r"(?:Text|NextText|NoEventText):(.+)$", conv)
+	if m:
+		return label(m.group(1))
+	if conv == "Kind":
+		return max([label("Film"), label("Series")], key=len)
+	if conv == "Remaining":
+		return u"199 " + label("min left")
+	if conv == "Duration":
+		return u"199 " + label("min")
+	return None
+
+
+def fit_labels(xml):
+	"""Widen the boxes of the infobar words for the chosen language. What follows on the same row (the time after "Next at") moves
+	over by the same amount; nothing is ever pushed into another box, the word is cut short instead."""
+	import re
+	if lang() == "en":
+		return xml
+	elem = re.compile(r'<(widget|eLabel|ePixmap)\b([^>]*?)position="(-?\d+),(-?\d+)"(\s+size=")(\d+),(\d+)(")([^>]*?)(/?)>', re.S)
+	items = []
+	for m in elem.finditer(xml):
+		x, y, w, h = int(m.group(3)), int(m.group(4)), int(m.group(6)), int(m.group(7))
+		items.append(dict(m=m, tag=m.group(1), x=x, y=y, w=w, h=h, nx=x, nw=w, label='render="Label"' in m.group(0)))
+
+	def same_row(a, b):
+		return a["y"] < b["y"] + b["h"] and a["y"] + a["h"] > b["y"]
+
+	def obstacle(it, start, skip):
+		"""x of the nearest box right of `start` on the row (backgrounds of the whole bar do not count)."""
+		best = 1900
+		for o in items:
+			if o is it or id(o) in skip or o["w"] >= 900 or o["x"] < start - 2 or not same_row(it, o) or o["x"] >= 1900:
+				continue
+			best = min(best, o["x"])
+		return best
+
+	for it in items:
+		m = it["m"]
+		if it["tag"] != "widget" or not it["label"] or m.group(10) == "/":
+			continue
+		if "halign" in m.group(0) and 'halign="left"' not in m.group(0):
+			continue
+		end = xml.find("</widget>", m.end())
+		body = xml[m.end():end] if end > 0 else ""
+		cv = re.search(r'<convert type="MohammedInfo">([^<]+)</convert>', body)
+		fo = re.search(r'font="(\w+);(\d+)"', m.group(0))
+		if not cv or not fo:
+			continue
+		conv = cv.group(1).strip()
+		txt = _sample(conv)
+		if not txt:
+			continue
+		want = text_width(txt, fo.group(1), int(fo.group(2))) + 6 - it["nw"]
+		if want <= 2:
+			continue
+		old_end = it["x"] + it["w"]
+		chain, front = [], old_end
+		if re.match(r"(?:Text|NextText|NoEventText):", conv):  # the value that follows the word moves with it
+			moved = True
+			while moved:
+				moved = False
+				for o in items:
+					if o is it or o in chain or not o["label"] or o["w"] >= 900 or not same_row(it, o) or not (0 <= o["x"] - front <= 48):
+						continue
+					chain.append(o)
+					front = o["x"] + o["w"]
+					moved = True
+		room = obstacle(it, front, set(id(c) for c in chain)) - front - 4
+		delta = min(want, max(0, room), 200)
+		if delta <= 2:
+			continue
+		it["nw"] += delta
+		for c in chain:
+			c["nx"] = c["x"] + delta
+	out, last = [], 0
+	for it in items:
+		if it["nx"] == it["x"] and it["nw"] == it["w"]:
+			continue
+		m = it["m"]
+		s = m.group(0)
+		s = s.replace('position="%d,%d"' % (it["x"], it["y"]), 'position="%d,%d"' % (it["nx"], it["y"]), 1)
+		s = s.replace('size="%d,%d"' % (it["w"], it["h"]), 'size="%d,%d"' % (it["nw"], it["h"]), 1)
+		out.append(xml[last:m.start()])
+		out.append(s)
+		last = m.end()
+	out.append(xml[last:])
+	return "".join(out)

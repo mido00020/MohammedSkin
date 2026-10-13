@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.89"
+SKIN_VERSION = "2.1.90"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -2943,6 +2943,7 @@ def tune_snippet(kind, snippet, base=SKIN_DIR):
 	try:
 		from Components import MohammedLabels
 		snippet = MohammedLabels.translate_static(snippet)
+		snippet = MohammedLabels.fit_labels(snippet)
 	except Exception as e:
 		print("[MohammedSkin] labels %s: %s" % (kind, e))
 	try:
