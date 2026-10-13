@@ -264,6 +264,7 @@ class MohammedSkinSetup(Screen):
 		self.ibBackdrop = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_BACKDROP], default=U.ib_backdrop())
 		self.ibLed = ConfigYesNo(default=bool(s.get("ib_led", True)))
 		self.menuAnim = ConfigYesNo(default=bool(s.get("menu_anim", True)))
+		self.osdFit = ConfigYesNo(default=U.osd_is_full())
 		self.ibMeterColor = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_COLOR], default=U._choice("ib_meter_color", U.IB_METER_COLOR, "classic"))
 		self.ibMeterShape = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_SHAPE], default=U._choice("ib_meter_shape", U.IB_METER_SHAPE, "line"))
 		self.menuBg = ConfigSelection(choices=[(n, t(l)) for n, l in U.MENU_BG], default=U._choice("menu_bg", U.MENU_BG, U.MENU_BG_DEFAULT))
@@ -314,6 +315,7 @@ class MohammedSkinSetup(Screen):
 			id(self.uiLang): "Language of this setup screen. Saving switches it at once.",
 			id(self.dateFormat): "How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.",
 			id(self.menuBg): "A drawn background in the theme colours behind the main menu, its submenus and the plugin list (no photos), or off to see the TV picture. 'Image style' picks the look that goes with the image on this receiver. Saving restarts the GUI.",
+			id(self.osdFit): "On: the screen position of the receiver is set to full, so pictures reach every edge of the TV. Off: the position that was set before is put back. Takes effect at once.",
 			id(self.menuAnim): "Honeycomb background only: cells light up and small lights fall between them, on the right side of the menu. Saving restarts the GUI.",
 			id(self.epgEnglish): "Many Arabic channels send each programme's title in Arabic and in English. Yes: posters and ratings are looked up with the English title (much more exact), the Arabic one is tried after it. What you read on screen does not change.",
 			id(self.ibMeterColor): "Colour of the SNR and AGC bars in the infobars and the second infobar. Saving restarts the GUI.",
@@ -360,7 +362,7 @@ class MohammedSkinSetup(Screen):
 		}
 		E = lambda label, cfg: (t(label), cfg)
 		self.groups = [
-			[E("Skin colour theme", self.theme), E("Menu style", self.menuStyle), E("Main menu background", self.menuBg), E("Menu animation", self.menuAnim), E("Arabic text font", self.arText), E("Arabic title font", self.arTitle),
+			[E("Skin colour theme", self.theme), E("Menu style", self.menuStyle), E("Main menu background", self.menuBg), E("Menu animation", self.menuAnim), E("Fill the whole screen", self.osdFit), E("Arabic text font", self.arText), E("Arabic title font", self.arTitle),
 				E("Fit plugin windows to the screen", self.fitScreens)],
 			[E("Infobar style", self.ibxStyle), E("Infobar transparency", self.ibAlpha), E("Channel logo and name size", self.ibChan), E("Backdrop above the infobar", self.ibBackdrop), E("Light line on the infobar", self.ibLed), E("Infobar texts language", self.labelLang), E("Date format", self.dateFormat), E("Signal bars colour", self.ibMeterColor), E("Dark backing behind signal bars", self.meterBack), E("Signal bars shape", self.ibMeterShape), E("Second infobar style", self.sibStyle),
 				E("Classic infobar poster", self.ibStyle), E("Show rating stars", self.rating), E("3D channel logo when no poster", self.logo3d)],
@@ -768,7 +770,7 @@ class MohammedSkinSetup(Screen):
 				"weather": self.weather.value, "weather_city": self.weatherCity.value.strip(), "weather_units": self.weatherUnits.value,
 				"weather_mode": self.weatherLoc.value, "weather_lat": self.pick.get("lat"), "weather_lon": self.pick.get("lon"),
 				"weather_place_en": self.pick.get("en") or "", "weather_place_ar": self.pick.get("ar") or "",
-				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value, "ib_led": self.ibLed.value, "ib_meter_color": self.ibMeterColor.value, "ib_meter_shape": self.ibMeterShape.value, "menu_bg": self.menuBg.value, "menu_anim": self.menuAnim.value, "menu_bg_v2": True, "date_format": self.dateFormat.value, "label_lang": self.labelLang.value, "ib_meter_back": self.meterBack.value, "weather_forecast": self.weatherForecast.value, "epg_english": self.epgEnglish.value,
+				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value, "ib_led": self.ibLed.value, "ib_meter_color": self.ibMeterColor.value, "ib_meter_shape": self.ibMeterShape.value, "menu_bg": self.menuBg.value, "menu_anim": self.menuAnim.value, "osd_fit": self.osdFit.value, "menu_bg_v2": True, "date_format": self.dateFormat.value, "label_lang": self.labelLang.value, "ib_meter_back": self.meterBack.value, "weather_forecast": self.weatherForecast.value, "epg_english": self.epgEnglish.value,
 				"weather_pos": self.weatherPos.value, "pl_layout": self.plLayout.value, "logo_style": self.logoStyle.value, "poster_store": self.posterStore.value,
 				"ui_lang": self.uiLang.value, "tr_lang": self.trLang.value, "tr_service": self.trService.value, "tr_key": self.trKey.value.strip(), "tr_region": self.trRegion.value.strip()})
 			self.setPluginLayout()
@@ -776,6 +778,11 @@ class MohammedSkinSetup(Screen):
 			U._tr_failed.clear()  # new translation settings: try everything again at once
 			U._tr_block.clear()
 			U.save_settings(data)
+			try:
+				if self.osdFit.value != U.osd_is_full():
+					U.fit_osd(restore=not self.osdFit.value)
+			except Exception as e:
+				print("[MohammedSkin] screen position: %s" % e)
 			U.set_cache_dir()  # RAM or disk, as chosen now
 			U.clear_cache() if data.get("poster_store") != "disk" else None
 			newTheme = self.theme.value != self.startTheme
@@ -992,6 +999,10 @@ def sessionstart(reason, session=None, **kwargs):
 	except Exception as e:
 		print("[MohammedSkin] sessionstart: %s" % e)
 		return
+	try:
+		U.auto_fit_osd()  # a reduced screen position of the image leaves gaps around full-screen pictures: set it to full, once
+	except Exception as e:
+		print("[MohammedSkin] screen position: %s" % e)
 	try:
 		U.install_auto_windows()  # plugin windows without a design here get one in the skin's style
 		U.install_screen_fitter()  # the rest (pictures, own list layouts) scaled up to full HD

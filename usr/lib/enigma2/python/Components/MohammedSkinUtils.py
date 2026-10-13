@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.81"
+SKIN_VERSION = "2.1.82"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "auto", "menu_anim": True, "epg_english": True, "date_format": "skin", "label_lang": "en", "ib_meter_back": True, "weather_forecast": True,  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "auto", "menu_anim": True, "osd_fit": True, "epg_english": True, "date_format": "skin", "label_lang": "en", "ib_meter_back": True, "weather_forecast": True,  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -167,6 +167,81 @@ def save_settings(data):
 	with open(SETTINGS_FILE, "w") as f:
 		json.dump(merged, f, indent=1)
 	_settings, _settings_mtime = merged, -1  # read back on the next call
+
+
+# ---------------------------------------------------------------- screen position (OSD calibration)
+_OSD_FULL = {"dst_left": 0, "dst_top": 0, "dst_width": 720, "dst_height": 576}
+
+
+def _osd_items():
+	"""The image's own screen position settings, or None when this box has none (or cannot change them)."""
+	try:
+		from Components.config import config
+		o = config.osd
+		items = dict((k, getattr(o, k)) for k in _OSD_FULL)
+		if not os.access("/proc/stb/fb/dst_left", os.W_OK):
+			return None
+		return items
+	except Exception:
+		return None
+
+
+def _osd_apply(items, values):
+	from Components.config import configfile
+	for k in ("dst_left", "dst_top", "dst_width", "dst_height"):  # start from the corner so nothing runs off the edge on the way
+		items[k].setValue(int(values[k]))
+	for k in items:
+		items[k].save()
+	try:
+		configfile.save()
+	except Exception:
+		pass
+
+
+def osd_is_full():
+	items = _osd_items()
+	return items is None or all(int(items[k].value) == v for k, v in _OSD_FULL.items())
+
+
+def fit_osd(restore=False):
+	"""Make the picture of the receiver use the whole screen. A reduced screen position (the image's own
+	setting, often left behind by its first start wizard) leaves the skin's full-screen backgrounds short of the edges
+	with the TV picture showing around them. The values that were there are kept, so the setup can put them back."""
+	items = _osd_items()
+	if items is None:
+		return False
+	st = dict(settings())
+	try:
+		if restore:
+			prev = st.get("osd_prev")
+			if not prev:
+				return False
+			_osd_apply(items, prev)
+			st.pop("osd_prev", None)
+			save_settings(st)
+			return True
+		cur = dict((k, int(items[k].value)) for k in _OSD_FULL)
+		if cur == _OSD_FULL:
+			return False
+		if not st.get("osd_prev"):
+			st["osd_prev"] = cur
+			save_settings(st)
+		_osd_apply(items, _OSD_FULL)
+		return True
+	except Exception as e:
+		print("MohammedSkin: screen position: %s" % e)
+		return False
+
+
+def auto_fit_osd():
+	"""Once, on the first start with this skin (and only when the user keeps 'Fill the whole screen' on)."""
+	st = settings()
+	if st.get("osd_fit_done") or not st.get("osd_fit", True):
+		return False
+	st = dict(st)
+	st["osd_fit_done"] = True
+	save_settings(st)  # first: whatever happens, this is tried only once
+	return fit_osd()
 
 
 # ---------------------------------------------------------------- titles
