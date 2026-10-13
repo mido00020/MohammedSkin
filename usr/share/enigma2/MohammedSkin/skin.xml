@@ -883,6 +883,45 @@
 		<widget name="HelpWindow" conditional="HelpWindow" position="0,1100" size="4,4" pixmap="/usr/share/enigma2/MohammedSkin/img/blank.png" alphatest="on" zPosition="-1" />
 	</screen>
 
+	<!-- Quick Launch Menu (OpenATV): main list with icons on the left, what is inside the chosen entry on the right. -->
+	<screen name="QuickMenu" title="Quick Launch Menu" position="center,center" size="1500,860" backgroundColor="transparent" flags="wfNoBorder">
+		<eLabel position="0,0" size="1500,860" backgroundColor="panel" zPosition="-1" />
+		<eLabel position="0,0" size="1500,4" backgroundColor="crimson" zPosition="1" />
+		<widget source="Title" render="Label" position="40,24" size="1420,64" font="Title;44" foregroundColor="ivory" backgroundColor="panel" transparent="1" noWrap="1" zPosition="1" />
+		<eLabel position="40,100" size="1420,1" backgroundColor="line" zPosition="1" />
+		<widget source="mainlist" render="Listbox" position="40,120" size="690,600" itemHeight="60" scrollbarMode="showNever" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1" zPosition="2">
+			<templates>
+				<template name="Default" fonts="Regular;27,Regular;19" itemWidth="690" itemHeight="60">
+					<mode name="default">
+						<pixmap index="2" position="10,6" size="48,48" alpha="blend" scale="centerScaled" />
+						<text index="0" position="74,2" size="e-90,32" font="0" verticalAlignment="center" />
+						<text index="1" position="74,32" size="e-90,24" font="1" verticalAlignment="center" />
+					</mode>
+				</template>
+			</templates>
+		</widget>
+		<eLabel position="748,120" size="1,600" backgroundColor="line" zPosition="1" />
+		<widget source="sublist" render="Listbox" position="770,120" size="690,600" itemHeight="60" scrollbarMode="showNever" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1" zPosition="2">
+			<templates>
+				<template name="Default" fonts="Regular;27,Regular;19" itemWidth="690" itemHeight="60">
+					<mode name="default">
+						<text index="0" position="14,2" size="e-28,32" font="0" verticalAlignment="center" />
+						<text index="1" position="34,32" size="e-48,24" font="1" verticalAlignment="center" wrap="ellipsis" />
+					</mode>
+				</template>
+			</templates>
+		</widget>
+		<eLabel position="40,734" size="1420,1" backgroundColor="line" zPosition="1" />
+		<widget name="description" position="40,744" size="1420,56" font="Regular;24" foregroundColor="smoke" backgroundColor="panel" transparent="1" halign="center" valign="center" zPosition="2" />
+		<eLabel position="44,820" size="18,18" backgroundColor="keyred" zPosition="1" />
+		<widget source="key_red" render="Label" position="72,810" size="270,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="364,820" size="18,18" backgroundColor="keygreen" zPosition="1" />
+		<widget source="key_green" render="Label" position="392,810" size="270,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<eLabel position="684,820" size="18,18" backgroundColor="keyyellow" zPosition="1" />
+		<widget source="key_yellow" render="Label" position="712,810" size="270,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" noWrap="1" zPosition="2" />
+		<widget source="key_help" render="Label" position="1340,810" size="120,40" font="Regular;22" foregroundColor="ivorydim" backgroundColor="panel" halign="center" valign="center" transparent="1" noWrap="1" zPosition="2" />
+	</screen>
+
 	<!-- Video enhancement (picture settings): the default window uses fonts and panels this skin does not have. -->
 	<screen name="VideoEnhancementSetup" position="center,center" size="1400,860" backgroundColor="transparent" flags="wfNoBorder">
 		<eLabel position="0,0" size="1400,860" backgroundColor="panel" zPosition="-1" />
