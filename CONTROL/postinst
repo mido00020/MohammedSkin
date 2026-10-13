@@ -3,10 +3,17 @@ mkdir -p /tmp/MohammedSkin
 # adapt skin.xml to this image (OpenViX, OpenBlackHole, OpenATV, PurE2, EGAMI or another one)
 # and keep the theme, clock and styles picked before this update
 python3 - <<'PY' || true
-import importlib.util
-spec = importlib.util.spec_from_file_location("msu", "/usr/lib/enigma2/python/Components/MohammedSkinUtils.py")
+import importlib.util, sys, types
+d = "/usr/lib/enigma2/python/Components"
+# outside of enigma2 the Components package is not on the search path of every image: give the skin's own modules a home
+pk = types.ModuleType("Components")
+pk.__path__ = [d]
+sys.modules["Components"] = pk
+spec = importlib.util.spec_from_file_location("Components.MohammedSkinUtils", d + "/MohammedSkinUtils.py")
 m = importlib.util.module_from_spec(spec)
+sys.modules["Components.MohammedSkinUtils"] = m
 spec.loader.exec_module(m)
+pk.MohammedSkinUtils = m
 m.reapply_all()
 PY
 # last step: mark the install complete (the setup offers a repair when this mark is missing)
