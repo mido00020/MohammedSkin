@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.87"
+SKIN_VERSION = "2.1.88"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -2613,7 +2613,7 @@ def _tune_menu(snippet, base):
 	body = re.sub(r'position="(\d+),(\d+)"', lambda p: 'position="%d,%d"' % (int(p.group(1)) + ox, int(p.group(2)) + oy), snippet[head_end:body_end])
 	head = snippet[m.start():head_end].replace('position="center,center" size="%d,%d"' % (w, h), 'position="0,0" size="1920,1080"').replace('backgroundColor="transparent"', 'backgroundColor="ink"')  # solid colour under the picture: edges stay covered on every image
 	body = body.replace('backgroundColor="panel"', 'backgroundColor="ink"')  # solid, so the picture shows behind it and not the TV
-	pic = '\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="0" />' % menu_bg_pic(bg) + menu_bg_extra(bg)
+	pic = '\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="-1" />' % menu_bg_pic(bg) + menu_bg_extra(bg)
 	return snippet[:m.start()] + head + pic + body + snippet[body_end:]
 
 
@@ -3125,7 +3125,7 @@ def apply_plugin_fonts(base=SKIN_DIR):
 	bg = menu_bg_name(_choice("menu_bg", MENU_BG, MENU_BG_DEFAULT))
 	if bg != "off":  # the same drawn background as the main menu behind the plugin list
 		block = re.sub(r'(<screen name="PluginBrowser\w*"[^>]*>)', lambda m: m.group(1) +
-			'\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="0" />' % menu_bg_pic(bg), block)
+			'\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="-1" />' % menu_bg_pic(bg), block)
 	skin = os.path.join(base, "skin.xml")
 	with open(skin) as f:
 		xml = f.read()
