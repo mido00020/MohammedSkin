@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.80"
+SKIN_VERSION = "2.1.81"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -51,7 +51,7 @@ DEFAULT_SETTINGS = {
 	"family": "",                # vix (OpenViX / OpenBH) or atv (OpenATV / PurE2 / EGAMI)
 	"ch_font": "normal",         # channel list text: small | normal | large | xlarge
 	"ch_preview": "poster",
-	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "orbit", "epg_english": True, "date_format": "skin", "label_lang": "en", "ib_meter_back": True, "weather_forecast": True,  # windows of plugins made for smaller screens are scaled up to full HD
+	"fit_screens": True, "ib_backdrop": "band", "ib_led": True, "ib_meter_color": "classic", "ib_meter_shape": "line", "menu_bg": "auto", "menu_anim": True, "epg_english": True, "date_format": "skin", "label_lang": "en", "ib_meter_back": True, "weather_forecast": True,  # windows of plugins made for smaller screens are scaled up to full HD
 	"event_color": "default",     # colour of the event name next to each channel      # channel list picture: poster | live
 	"ch_rows": "normal",         # channel list rows: compact | normal | large | xlarge
 	"pl_font": "normal",         # plugin list text and rows: small | normal | large | xlarge
@@ -1445,7 +1445,7 @@ def make_theme(name, base=SKIN_DIR, progress=None):
 			os.makedirs(d)
 	for i, (sp, dp) in enumerate(jobs):
 		fn = os.path.basename(sp)
-		if fn.startswith("preview."):
+		if fn.startswith("preview.") or fn.endswith("_4k.jpg"):  # the sharp 4K pictures are only shipped for the ready-made colours
 			continue
 		if fn.endswith(".png") or fn.startswith("menubg_"):
 			# light themes keep the selection bars darker so the white text on them stays readable
@@ -2475,8 +2475,44 @@ def _bitrate_spot(snippet, lock, bw=_BR_W, bh=_BR_H, bottom=1076):
 	return None
 
 
-MENU_BG = (("off", "Off (TV picture)"), ("orbit", "Orbit and satellites"), ("waves", "Signal waves"), ("aurora", "Aurora"), ("honeycomb", "Honeycomb"))
-MENU_BG_DEFAULT = "orbit"
+MENU_BG = (("auto", "Image style (automatic)"), ("off", "Off (TV picture)"), ("orbit", "Orbit and satellites"), ("waves", "Signal waves"), ("aurora", "Aurora"), ("honeycomb", "Honeycomb"),
+	("deco", "Art deco"), ("carbon", "Carbon fibre"), ("bokeh", "Bokeh lights"), ("prism", "Glass prism"))
+MENU_BG_DEFAULT = "auto"
+MENU_BG_BY_IMAGE = {"openvix": "honeycomb", "pure2": "honeycomb", "openbh": "prism", "openatv": "deco", "egami": "carbon"}  # the look that goes with each image
+
+
+def menu_bg_name(bg):
+	"""'auto' becomes the style of the image this box runs."""
+	if bg == "auto":
+		try:
+			return MENU_BG_BY_IMAGE.get(image_key(), "orbit")
+		except Exception:
+			return "orbit"
+	return bg
+
+
+def _screen_4k():
+	try:
+		from enigma import getDesktop
+		return getDesktop(0).size().width() >= 3000
+	except Exception:
+		return False
+
+
+def menu_bg_pic(bg, base=SKIN_DIR):
+	"""Picture file of a background: the sharp 4K one on a 4K screen (when there is one), else the full HD one."""
+	th = settings().get("theme", "red")  # the 4K picture of an earlier colour must not stay in use: it has to exist for this theme
+	if _screen_4k() and os.path.isfile("%s/img/menubg_%s_4k.jpg" % (base, bg)) and os.path.isfile("%s/themes/%s/menubg_%s_4k.jpg" % (base, th, bg)):
+		return "%s/img/menubg_%s_4k.jpg" % (SKIN_DIR, bg)
+	return "%s/img/menubg_%s.jpg" % (SKIN_DIR, bg)
+
+
+def menu_bg_extra(bg):
+	"""Animation on the right of the menu: cells that light up and lights falling between them (honeycomb only)."""
+	if bg == "honeycomb" and settings().get("menu_anim", True) and os.path.isfile(SKIN_DIR + "/img/honeyfx_00.png"):
+		return ('\n\t\t<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="%s/img/honeyfx_%%02d.png" count="12" interval="170" '
+			'position="1600,0" size="320,1080" alphatest="blend" zPosition="1" />' % SKIN_DIR)
+	return ""
 
 
 def _tune_menu(snippet, base):
@@ -2489,7 +2525,7 @@ def _tune_menu(snippet, base):
 				snippet = re.sub(r'(<widget source="(?:Title|global\.CurrentTime)"[^>]*?foregroundColor=)"white"', r'\1"#00050506"', snippet)
 	except Exception:
 		pass
-	bg = _choice("menu_bg", MENU_BG, MENU_BG_DEFAULT)
+	bg = menu_bg_name(_choice("menu_bg", MENU_BG, MENU_BG_DEFAULT))
 	if bg == "off":
 		return snippet
 	m = re.search(r'<screen name="Menu" position="center,center" size="(\d+),(\d+)"', snippet)
@@ -2500,9 +2536,9 @@ def _tune_menu(snippet, base):
 	head_end = snippet.index(">", m.start()) + 1
 	body_end = snippet.rfind("</screen>")
 	body = re.sub(r'position="(\d+),(\d+)"', lambda p: 'position="%d,%d"' % (int(p.group(1)) + ox, int(p.group(2)) + oy), snippet[head_end:body_end])
-	head = snippet[m.start():head_end].replace('position="center,center" size="%d,%d"' % (w, h), 'position="0,0" size="1920,1080"')
+	head = snippet[m.start():head_end].replace('position="center,center" size="%d,%d"' % (w, h), 'position="0,0" size="1920,1080"').replace('backgroundColor="transparent"', 'backgroundColor="ink"')  # solid colour under the picture: edges stay covered on every image
 	body = body.replace('backgroundColor="panel"', 'backgroundColor="ink"')  # solid, so the picture shows behind it and not the TV
-	pic = '\n\t\t<ePixmap pixmap="%s/img/menubg_%s.jpg" position="0,0" size="1920,1080" zPosition="-5" />' % (SKIN_DIR, bg)
+	pic = '\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="0" />' % menu_bg_pic(bg) + menu_bg_extra(bg)
 	return snippet[:m.start()] + head + pic + body + snippet[body_end:]
 
 
@@ -3011,10 +3047,10 @@ def apply_plugin_fonts(base=SKIN_DIR):
 	"""Write the plugin list size into skin.xml (font aliases + PLUGINS block)."""
 	level = tune_value("pl_font", PL_FONT)
 	block, f0, f1, rowh = plugins_block(level)
-	bg = _choice("menu_bg", MENU_BG, MENU_BG_DEFAULT)
+	bg = menu_bg_name(_choice("menu_bg", MENU_BG, MENU_BG_DEFAULT))
 	if bg != "off":  # the same drawn background as the main menu behind the plugin list
 		block = re.sub(r'(<screen name="PluginBrowser\w*"[^>]*>)', lambda m: m.group(1) +
-			'\n\t\t<ePixmap pixmap="%s/img/menubg_%s.jpg" position="0,0" size="1920,1080" zPosition="-5" />' % (SKIN_DIR, bg), block)
+			'\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="0" />' % menu_bg_pic(bg), block)
 	skin = os.path.join(base, "skin.xml")
 	with open(skin) as f:
 		xml = f.read()

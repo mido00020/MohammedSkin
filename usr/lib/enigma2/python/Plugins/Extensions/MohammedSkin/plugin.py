@@ -263,12 +263,13 @@ class MohammedSkinSetup(Screen):
 		self.fitScreens = ConfigYesNo(default=bool(s.get("fit_screens", True)))
 		self.ibBackdrop = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_BACKDROP], default=U.ib_backdrop())
 		self.ibLed = ConfigYesNo(default=bool(s.get("ib_led", True)))
+		self.menuAnim = ConfigYesNo(default=bool(s.get("menu_anim", True)))
 		self.ibMeterColor = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_COLOR], default=U._choice("ib_meter_color", U.IB_METER_COLOR, "classic"))
 		self.ibMeterShape = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_METER_SHAPE], default=U._choice("ib_meter_shape", U.IB_METER_SHAPE, "line"))
 		self.menuBg = ConfigSelection(choices=[(n, t(l)) for n, l in U.MENU_BG], default=U._choice("menu_bg", U.MENU_BG, U.MENU_BG_DEFAULT))
 		self.epgEnglish = ConfigYesNo(default=bool(s.get("epg_english", True)))
 		self.dateFormat = ConfigSelection(choices=[(n, t(l) if n == "skin" else U.date_example(n)) for n, l in U.DATE_FORMAT], default=U._choice("date_format", U.DATE_FORMAT, "skin"))
-		self.startBackdrop = (self.ibBackdrop.value, self.ibLed.value, self.ibMeterColor.value, self.ibMeterShape.value, self.menuBg.value, self.dateFormat.value, self.labelLang.value, self.weatherForecast.value, self.meterBack.value)
+		self.startBackdrop = (self.ibBackdrop.value, self.ibLed.value, self.ibMeterColor.value, self.ibMeterShape.value, self.menuBg.value, self.menuAnim.value, self.dateFormat.value, self.labelLang.value, self.weatherForecast.value, self.meterBack.value)
 		self.uiLang = ConfigSelection(choices=list(UI_LANGS), default=L)
 		self.helptext = {
 			id(self.theme): "Use LEFT / RIGHT to see each colour theme. Saving a new theme restarts the GUI.",
@@ -312,7 +313,8 @@ class MohammedSkinSetup(Screen):
 			id(self.logo3d): "When a channel has no event, no poster was found or the poster is hidden, show its logo on a 3D card instead.",
 			id(self.uiLang): "Language of this setup screen. Saving switches it at once.",
 			id(self.dateFormat): "How the date is written in the infobars, the second infobar and the channel lists. Narrow places show it without the year so nothing is cut off. Saving restarts the GUI.",
-			id(self.menuBg): "A drawn background in the theme colours behind the main menu, its submenus and the plugin list (no photos), or off to see the TV picture. Saving restarts the GUI.",
+			id(self.menuBg): "A drawn background in the theme colours behind the main menu, its submenus and the plugin list (no photos), or off to see the TV picture. 'Image style' picks the look that goes with the image on this receiver. Saving restarts the GUI.",
+			id(self.menuAnim): "Honeycomb background only: cells light up and small lights fall between them, on the right side of the menu. Saving restarts the GUI.",
 			id(self.epgEnglish): "Many Arabic channels send each programme's title in Arabic and in English. Yes: posters and ratings are looked up with the English title (much more exact), the Arabic one is tried after it. What you read on screen does not change.",
 			id(self.ibMeterColor): "Colour of the SNR and AGC bars in the infobars and the second infobar. Saving restarts the GUI.",
 			id(self.ibMeterShape): "Shape of the SNR and AGC bars in the infobars and the second infobar: a line, blocks, dots or rising bars - each piece stands apart. Saving restarts the GUI.",
@@ -328,7 +330,10 @@ class MohammedSkinSetup(Screen):
 		Y, N = True, False
 		self.valuehint = {  # what the chosen value does: shown under the preview while LEFT / RIGHT change it
 			id(self.menuBg): {"off": "No picture: the TV stays visible behind the menu.", "orbit": "Satellites on their orbits and a dish sending its signal.",
-				"waves": "Glowing signal waves running across the screen.", "aurora": "Soft northern lights in the theme colours.", "honeycomb": "A honeycomb of glowing cells, a few of them lit."},
+				"waves": "Glowing signal waves running across the screen.", "aurora": "Soft northern lights in the theme colours.", "honeycomb": "A honeycomb of glowing cells, a few of them lit.",
+				"auto": "The look that goes with the image on this receiver.", "deco": "Art deco: fans of fine lines and a diamond pattern.", "carbon": "Carbon fibre with a sweep of light.",
+				"bokeh": "Soft glowing circles, like a night city out of focus.", "prism": "Glass facets that catch the light."},
+			id(self.menuAnim): {Y: "Cells light up and small lights fall between them.", N: "A still picture."},
 			id(self.ibBackdrop): {"band": "A wide strip across the top of the screen.", "center": "A framed picture at the top, in the middle.",
 				"left": "A framed picture at the top left.", "right": "A framed picture at the top right.", "off": "No backdrop: only the infobar."},
 			id(self.ibLed): {Y: "The line lights up from the middle outwards each time the bar opens, then stays softly lit.", N: "No light line on the infobar."},
@@ -355,7 +360,7 @@ class MohammedSkinSetup(Screen):
 		}
 		E = lambda label, cfg: (t(label), cfg)
 		self.groups = [
-			[E("Skin colour theme", self.theme), E("Menu style", self.menuStyle), E("Main menu background", self.menuBg), E("Arabic text font", self.arText), E("Arabic title font", self.arTitle),
+			[E("Skin colour theme", self.theme), E("Menu style", self.menuStyle), E("Main menu background", self.menuBg), E("Menu animation", self.menuAnim), E("Arabic text font", self.arText), E("Arabic title font", self.arTitle),
 				E("Fit plugin windows to the screen", self.fitScreens)],
 			[E("Infobar style", self.ibxStyle), E("Infobar transparency", self.ibAlpha), E("Channel logo and name size", self.ibChan), E("Backdrop above the infobar", self.ibBackdrop), E("Light line on the infobar", self.ibLed), E("Infobar texts language", self.labelLang), E("Date format", self.dateFormat), E("Signal bars colour", self.ibMeterColor), E("Dark backing behind signal bars", self.meterBack), E("Signal bars shape", self.ibMeterShape), E("Second infobar style", self.sibStyle),
 				E("Classic infobar poster", self.ibStyle), E("Show rating stars", self.rating), E("3D channel logo when no poster", self.logo3d)],
@@ -606,7 +611,8 @@ class MohammedSkinSetup(Screen):
 			id(self.adult): logo, id(self.logo3d): logo,
 			id(self.logoStyle): ("logostyle", self.logoStyle.value, "LEFT / RIGHT to change"),
 			id(self.arPosters): ("arposter", "sample", "Arabic poster from TMDB on Arabic channels"),
-			id(self.menuBg): ("menubg", "%s_%s" % (self.menuBg.value, th), ""),
+			id(self.menuBg): ("menubg", "%s_%s" % (U.menu_bg_name(self.menuBg.value), th), ""),
+			id(self.menuAnim): ("menubg", "%s_%s" % (U.menu_bg_name(self.menuBg.value), th), ""),
 			id(self.ibBackdrop): ("backdrop", "%s_%s" % (ib, self.ibBackdrop.value), ""),
 			id(self.ibLed): ("led", "%s_%s" % (ib, yn(self.ibLed)), ""),
 			id(self.ibMeterColor): meters, id(self.ibMeterShape): meters,
@@ -762,7 +768,7 @@ class MohammedSkinSetup(Screen):
 				"weather": self.weather.value, "weather_city": self.weatherCity.value.strip(), "weather_units": self.weatherUnits.value,
 				"weather_mode": self.weatherLoc.value, "weather_lat": self.pick.get("lat"), "weather_lon": self.pick.get("lon"),
 				"weather_place_en": self.pick.get("en") or "", "weather_place_ar": self.pick.get("ar") or "",
-				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value, "ib_led": self.ibLed.value, "ib_meter_color": self.ibMeterColor.value, "ib_meter_shape": self.ibMeterShape.value, "menu_bg": self.menuBg.value, "menu_bg_v2": True, "date_format": self.dateFormat.value, "label_lang": self.labelLang.value, "ib_meter_back": self.meterBack.value, "weather_forecast": self.weatherForecast.value, "epg_english": self.epgEnglish.value,
+				"weather_lang": self.weatherLang.value, "arabic_posters": self.arPosters.value, "logo3d": self.logo3d.value, "fit_screens": self.fitScreens.value, "ib_backdrop": self.ibBackdrop.value, "ib_led": self.ibLed.value, "ib_meter_color": self.ibMeterColor.value, "ib_meter_shape": self.ibMeterShape.value, "menu_bg": self.menuBg.value, "menu_anim": self.menuAnim.value, "menu_bg_v2": True, "date_format": self.dateFormat.value, "label_lang": self.labelLang.value, "ib_meter_back": self.meterBack.value, "weather_forecast": self.weatherForecast.value, "epg_english": self.epgEnglish.value,
 				"weather_pos": self.weatherPos.value, "pl_layout": self.plLayout.value, "logo_style": self.logoStyle.value, "poster_store": self.posterStore.value,
 				"ui_lang": self.uiLang.value, "tr_lang": self.trLang.value, "tr_service": self.trService.value, "tr_key": self.trKey.value.strip(), "tr_region": self.trRegion.value.strip()})
 			self.setPluginLayout()
@@ -798,7 +804,7 @@ class MohammedSkinSetup(Screen):
 				raise Exception("infobar style files are missing")
 			newTune = (self.chFont.value, self.chRows.value, self.plFont.value, self.ibAlpha.value) != self.startTune \
 				or (self.weatherPos.value, self.plLayout.value, self.ibChan.value, self.chPreview.value, self.eventColor.value) != self.startPlace \
-				or (self.ibBackdrop.value, self.ibLed.value, self.ibMeterColor.value, self.ibMeterShape.value, self.menuBg.value, self.dateFormat.value, self.labelLang.value, self.weatherForecast.value, self.meterBack.value) != self.startBackdrop
+				or (self.ibBackdrop.value, self.ibLed.value, self.ibMeterColor.value, self.ibMeterShape.value, self.menuBg.value, self.menuAnim.value, self.dateFormat.value, self.labelLang.value, self.weatherForecast.value, self.meterBack.value) != self.startBackdrop
 			if newTune or newTheme:
 				U.apply_tuning()  # also re-makes the tuned pictures in the new colour theme
 			newFonts = (self.arText.value, self.arTitle.value) != self.startFonts
