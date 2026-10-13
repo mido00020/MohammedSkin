@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.84"
+SKIN_VERSION = "2.1.85"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -4909,7 +4909,8 @@ def _restyle(elem, panel=False):
 			else:  # boxes and bars: this skin's panel, or its accent where the system had a coloured bar
 				c = e.attrib.get("backgroundColor", "")
 				val = _win.get("colors", {}).get(c, c if c.startswith("#") else "")
-				e.attrib["backgroundColor"] = "crimson" if val and _color_target(val, c) == "crimson" else "panel"
+				# the accent only on thin bars: a big box in the accent colour hides the text on it (light accents of the white and black themes)
+				e.attrib["backgroundColor"] = "crimson" if val and _color_target(val, c) == "crimson" and min(w or 0, h or 0) <= 12 else "panel"
 			for a in ("backgroundPixmap", "pixmap"):
 				e.attrib.pop(a, None)
 			continue
