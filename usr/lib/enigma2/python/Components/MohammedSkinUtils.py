@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.86"
+SKIN_VERSION = "2.1.87"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -2493,11 +2493,11 @@ _METER_WIDGET = re.compile(r'([ \t]*)(<widget source="session\.FrontendStatus" r
 
 
 def _meter_back(snippet):
-	"""A solid dark plate behind every SNR / AGC bar. On some images (EGAMI for one) the soft edges of the bar pictures
+	"""A fully opaque dark plate behind every SNR / AGC bar. On some images (EGAMI for one) the soft edges of the bar pictures
 	let the video show through and look ragged; on the plate they are always clean."""
 	def one(m):
 		x, y, w, h = int(m.group(3)), int(m.group(4)), int(m.group(6)), int(m.group(7))
-		plate = '%s<eLabel position="%d,%d" size="%d,%d" backgroundColor="#18101015" zPosition="1" />\n' % (m.group(1), x - 5, y - 3, w + 10, h + 6)
+		plate = '%s<eLabel position="%d,%d" size="%d,%d" backgroundColor="#00141318" zPosition="1" />\n' % (m.group(1), x - 5, y - 3, w + 10, h + 6)
 		return plate + m.group(0)
 	return _METER_WIDGET.sub(one, snippet)
 
