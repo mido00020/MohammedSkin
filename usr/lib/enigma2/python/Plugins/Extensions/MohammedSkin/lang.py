@@ -126,7 +126,7 @@ AR = {
 # languages of the setup screen: code, own name. The other texts live in i18n/<code>.json
 UI_LANGS = (("en", "English"), ("ar", u"العربية"), ("uk", u"Українська"), ("ru", u"Русский"), ("pl", "Polski"),
 	("tr", u"Türkçe"), ("de", "Deutsch"), ("fr", u"Français"), ("es", u"Español"), ("it", "Italiano"),
-	("pt", u"Português"), ("nl", "Nederlands"), ("fa", u"فارسی"), ("zh", u"中文"), ("ja", u"日本語"), ("el", u"Ελληνικά"))
+	("pt", u"Português"), ("nl", "Nederlands"), ("fa", u"فارسی"), ("zh", u"中文"), ("ja", u"日本語"), ("el", u"Ελληνικά"), ("hr", "Hrvatski"))
 RTL = ("ar", "fa")
 _tables = {}
 

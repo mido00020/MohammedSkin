@@ -7,47 +7,47 @@ from Components import MohammedSkinUtils as U
 
 LABEL_LANGS = (("en", "English"), ("ar", u"العربية"), ("el", u"Ελληνικά"), ("uk", u"Українська"), ("ru", u"Русский"), ("pl", "Polski"),
 	("tr", u"Türkçe"), ("de", "Deutsch"), ("fr", u"Français"), ("es", u"Español"), ("it", "Italiano"),
-	("pt", u"Português"), ("nl", "Nederlands"), ("fa", u"فارسی"), ("zh", u"中文"), ("ja", u"日本語"))
+	("pt", u"Português"), ("nl", "Nederlands"), ("fa", u"فارسی"), ("zh", u"中文"), ("ja", u"日本語"), ("hr", "Hrvatski"))
 
 # English text -> {language: text}. "min" is the unit after a number, "min left" the words after a number.
 LABELS = {
 	"Now playing": {"ar": u"يُعرض الآن", "el": u"Τώρα", "uk": u"Зараз в ефірі", "ru": u"Сейчас в эфире", "pl": u"Teraz", "tr": u"Şimdi",
-		"de": u"Jetzt läuft", "fr": u"En cours", "es": u"Ahora", "it": u"In onda", "pt": u"Agora", "nl": u"Nu bezig", "fa": u"در حال پخش", "zh": u"正在播放", "ja": u"放送中"},
+		"de": u"Jetzt läuft", "fr": u"En cours", "es": u"Ahora", "it": u"In onda", "pt": u"Agora", "nl": u"Nu bezig", "fa": u"در حال پخش", "zh": u"正在播放", "ja": u"放送中", "hr": u"Trenutno"},
 	"Then at": {"ar": u"ثم الساعة", "el": u"Μετά στις", "uk": u"Далі о", "ru": u"Далее в", "pl": u"Potem o", "tr": u"Sonra",
-		"de": u"Danach um", "fr": u"Ensuite à", "es": u"Luego a las", "it": u"Poi alle", "pt": u"Depois às", "nl": u"Daarna om", "fa": u"سپس ساعت", "zh": u"接下来", "ja": u"次は"},
+		"de": u"Danach um", "fr": u"Ensuite à", "es": u"Luego a las", "it": u"Poi alle", "pt": u"Depois às", "nl": u"Daarna om", "fa": u"سپس ساعت", "zh": u"接下来", "ja": u"次は", "hr": u"Zatim u"},
 	"Next:": {"ar": u"التالي:", "el": u"Επόμενο:", "uk": u"Далі:", "ru": u"Далее:", "pl": u"Następnie:", "tr": u"Sonraki:",
-		"de": u"Danach:", "fr": u"Ensuite :", "es": u"Siguiente:", "it": u"Poi:", "pt": u"A seguir:", "nl": u"Straks:", "fa": u"بعدی:", "zh": u"下一个:", "ja": u"次:"},
+		"de": u"Danach:", "fr": u"Ensuite :", "es": u"Siguiente:", "it": u"Poi:", "pt": u"A seguir:", "nl": u"Straks:", "fa": u"بعدی:", "zh": u"下一个:", "ja": u"次:", "hr": u"Sljedeće:"},
 	"Next at": {"ar": u"التالي الساعة", "el": u"Επόμενο στις", "uk": u"Наступне о", "ru": u"Следующее в", "pl": u"Następny o", "tr": u"Sonraki saat",
-		"de": u"Nächste um", "fr": u"Suivant à", "es": u"Siguiente a las", "it": u"Prossimo alle", "pt": u"Próximo às", "nl": u"Volgende om", "fa": u"بعدی ساعت", "zh": u"下一个", "ja": u"次の番組"},
+		"de": u"Nächste um", "fr": u"Suivant à", "es": u"Siguiente a las", "it": u"Prossimo alle", "pt": u"Próximo às", "nl": u"Volgende om", "fa": u"بعدی ساعت", "zh": u"下一个", "ja": u"次の番組", "hr": u"Sljedeće u"},
 	"NEXT": {"ar": u"التالي", "el": u"ΕΠΟΜΕΝΟ", "uk": u"ДАЛІ", "ru": u"ДАЛЕЕ", "pl": u"NASTĘPNY", "tr": u"SONRAKİ",
-		"de": u"DANACH", "fr": u"SUIVANT", "es": u"SIGUIENTE", "it": u"PROSSIMO", "pt": u"SEGUINTE", "nl": u"VOLGENDE", "fa": u"بعدی", "zh": u"下一个", "ja": u"次"},
+		"de": u"DANACH", "fr": u"SUIVANT", "es": u"SIGUIENTE", "it": u"PROSSIMO", "pt": u"SEGUINTE", "nl": u"VOLGENDE", "fa": u"بعدی", "zh": u"下一个", "ja": u"次", "hr": u"SLJEDEĆE"},
 	"Film": {"ar": u"فيلم", "el": u"Ταινία", "uk": u"Фільм", "ru": u"Фильм", "pl": u"Film", "tr": u"Film",
-		"de": u"Film", "fr": u"Film", "es": u"Película", "it": u"Film", "pt": u"Filme", "nl": u"Film", "fa": u"فیلم", "zh": u"电影", "ja": u"映画"},
+		"de": u"Film", "fr": u"Film", "es": u"Película", "it": u"Film", "pt": u"Filme", "nl": u"Film", "fa": u"فیلم", "zh": u"电影", "ja": u"映画", "hr": u"Film"},
 	"Series": {"ar": u"مسلسل", "el": u"Σειρά", "uk": u"Серіал", "ru": u"Сериал", "pl": u"Serial", "tr": u"Dizi",
-		"de": u"Serie", "fr": u"Série", "es": u"Serie", "it": u"Serie", "pt": u"Série", "nl": u"Serie", "fa": u"سریال", "zh": u"剧集", "ja": u"シリーズ"},
+		"de": u"Serie", "fr": u"Série", "es": u"Serie", "it": u"Serie", "pt": u"Série", "nl": u"Serie", "fa": u"سریال", "zh": u"剧集", "ja": u"シリーズ", "hr": u"Serija"},
 	"min": {"ar": u"دقيقة", "el": u"λεπτά", "uk": u"хв", "ru": u"мин", "pl": u"min", "tr": u"dk",
-		"de": u"Min.", "fr": u"min", "es": u"min", "it": u"min", "pt": u"min", "nl": u"min", "fa": u"دقیقه", "zh": u"分钟", "ja": u"分"},
+		"de": u"Min.", "fr": u"min", "es": u"min", "it": u"min", "pt": u"min", "nl": u"min", "fa": u"دقیقه", "zh": u"分钟", "ja": u"分", "hr": u"min"},
 	"min left": {"ar": u"دقيقة متبقية", "el": u"λεπτά ακόμη", "uk": u"хв залишилось", "ru": u"мин осталось", "pl": u"min do końca", "tr": u"dk kaldı",
-		"de": u"Min. übrig", "fr": u"min restantes", "es": u"min restantes", "it": u"min rimanenti", "pt": u"min restantes", "nl": u"min resterend", "fa": u"دقیقه مانده", "zh": u"分钟剩余", "ja": u"分残り"},
+		"de": u"Min. übrig", "fr": u"min restantes", "es": u"min restantes", "it": u"min rimanenti", "pt": u"min restantes", "nl": u"min resterend", "fa": u"دقیقه مانده", "zh": u"分钟剩余", "ja": u"分残り", "hr": u"min preostalo"},
 }
 
 
 # fixed texts of some screens (written into skin.xml when the skin is tuned)
 LABELS.update({
 	"Playing": {"ar": u"قيد التشغيل", "el": u"Αναπαραγωγή", "uk": u"Відтворення", "ru": u"Воспроизведение", "pl": u"Odtwarzanie", "tr": u"Oynatılıyor",
-		"de": u"Wiedergabe", "fr": u"Lecture", "es": u"Reproduciendo", "it": u"In riproduzione", "pt": u"A reproduzir", "nl": u"Afspelen", "fa": u"در حال پخش", "zh": u"播放中", "ja": u"再生中"},
+		"de": u"Wiedergabe", "fr": u"Lecture", "es": u"Reproduciendo", "it": u"In riproduzione", "pt": u"A reproduzir", "nl": u"Afspelen", "fa": u"در حال پخش", "zh": u"播放中", "ja": u"再生中", "hr": u"Reprodukcija"},
 	"Volume": {"ar": u"الصوت", "el": u"Ένταση", "uk": u"Гучність", "ru": u"Громкость", "pl": u"Głośność", "tr": u"Ses",
-		"de": u"Lautstärke", "fr": u"Volume", "es": u"Volumen", "it": u"Volume", "pt": u"Volume", "nl": u"Volume", "fa": u"صدا", "zh": u"音量", "ja": u"音量"},
+		"de": u"Lautstärke", "fr": u"Volume", "es": u"Volumen", "it": u"Volume", "pt": u"Volume", "nl": u"Volume", "fa": u"صدا", "zh": u"音量", "ja": u"音量", "hr": u"Glasnoća"},
 	"NOW": {"ar": u"الآن", "el": u"ΤΩΡΑ", "uk": u"ЗАРАЗ", "ru": u"СЕЙЧАС", "pl": u"TERAZ", "tr": u"ŞİMDİ",
-		"de": u"JETZT", "fr": u"MAINT.", "es": u"AHORA", "it": u"ORA", "pt": u"AGORA", "nl": u"NU", "fa": u"اکنون", "zh": u"现在", "ja": u"今"},
+		"de": u"JETZT", "fr": u"MAINT.", "es": u"AHORA", "it": u"ORA", "pt": u"AGORA", "nl": u"NU", "fa": u"اکنون", "zh": u"现在", "ja": u"今", "hr": u"SADA"},
 	"Live Channels": {"ar": u"القنوات المباشرة", "el": u"Ζωντανά κανάλια", "uk": u"Прямі канали", "ru": u"Прямой эфир", "pl": u"Kanały na żywo", "tr": u"Canlı kanallar",
-		"de": u"Live-Sender", "fr": u"Chaînes en direct", "es": u"Canales en vivo", "it": u"Canali in diretta", "pt": u"Canais em direto", "nl": u"Live zenders", "fa": u"کانال‌های زنده", "zh": u"直播频道", "ja": u"ライブチャンネル"},
+		"de": u"Live-Sender", "fr": u"Chaînes en direct", "es": u"Canales en vivo", "it": u"Canali in diretta", "pt": u"Canais em direto", "nl": u"Live zenders", "fa": u"کانال‌های زنده", "zh": u"直播频道", "ja": u"ライブチャンネル", "hr": u"Kanali uživo"},
 	"Program Info": {"ar": u"معلومات", "el": u"Πληροφ.", "uk": u"Інфо", "ru": u"Инфо", "pl": u"Info", "tr": u"Bilgi",
-		"de": u"Info", "fr": u"Infos", "es": u"Info", "it": u"Info", "pt": u"Info", "nl": u"Info", "fa": u"اطلاعات", "zh": u"信息", "ja": u"情報"},
+		"de": u"Info", "fr": u"Infos", "es": u"Info", "it": u"Info", "pt": u"Info", "nl": u"Info", "fa": u"اطلاعات", "zh": u"信息", "ja": u"情報", "hr": u"Info"},
 	"Options": {"ar": u"خيارات", "el": u"Επιλογές", "uk": u"Опції", "ru": u"Опции", "pl": u"Opcje", "tr": u"Seçenekler",
-		"de": u"Optionen", "fr": u"Options", "es": u"Opciones", "it": u"Opzioni", "pt": u"Opções", "nl": u"Opties", "fa": u"گزینه‌ها", "zh": u"选项", "ja": u"オプション"},
+		"de": u"Optionen", "fr": u"Options", "es": u"Opciones", "it": u"Opzioni", "pt": u"Opções", "nl": u"Opties", "fa": u"گزینه‌ها", "zh": u"选项", "ja": u"オプション", "hr": u"Opcije"},
 	"Back": {"ar": u"رجوع", "el": u"Πίσω", "uk": u"Назад", "ru": u"Назад", "pl": u"Wstecz", "tr": u"Geri",
-		"de": u"Zurück", "fr": u"Retour", "es": u"Atrás", "it": u"Indietro", "pt": u"Voltar", "nl": u"Terug", "fa": u"بازگشت", "zh": u"返回", "ja": u"戻る"},
+		"de": u"Zurück", "fr": u"Retour", "es": u"Atrás", "it": u"Indietro", "pt": u"Voltar", "nl": u"Terug", "fa": u"بازگشت", "zh": u"返回", "ja": u"戻る", "hr": u"Natrag"},
 })
 STATIC = ("Playing", "Volume", "NOW", "Live Channels", "Program Info", "Options", "Back")
 

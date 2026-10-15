@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.90"
+SKIN_VERSION = "2.1.91"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -1893,7 +1893,7 @@ TR_LANGS = (("ar", u"العربية Arabic"), ("en", "English"), ("tr", u"Türk�
 	("pt", u"Português Portuguese"), ("id", "Indonesia Indonesian"), ("hi", u"हिन्दी Hindi"),
 	("uk", u"Українська Ukrainian"), ("zh-CN", u"中文 Chinese"), ("ja", u"日本語 Japanese"), ("el", u"Ελληνικά Greek"),
 	("ro", u"Română Romanian"), ("cs", u"Čeština Czech"), ("sv", "Svenska Swedish"), ("hu", "Magyar Hungarian"),
-	("bg", u"Български Bulgarian"))
+	("bg", u"Български Bulgarian"), ("hr", "Hrvatski Croatian"))
 DEEPL_CODES = {"en": "EN-GB", "pt": "PT-PT", "zh-CN": "ZH"}
 MS_CODES = {"zh-CN": "zh-Hans"}  # Microsoft / Bing names for the same languages
 CJK = ("zh", "zh-CN", "ja")
@@ -3248,8 +3248,9 @@ WMO = {
 # weather words in the other languages of the setup (Arabic and English are in WMO above)
 WEATHER_LANGS = (("ar", u"العربية"), ("en", "English"), ("zh", u"简体中文"), ("uk", u"Українська"), ("ru", u"Русский"),
 	("de", "Deutsch"), ("fr", u"Français"), ("es", u"Español"), ("it", "Italiano"), ("pt", u"Português"),
-	("nl", "Nederlands"), ("pl", "Polski"), ("tr", u"Türkçe"), ("fa", u"فارسی"), ("ja", u"日本語"), ("el", u"Ελληνικά"))
+	("nl", "Nederlands"), ("pl", "Polski"), ("tr", u"Türkçe"), ("fa", u"فارسی"), ("ja", u"日本語"), ("el", u"Ελληνικά"), ("hr", "Hrvatski"))
 WX_WORDS = {
+	"hr": {"Clear": u"Vedro", "Mostly clear": u"Pretežno vedro", "Partly cloudy": u"Djelomice oblačno", "Cloudy": u"Oblačno", "Fog": u"Magla", "Drizzle": u"Rominjanje", "Freezing drizzle": u"Ledeno rominjanje", "Light rain": u"Slaba kiša", "Rain": u"Kiša", "Heavy rain": u"Jaka kiša", "Freezing rain": u"Ledena kiša", "Light snow": u"Slab snijeg", "Snow": u"Snijeg", "Heavy snow": u"Jak snijeg", "Snow grains": u"Snježna zrnca", "Showers": u"Pljuskovi", "Heavy showers": u"Jaki pljuskovi", "Snow showers": u"Snježni pljuskovi", "Thunderstorm": u"Grmljavina", "Humidity": u"Vlažnost"},
 	"el": {"Clear": u"Αίθριος", "Mostly clear": u"Κυρίως αίθριος", "Partly cloudy": u"Λίγες νεφώσεις", "Cloudy": u"Συννεφιά", "Fog": u"Ομίχλη", "Drizzle": u"Ψιχάλες", "Freezing drizzle": u"Παγωμένες ψιχάλες", "Light rain": u"Ασθενής βροχή", "Rain": u"Βροχή", "Heavy rain": u"Ισχυρή βροχή", "Freezing rain": u"Παγωμένη βροχή", "Light snow": u"Ασθενής χιονόπτωση", "Snow": u"Χιόνι", "Heavy snow": u"Ισχυρή χιονόπτωση", "Snow grains": u"Κόκκοι χιονιού", "Showers": u"Βροχοπτώσεις", "Heavy showers": u"Ισχυρές βροχοπτώσεις", "Snow showers": u"Χιονοπτώσεις", "Thunderstorm": u"Καταιγίδα", "Humidity": u"Υγρασία"},
 	"zh": {"Clear": u"晴", "Mostly clear": u"大部晴朗", "Partly cloudy": u"多云", "Cloudy": u"阴", "Fog": u"雾", "Drizzle": u"毛毛雨", "Freezing drizzle": u"冻毛毛雨", "Light rain": u"小雨", "Rain": u"雨", "Heavy rain": u"大雨", "Freezing rain": u"冻雨", "Light snow": u"小雪", "Snow": u"雪", "Heavy snow": u"大雪", "Snow grains": u"米雪", "Showers": u"阵雨", "Heavy showers": u"强阵雨", "Snow showers": u"阵雪", "Thunderstorm": u"雷暴", "Humidity": u"湿度"},
 	"ja": {"Clear": u"快晴", "Mostly clear": u"おおむね晴れ", "Partly cloudy": u"晴れ時々曇り", "Cloudy": u"曇り", "Fog": u"霧", "Drizzle": u"霧雨", "Freezing drizzle": u"着氷性の霧雨", "Light rain": u"小雨", "Rain": u"雨", "Heavy rain": u"大雨", "Freezing rain": u"着氷性の雨", "Light snow": u"小雪", "Snow": u"雪", "Heavy snow": u"大雪", "Snow grains": u"霧雪", "Showers": u"にわか雨", "Heavy showers": u"強いにわか雨", "Snow showers": u"にわか雪", "Thunderstorm": u"雷雨", "Humidity": u"湿度"},
@@ -3271,6 +3272,7 @@ WX_WORDS = {
 DAY_NAMES = {
 	"en": ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
 	"ar": (u"الاثنين", u"الثلاثاء", u"الأربعاء", u"الخميس", u"الجمعة", u"السبت", u"الأحد"),
+	"hr": (u"Pon", u"Uto", u"Sri", u"Čet", u"Pet", u"Sub", u"Ned"),
 	"el": (u"Δευ", u"Τρί", u"Τετ", u"Πέμ", u"Παρ", u"Σάβ", u"Κυρ"),
 	"zh": (u"周一", u"周二", u"周三", u"周四", u"周五", u"周六", u"周日"),
 	"uk": (u"Пн", u"Вт", u"Ср", u"Чт", u"Пт", u"Сб", u"Нд"),
