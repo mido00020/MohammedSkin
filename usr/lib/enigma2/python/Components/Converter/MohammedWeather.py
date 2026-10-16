@@ -5,6 +5,7 @@
 #
 # DayName:1..4 | DayTemp:1..4 (forecast, the days after today)
 # Temp | Condition | City | MinMax | Humidity | Wind | Line (condition and city)
+# City:<width>:<font>:<size>:<1|2|3> -> the city name that fits the box: the full size, a smaller one, or shortened (three boxes, one shows it)
 # HasWeather (with ConditionalShowHide): weather switched on and known
 
 from Components.Converter.Converter import Converter
@@ -30,7 +31,33 @@ class MohammedWeather(Converter, object):
 		data = U.weather(self.cb)
 		if self.type == "HasWeather":
 			return ""
+		if self.type.startswith("City:"):
+			return self.cityFit(U.weather_text("City", data))
 		return U.weather_text(self.type, data)
+
+	def cityFit(self, name):
+		"""The name in the box of its size tier: full size when it fits, 80% when it does not, else 66% and shortened with dots."""
+		try:
+			_, w, font, size, tier = self.type.split(":")
+			w, size, tier = int(w), int(size), int(tier)
+			from Components import MohammedLabels as L
+		except Exception:
+			return name
+		if not name:
+			return ""
+		sizes = (size, int(round(size * 0.8)), int(round(size * 0.66)))
+		pick = 3
+		for i in (0, 1):
+			if L.text_width(name, font, sizes[i]) <= w:
+				pick = i + 1
+				break
+		if pick != tier:
+			return ""
+		if pick == 3 and L.text_width(name, font, sizes[2]) > w:
+			while len(name) > 1 and L.text_width(name + u"\u2026", font, sizes[2]) > w:
+				name = name[:-1].rstrip()
+			name += u"\u2026"
+		return name
 
 	text = property(getText)
 

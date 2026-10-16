@@ -173,7 +173,9 @@
 		<!-- WEATHER START (inline) -->
 		<widget source="global.CurrentTime" render="MohammedWeatherIcon" icons="/usr/share/enigma2/MohammedSkin/weather/60/%s.png" position="1060,42" size="60,60" alphatest="blend" zPosition="3" />
 		<widget source="global.CurrentTime" render="Label" position="1124,46" size="96,56" font="Title;44" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">Temp</convert></widget>
-		<widget source="global.CurrentTime" render="Label" position="1214,40" size="230,32" font="Semi;22" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">City</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1214,40" size="230,32" valign="center" font="Semi;22" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">City:230:Semi:22:1</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1214,40" size="230,32" valign="center" font="Semi;18" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">City:230:Semi:22:2</convert></widget>
+		<widget source="global.CurrentTime" render="Label" position="1214,40" size="230,32" valign="center" font="Semi;15" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">City:230:Semi:22:3</convert></widget>
 		<widget source="global.CurrentTime" render="Label" position="1214,72" size="230,30" font="Regular;20" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3"><convert type="MohammedWeather">Condition</convert></widget>
 		<!-- WEATHER END -->
 	</screen>

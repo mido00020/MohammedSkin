@@ -9,7 +9,13 @@
 			<convert type="MohammedWeather">Temp</convert>
 		</widget>
 		<widget source="global.CurrentTime" render="Label" position="82,916" size="180,28" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
-			<convert type="MohammedWeather">City</convert>
+			<convert type="MohammedWeather">City:180:Semi:20:1</convert>
+		</widget>
+		<widget source="global.CurrentTime" render="Label" position="82,916" size="180,28" font="Semi;16" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+			<convert type="MohammedWeather">City:180:Semi:20:2</convert>
+		</widget>
+		<widget source="global.CurrentTime" render="Label" position="82,916" size="180,28" font="Semi;13" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+			<convert type="MohammedWeather">City:180:Semi:20:3</convert>
 		</widget>
 		<widget source="global.CurrentTime" render="Label" position="92,944" size="160,24" font="Regular;18" halign="center" valign="center" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedWeather">MinMax</convert>
