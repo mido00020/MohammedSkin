@@ -1,7 +1,7 @@
 	<!-- IB START (diagonal) -->
 	<screen name="InfoBar" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_diagonal_bg.png" position="0,748" size="1920,332" alphatest="blend" zPosition="0" />
-		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cornerRadius="24" position="780,740" size="604,340" zPosition="1" />
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="24" position="780,740" size="604,224" zPosition="1" />
 		<!-- 3D poster box -->
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_box_diagonal.png" position="20,748" size="340,332" alphatest="blend" zPosition="3" />
 		<widget source="session.CurrentService" render="Picon" position="98,839" size="166,99" alphatest="blend" zPosition="3">

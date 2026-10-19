@@ -181,8 +181,8 @@
 	<!-- IB START (classic) -->
 	<screen name="InfoBar" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ib_scrim.png" position="0,690" size="1920,430" alphatest="blend" zPosition="0" />
-		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cornerRadius="24" position="965,887" size="375,211" zPosition="1" />
-		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ib_bdfade.png" position="965,887" size="375,211" alphatest="blend" zPosition="2" />
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="24" position="1170,887" size="170,211" zPosition="1" />
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ib_bdfade.png" position="1170,887" size="170,211" alphatest="blend" zPosition="2" />
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ib_rule.png" position="0,890" size="1920,2" alphatest="blend" zPosition="2" />
 		<!-- IBPOSTER START (left) -->
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/card_ib.png" position="70,794" size="168,252" alphatest="blend" zPosition="3" />

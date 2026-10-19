@@ -1,7 +1,7 @@
 	<!-- IB START (holo) -->
 	<screen name="InfoBar" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_holo_bg.png" position="0,748" size="1920,332" alphatest="blend" zPosition="0" />
-		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cornerRadius="24" position="650,740" size="604,340" zPosition="1" />
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="24" position="650,740" size="604,224" zPosition="1" />
 		<!-- round poster inside the hologram rings -->
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_box_holo.png" position="34,748" size="340,332" alphatest="blend" zPosition="3" />
 		<widget source="session.CurrentService" render="Picon" position="126,846" size="156,93" alphatest="blend" zPosition="3">

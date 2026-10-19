@@ -1,4 +1,5 @@
 	<!-- CHANNELS START (hero) -->
+	<!-- nolive -->
 	<screen name="ChannelSelection" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/cl9_base.png" position="0,0" size="1920,1080" alphatest="blend" zPosition="0" />
 		<widget source="ServiceEvent" render="MohammedPoster" kind="backdrop" event="now" delay="700" logo="0" cover="1" position="0,0" size="1920,470" zPosition="1" />

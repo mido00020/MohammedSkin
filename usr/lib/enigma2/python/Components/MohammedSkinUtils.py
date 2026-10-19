@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.93"
+SKIN_VERSION = "2.1.94"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -2758,7 +2758,7 @@ def _live_channels(snippet):
 	Wide backdrop styles: in place of the backdrop. Carousel: in place of the poster wheel.
 	Poster styles: the poster and its details stay, the picture takes the place of the description
 	and the next programme under them."""
-	if ch_preview() != "live":
+	if ch_preview() != "live" or "<!-- nolive -->" in snippet:  # a few wide styles keep their details instead
 		return snippet
 	pig = '<widget source="session.VideoPicture" render="Pig" position="%d,%d" size="%d,%d" backgroundColor="transparent" zPosition="%d" />'
 

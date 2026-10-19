@@ -1,7 +1,7 @@
 	<!-- IB START (s2) -->
 	<screen name="InfoBar" position="0,0" size="1920,1080" backgroundColor="transparent" flags="wfNoBorder">
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_s2_bg.png" position="0,748" size="1920,332" alphatest="blend" zPosition="0" />
-		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cornerRadius="24" position="560,740" size="604,340" zPosition="1" />
+		<widget source="session.Event_Now" render="MohammedPoster" kind="backdrop" cover="1" cornerRadius="24" position="560,740" size="604,270" zPosition="1" />
 		<!-- small round clock -->
 		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_ring_s.png" position="30,742" size="132,132" alphatest="blend" zPosition="3" />
 		<widget source="global.CurrentTime" render="Label" position="170,750" size="220,64" font="Title;56" halign="left" valign="center" foregroundColor="clockblue" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
