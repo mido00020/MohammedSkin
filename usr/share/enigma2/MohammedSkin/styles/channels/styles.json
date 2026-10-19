@@ -18,7 +18,10 @@
   "feature",
   "tickets",
   "tickets2",
-  "synth"
+  "synth",
+  "cinerows",
+  "postercol",
+  "hero"
  ],
  "labels": {
   "classic": "Classic",
@@ -39,6 +42,9 @@
   "feature": "15  Featured channel card",
   "tickets": "16  Tickets - big picture and lit board",
   "tickets2": "17  Tickets - poster, details and next",
-  "synth": "18  Neon glass - full picture behind"
+  "synth": "18  Neon glass - full picture behind",
+  "cinerows": "19  Cinema rows - wide glass rows",
+  "postercol": "20  Poster column + wide rows",
+  "hero": "21  Hero banner + wide rows"
  }
 }
