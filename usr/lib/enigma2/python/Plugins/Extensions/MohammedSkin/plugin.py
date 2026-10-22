@@ -471,7 +471,7 @@ class MohammedSkinSetup(Screen):
 			print("[MohammedSkin] notice timer: %s" % e)
 
 	def showNotice(self):
-		if U.settings().get("notice_2195"):
+		if U.settings().get("notice_full"):
 			return
 		if not self.isTop():
 			self.noticeTries += 1
@@ -480,7 +480,7 @@ class MohammedSkinSetup(Screen):
 			return
 		try:
 			d = dict(U.settings())
-			d["notice_2195"] = True
+			d["notice_full"] = True
 			U.save_settings(d)
 		except Exception:
 			pass

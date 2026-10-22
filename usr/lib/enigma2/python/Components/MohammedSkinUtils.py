@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.98"
+SKIN_VERSION = "2.1.99"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -135,7 +135,7 @@ def purge_posters_once():
 			data = json.load(f)
 	except Exception:
 		data = {}
-	if data.get("purged_2195"):
+	if data.get("purged_2198"):
 		return
 	import shutil
 	for d in ["/tmp/MohammedSkin"] + [os.path.join(b, "MohammedSkin_cache") for b in ("/media/hdd", "/media/usb", "/media/mmc")]:
@@ -151,8 +151,8 @@ def purge_posters_once():
 		for k in ("tmdb", "omdb", "fanart"):
 			data[k] = ""  # keys put in by older versions are deleted: they are typed again after reading the notice
 		data["terms_ok"] = False
-		data["notice_2195"] = False
-		data["purged_2195"] = True
+		data["notice_full"] = False
+		data["purged_2198"] = True
 		try:
 			with open(SETTINGS_FILE, "w") as f:
 				json.dump(data, f, indent=1)
