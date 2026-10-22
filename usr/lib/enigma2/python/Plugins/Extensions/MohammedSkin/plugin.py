@@ -430,25 +430,44 @@ class MohammedSkinSetup(Screen):
 	def layoutDone(self):
 		self.showCategory()
 		self.initPreview()
-		if not U.settings().get("notice_2195") and self.isTop():
+		self.noticeTries = 0
+		try:
+			from enigma import eTimer
+			self.noticeTimer = eTimer()
 			try:
-				d = dict(U.settings())
-				d["notice_2195"] = True
-				U.save_settings(d)
-			except Exception:
-				pass
-			self.session.open(MessageBox, self.m(
-				u"تنبيه مهم\n\n"
-				u"نستسمحكم عذراً، تم حذف مفاتيح البوسترات من السكن لأسباب تقنية، وتم حذف البوسترات المخزّنة.\n\n"
-				u"والمطوّر يبرئ ذمته أمام الله من استخدام أي مفاتيح لعرض البوسترات أو تنزيل صور النساء أو العري، وذلك لمخالفته تعاليم الشريعة الإسلامية.\n\n"
-				u"فإذا وضعت مفتاحك الخاص فإنك تتحمل المسؤولية الكاملة عنه، والمطوّر غير مسؤول عنك ولا عن تصرفاتك واستخدامك.\n\n"
-				u"بدون مفتاح يعمل السكن كالمعتاد ويعرض شعارات القنوات.",
-				"Important notice\n\n"
-				"We apologize: the poster keys were removed from the skin for technical reasons, and the stored posters were deleted.\n\n"
-				"The developer declares himself free before God of any use of keys to show posters or download pictures of women or nudity, because that goes against the teachings of Islamic Sharia.\n\n"
-				"If you enter your own key, you take full responsibility for it, and the developer is not responsible for you, your actions or how you use it.\n\n"
-				"Without a key the skin works as usual and shows the channel logos."),
-				MessageBox.TYPE_INFO)
+				self.noticeTimer.callback.append(self.showNotice)
+			except AttributeError:
+				self.noticeConn = self.noticeTimer.timeout.connect(self.showNotice)
+			self.noticeTimer.start(800, True)
+		except Exception as e:
+			print("[MohammedSkin] notice timer: %s" % e)
+
+	def showNotice(self):
+		if U.settings().get("notice_2195"):
+			return
+		if not self.isTop():
+			self.noticeTries += 1
+			if self.noticeTries < 10:
+				self.noticeTimer.start(800, True)
+			return
+		try:
+			d = dict(U.settings())
+			d["notice_2195"] = True
+			U.save_settings(d)
+		except Exception:
+			pass
+		self.session.open(MessageBox, self.m(
+			u"تنبيه مهم\n\n"
+			u"نستسمحكم عذراً، تم حذف مفاتيح البوسترات من السكن لأسباب تقنية، وتم حذف البوسترات المخزّنة.\n\n"
+			u"والمطوّر يبرئ ذمته أمام الله من استخدام أي مفاتيح لعرض البوسترات أو تنزيل صور النساء أو العري، وذلك لمخالفته تعاليم الشريعة الإسلامية.\n\n"
+			u"فإذا وضعت مفتاحك الخاص فإنك تتحمل المسؤولية الكاملة عنه، والمطوّر غير مسؤول عنك ولا عن تصرفاتك واستخدامك.\n\n"
+			u"بدون مفتاح يعمل السكن كالمعتاد ويعرض شعارات القنوات.",
+			"Important notice\n\n"
+			"We apologize: the poster keys were removed from the skin for technical reasons, and the stored posters were deleted.\n\n"
+			"The developer declares himself free before God of any use of keys to show posters or download pictures of women or nudity, because that goes against the teachings of Islamic Sharia.\n\n"
+			"If you enter your own key, you take full responsibility for it, and the developer is not responsible for you, your actions or how you use it.\n\n"
+			"Without a key the skin works as usual and shows the channel logos."),
+			MessageBox.TYPE_INFO)
 
 	def valueText(self, cfg):
 		if isinstance(cfg, ConfigYesNo):
@@ -721,6 +740,9 @@ class MohammedSkinSetup(Screen):
 		if cur and cur[1] is self.weatherLoc:
 			self.chooseCountry()
 			return
+		if cur and cur[1] in (self.tmdb, self.omdb, self.fanart) and not U.settings().get("terms_ok") and not getattr(self, "termsOk", False):
+			self.session.openWithCallback(self.keyTermsAnswer, MessageBox, self.termsText(), MessageBox.TYPE_YESNO, default=False)
+			return
 		if cur and isinstance(cur[1], ConfigText):
 			self.session.openWithCallback(lambda text, c=cur[1]: self.gotText(c, text), VirtualKeyBoard, title=cur[0], text=cur[1].value)
 
@@ -781,6 +803,11 @@ class MohammedSkinSetup(Screen):
 			"The skin comes with no poster key. You register with the source website (TMDB or others), get your own key and enter it here, so it is in your name and your responsibility.\n\n"
 			"By entering a key you confirm that you alone are fully responsible, before God and before the law, for everything your key fetches and shows on your receiver, including any forbidden or immoral pictures or content, such as pictures of women, nudity and the like. I call God as my witness, and the skin owner is free of all of it before God Almighty and takes no responsibility for the content that comes from those sources or for how you use your key.\n\n"
 			"Do you agree and accept?")
+
+	def keyTermsAnswer(self, answer):
+		if answer:
+			self.termsOk = True
+			self.keyOK()
 
 	def termsAnswer(self, answer):
 		if answer:
