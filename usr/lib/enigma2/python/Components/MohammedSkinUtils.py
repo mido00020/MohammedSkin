@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.99"
+SKIN_VERSION = "2.1.100"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -151,7 +151,7 @@ def purge_posters_once():
 		for k in ("tmdb", "omdb", "fanart"):
 			data[k] = ""  # keys put in by older versions are deleted: they are typed again after reading the notice
 		data["terms_ok"] = False
-		data["notice_full"] = False
+		data["notice_solid"] = False
 		data["purged_2198"] = True
 		try:
 			with open(SETTINGS_FILE, "w") as f:

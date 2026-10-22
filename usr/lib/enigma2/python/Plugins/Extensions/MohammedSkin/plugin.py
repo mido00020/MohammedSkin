@@ -130,13 +130,14 @@ class MohammedNotice(Screen):
 
 	def __init__(self, session, title, text, hint, asks=False):
 		Screen.__init__(self, session)
-		self.skin = """<screen name="MohammedNotice" position="0,0" size="1920,1080" flags="wfNoBorder" backgroundColor="#F2050507">
-			<eLabel position="0,0" size="1920,1080" backgroundColor="#F2050507" zPosition="-1" />
+		self.skin = """<screen name="MohammedNotice" position="0,0" size="1920,1080" flags="wfNoBorder" backgroundColor="#00050507">
+			<eLabel position="0,0" size="1920,1080" backgroundColor="#00050507" zPosition="-1" />
+			<eLabel position="200,120" size="1520,880" backgroundColor="#00131319" zPosition="-1" />
 			<eLabel position="260,150" size="1400,6" backgroundColor="#C8102E" />
-			<widget name="title" position="260,180" size="1400,90" font="Regular;56" halign="center" valign="center" foregroundColor="#FFFFFF" backgroundColor="#F2050507" transparent="1" />
-			<widget name="text" position="260,300" size="1400,590" font="Regular;38" halign="center" valign="center" foregroundColor="#E8E8E8" backgroundColor="#F2050507" transparent="1" />
+			<widget name="title" position="260,180" size="1400,90" font="Regular;56" halign="center" valign="center" foregroundColor="#FFFFFF" backgroundColor="#00050507" transparent="1" />
+			<widget name="text" position="260,300" size="1400,590" font="Regular;38" halign="center" valign="center" foregroundColor="#E8E8E8" backgroundColor="#00050507" transparent="1" />
 			<eLabel position="260,925" size="1400,2" backgroundColor="#555555" />
-			<widget name="hint" position="260,950" size="1400,60" font="Regular;34" halign="center" valign="center" foregroundColor="#FFD060" backgroundColor="#F2050507" transparent="1" />
+			<widget name="hint" position="260,950" size="1400,60" font="Regular;34" halign="center" valign="center" foregroundColor="#FFD060" backgroundColor="#00050507" transparent="1" />
 		</screen>"""
 		self.asks = asks
 		self["title"] = Label(title)
@@ -471,7 +472,7 @@ class MohammedSkinSetup(Screen):
 			print("[MohammedSkin] notice timer: %s" % e)
 
 	def showNotice(self):
-		if U.settings().get("notice_full"):
+		if U.settings().get("notice_solid"):
 			return
 		if not self.isTop():
 			self.noticeTries += 1
@@ -480,7 +481,7 @@ class MohammedSkinSetup(Screen):
 			return
 		try:
 			d = dict(U.settings())
-			d["notice_full"] = True
+			d["notice_solid"] = True
 			U.save_settings(d)
 		except Exception:
 			pass
