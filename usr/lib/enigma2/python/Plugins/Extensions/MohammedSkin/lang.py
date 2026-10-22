@@ -123,6 +123,7 @@ AR = {
 	"When a channel has no event, no poster was found or the poster is hidden, show its logo on a 3D card instead.": u"لو القناة ما لها برنامج أو بوستر، يطلع شعارها على بطاقة ثلاثية الأبعاد.",
 	"Language of this setup screen. Saving switches it at once.": u"لغة شاشة الإعدادات هذي. الحفظ يغيرها على طول.",
 	"Saving a new look restarts the GUI.": u"حفظ شكل جديد يعيد تشغيل الواجهة.",
+	"Your own free key from themoviedb.org. Needed for posters: the skin has no built-in key. Press OK to type.": u"مفتاحك الخاص المجاني من themoviedb.org. لازم للبوسترات: السكن ما فيه مفتاح مدمج. اضغط OK للكتابة.",
 }
 
 

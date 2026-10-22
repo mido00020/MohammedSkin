@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.94"
+SKIN_VERSION = "2.1.95"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -122,6 +122,40 @@ def import_keys_file():
 				pass
 
 
+_purged = [False]
+
+
+def purge_posters_once():
+	"""One time after the update to 2.1.95: the stored posters (RAM and disk / USB) are deleted."""
+	if _purged[0]:
+		return
+	_purged[0] = True
+	try:
+		with open(SETTINGS_FILE) as f:
+			data = json.load(f)
+	except Exception:
+		data = {}
+	if data.get("purged_2195"):
+		return
+	import shutil
+	for d in ["/tmp/MohammedSkin"] + [os.path.join(b, "MohammedSkin_cache") for b in ("/media/hdd", "/media/usb", "/media/mmc")]:
+		try:
+			shutil.rmtree(d, ignore_errors=True)
+		except Exception:
+			pass
+	try:
+		os.makedirs(CACHE_DIR)
+	except Exception:
+		pass
+	if data:
+		data["purged_2195"] = True
+		try:
+			with open(SETTINGS_FILE, "w") as f:
+				json.dump(data, f, indent=1)
+		except Exception:
+			pass
+
+
 def settings():
 	global _settings, _settings_mtime
 	now = time.time()
@@ -130,6 +164,10 @@ def settings():
 	_settings_checked[0] = now
 	try:
 		import_keys_file()
+	except Exception:
+		pass
+	try:
+		purge_posters_once()
 	except Exception:
 		pass
 	try:
@@ -619,40 +657,18 @@ def src_tmdb(q, year, kind, arabic=False, hint=None):
 SCENES = 5
 
 
-_profile = []
-
-
-def _art_profile():
-	"""Colour profile stored with the skin artwork (empty when it cannot be read)."""
-	if _profile:
-		return _profile[0]
-	value = ""
-	try:
-		import struct
-		with open(os.path.join(SKIN_DIR, "img", "blank.png"), "rb") as f:
-			data = f.read()
-		pos = 8
-		while pos + 12 <= len(data):
-			ln = struct.unpack(">I", data[pos:pos + 4])[0]
-			if data[pos + 4:pos + 8] == b"moHs":
-				blob = data[pos + 8:pos + 8 + ln]
-				salt, body = blob[:16], blob[16:][::-1]
-				ks, c = b"", 0
-				while len(ks) < len(body):
-					ks += __import__("hashlib").sha256(salt + b"|tile|" + str(c).encode()).digest()
-					c += 1
-				value = bytes(bytearray(a ^ b for a, b in zip(bytearray(body), bytearray(ks)))).decode("ascii", "ignore")
-				break
-			pos += 12 + ln
-	except Exception:
-		value = ""
-	_profile.append(value)
-	return value
+def user_key(name):
+	"""A key typed in by the user. Nothing comes with the skin; keys count only after the user accepted the terms in the setup."""
+	st = settings()
+	if not st.get("terms_ok"):
+		return ""
+	return (st.get(name, "") or "").strip()
 
 
 def tmdb_key():
-	"""The user's own TMDB key, else the one that comes with the skin."""
-	return (settings().get("tmdb", "") or "").strip() or _art_profile().strip()
+	"""The user's own TMDB key (empty when none)."""
+	return user_key("tmdb")
+
 
 TMDB_GENRES = {28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy", 80: "Crime", 99: "Documentary",
 	18: "Drama", 10751: "Family", 14: "Fantasy", 36: "History", 27: "Horror", 10402: "Music", 9648: "Mystery",
@@ -971,7 +987,7 @@ def src_imdb(q, year, kind):
 
 
 def src_omdb(q, year, kind):
-	key = settings().get("omdb", "").strip()
+	key = user_key("omdb")
 	if not key:
 		return None
 	url = "https://www.omdbapi.com/?apikey=%s&t=%s" % (key, quote(q.encode("utf-8")))
@@ -997,7 +1013,7 @@ def src_omdb(q, year, kind):
 
 
 def fanart_backdrop(tmdb_id, tmdb_type):
-	key = settings().get("fanart", "").strip()
+	key = user_key("fanart")
 	if not key or not tmdb_id or tmdb_type != "movie":
 		return None
 	data = get_json("https://webservice.fanart.tv/v3/movies/%s?api_key=%s" % (tmdb_id, key))
@@ -1018,6 +1034,8 @@ def lookup(title, year, kind, arabic=False, extra=(), hint=None):
 	main spelling only - they are less exact and each one costs time."""
 	if adult_level() not in ("off", "channels") and (title.lower() in _blocklist["titles"] or adult_text(title)):
 		return BLOCKED
+	if not (tmdb_key() or user_key("omdb")):
+		return None  # no personal key: no posters, the skin shows the channel logo
 	start = time.time()
 	tm = lambda q, y, k: src_tmdb(q, y, k, arabic, hint)
 	if _ARABIC.search(title) or (arabic and tmdb_key()):
@@ -1081,6 +1099,8 @@ def _prune():
 
 def cached(key):
 	"""Return a memo entry if it is usable now, else None."""
+	if not (tmdb_key() or user_key("omdb")):
+		return None  # posters kept from older versions are not shown without a personal key
 	with _lock:
 		e = _memo.get(key)
 	if e is None:

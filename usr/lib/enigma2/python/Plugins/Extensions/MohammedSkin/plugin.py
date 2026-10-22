@@ -287,7 +287,7 @@ class MohammedSkinSetup(Screen):
 			id(self.trKey): "Your own translation key (optional). Press OK to type. Only used when the service above is Microsoft or DeepL.",
 			id(self.trRegion): "Region of a Microsoft key, e.g. westeurope or uaenorth (leave empty for a global key). Press OK to type.",
 			id(self.translate): "Yes: translate event titles and descriptions to the language below. No: show everything in its original language.",
-			id(self.tmdb): "Your own free key from themoviedb.org (optional). Gives the scenes, film ratings and backdrops; replaces the skin's built-in key. Press OK to type.",
+			id(self.tmdb): "Your own free key from themoviedb.org. Needed for posters: the skin has no built-in key. Press OK to type.",
 			id(self.omdb): "Optional. Free key from omdbapi.com. Extra poster source. Press OK to type.",
 			id(self.fanart): "Optional. Free key from fanart.tv. Extra film backdrops (needs a TMDB key too). Press OK to type.",
 			id(self.language): "Language used for TMDB searches.",
@@ -430,6 +430,25 @@ class MohammedSkinSetup(Screen):
 	def layoutDone(self):
 		self.showCategory()
 		self.initPreview()
+		if not U.settings().get("notice_2195") and self.isTop():
+			try:
+				d = dict(U.settings())
+				d["notice_2195"] = True
+				U.save_settings(d)
+			except Exception:
+				pass
+			self.session.open(MessageBox, self.m(
+				u"تنبيه مهم\n\n"
+				u"نستسمحكم عذراً، تم حذف مفاتيح البوسترات من السكن لأسباب تقنية، وتم حذف البوسترات المخزّنة.\n\n"
+				u"والمطوّر يبرئ ذمته أمام الله من استخدام أي مفاتيح لعرض البوسترات أو تنزيل صور النساء أو العري، وذلك لمخالفته تعاليم الشريعة الإسلامية.\n\n"
+				u"فإذا وضعت مفتاحك الخاص فإنك تتحمل المسؤولية الكاملة عنه، والمطوّر غير مسؤول عنك ولا عن تصرفاتك واستخدامك.\n\n"
+				u"بدون مفتاح يعمل السكن كالمعتاد ويعرض شعارات القنوات.",
+				"Important notice\n\n"
+				"We apologize: the poster keys were removed from the skin for technical reasons, and the stored posters were deleted.\n\n"
+				"The developer declares himself free before God of any use of keys to show posters or download pictures of women or nudity, because that goes against the teachings of Islamic Sharia.\n\n"
+				"If you enter your own key, you take full responsibility for it, and the developer is not responsible for you, your actions or how you use it.\n\n"
+				"Without a key the skin works as usual and shows the channel logos."),
+				MessageBox.TYPE_INFO)
 
 	def valueText(self, cfg):
 		if isinstance(cfg, ConfigYesNo):
@@ -752,8 +771,31 @@ class MohammedSkinSetup(Screen):
 		else:
 			self.status("This colour needs python3-pillow. Update the skin (it installs it) and try again.")
 
+	def termsText(self):
+		return self.m(
+			u"تعهد وإخلاء مسؤولية\n\n"
+			u"السكن لا يحتوي على أي مفتاح بوسترات. أنت من يسجّل في موقع المصدر (TMDB وغيره) ويأخذ مفتاحك الخاص ويضعه هنا، فهو باسمك وتحت مسؤوليتك.\n\n"
+			u"بوضعك المفتاح تقرّ وتتعهد بأنك المسؤول مسؤولية كاملة أمام الله ثم أمام القانون عن كل ما يجلبه مفتاحك ويظهر على جهازك، بما في ذلك أي صور أو محتوى محرّم أو مخلّ بالآداب، مثل صور النساء والعري وما شابهها. وأشهد الله على ذلك، وصاحب السكن بريء أمام الله سبحانه وتعالى من ذلك كله، ولا يتحمل أي مسؤولية عن المحتوى القادم من تلك المصادر ولا عن استخدامك لمفتاحك.\n\n"
+			u"هل توافق وتتعهد؟",
+			"Pledge and disclaimer\n\n"
+			"The skin comes with no poster key. You register with the source website (TMDB or others), get your own key and enter it here, so it is in your name and your responsibility.\n\n"
+			"By entering a key you confirm that you alone are fully responsible, before God and before the law, for everything your key fetches and shows on your receiver, including any forbidden or immoral pictures or content, such as pictures of women, nudity and the like. I call God as my witness, and the skin owner is free of all of it before God Almighty and takes no responsibility for the content that comes from those sources or for how you use your key.\n\n"
+			"Do you agree and accept?")
+
+	def termsAnswer(self, answer):
+		if answer:
+			self.termsOk = True
+		else:
+			for cfg in (self.tmdb, self.omdb, self.fanart):
+				cfg.value = ""
+			self.status(self.m(u"ما انحفظت المفاتيح لأنك ما وافقت على التعهد.", "The keys were not saved because the pledge was not accepted."))
+		self.keySave()
+
 	def keySave(self):
 		if self.updating:
+			return
+		if (self.tmdb.value.strip() or self.omdb.value.strip() or self.fanart.value.strip()) and not U.settings().get("terms_ok") and not getattr(self, "termsOk", False):
+			self.session.openWithCallback(self.termsAnswer, MessageBox, self.termsText(), MessageBox.TYPE_YESNO, default=False)
 			return
 		if self.theme.value != self.startTheme and U.theme_missing(self.theme.value):
 			self.makeTheme()
@@ -762,6 +804,7 @@ class MohammedSkinSetup(Screen):
 			data = dict(U.settings())
 			data.update({
 				"tmdb": self.tmdb.value.strip(), "omdb": self.omdb.value.strip(), "fanart": self.fanart.value.strip(),
+				"terms_ok": bool(U.settings().get("terms_ok") or getattr(self, "termsOk", False)),
 				"language": self.language.value, "posters": self.posters.value, "backdrops": self.backdrops.value,
 				"translate": self.translate.value, "clock_smooth": self.smooth.value == "smooth", "rating": self.rating.value,
 				"ch_font": self.chFont.value, "ch_rows": self.chRows.value, "pl_font": self.plFont.value,
@@ -871,7 +914,7 @@ class MohammedSkinSetup(Screen):
 			else:
 				text = self.m(u"آخر تحديث للسكن ما اكتمل (%s)\n\nهل تريد إكماله الآن؟",
 					"The last MohammedSkin update did not finish (%s).\n\nFinish it now?") % latest
-			self.session.openWithCallback(self.updateAnswer, MessageBox, text, MessageBox.TYPE_YESNO)
+			self.startAutoUpdate(latest)
 		else:
 			self.latestFound = latest
 			self.session.openWithCallback(self.updateAnswer, MessageBox,
@@ -893,7 +936,9 @@ class MohammedSkinSetup(Screen):
 				return  # screen already closed
 		except Exception:
 			return
-		# no window and no automatic install: the blue button only shows that a new version is there
+		if U.version_tuple(latest) > U.version_tuple(U.SKIN_VERSION) and self.session.current_dialog is self:
+			self.startAutoUpdate(latest)  # a newer version is installed at once, no questions
+			return
 		self["key_blue"].setText(u"%s %s" % (self.t("Update"), latest))
 
 	def startAutoUpdate(self, latest):
