@@ -148,6 +148,10 @@ def purge_posters_once():
 	except Exception:
 		pass
 	if data:
+		for k in ("tmdb", "omdb", "fanart"):
+			data[k] = ""  # keys put in by older versions are deleted: they are typed again after reading the notice
+		data["terms_ok"] = False
+		data["notice_2195"] = False
 		data["purged_2195"] = True
 		try:
 			with open(SETTINGS_FILE, "w") as f:
