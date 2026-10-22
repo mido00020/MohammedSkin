@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # MohammedSkin Setup: colour theme (with preview), second infobar and poster layouts, rating stars,
 # Arabic translation, optional API keys and poster options.
-# Keys are optional; posters work without them (TVmaze, iTunes, IMDb).
+# Posters need the user's own key.
 # Works on OpenViX, OpenBlackHole, OpenATV, PurE2 and EGAMI: the skin adapts itself to the image.
 
 from Components.ActionMap import ActionMap
 from Components.MenuList import MenuList
+from Components.Label import Label
 from Components.MultiContent import MultiContentEntryText
 from Components.config import ConfigText, ConfigYesNo, ConfigSelection, getConfigListEntry
 from Components.Pixmap import Pixmap
@@ -122,6 +123,33 @@ def _wide(text, size):
 		return sum(1.0 if ord(c) >= 0x2E80 else 0.53 for c in text) * size
 	except Exception:
 		return 0
+
+
+class MohammedNotice(Screen):
+	"""A full-screen message (notice or pledge). OK / green agrees, EXIT / red declines when it asks."""
+
+	def __init__(self, session, title, text, hint, asks=False):
+		Screen.__init__(self, session)
+		self.skin = """<screen name="MohammedNotice" position="0,0" size="1920,1080" flags="wfNoBorder" backgroundColor="#F2050507">
+			<eLabel position="0,0" size="1920,1080" backgroundColor="#F2050507" zPosition="-1" />
+			<eLabel position="260,150" size="1400,6" backgroundColor="#C8102E" />
+			<widget name="title" position="260,180" size="1400,90" font="Regular;56" halign="center" valign="center" foregroundColor="#FFFFFF" backgroundColor="#F2050507" transparent="1" />
+			<widget name="text" position="260,300" size="1400,590" font="Regular;38" halign="center" valign="center" foregroundColor="#E8E8E8" backgroundColor="#F2050507" transparent="1" />
+			<eLabel position="260,925" size="1400,2" backgroundColor="#555555" />
+			<widget name="hint" position="260,950" size="1400,60" font="Regular;34" halign="center" valign="center" foregroundColor="#FFD060" backgroundColor="#F2050507" transparent="1" />
+		</screen>"""
+		self.asks = asks
+		self["title"] = Label(title)
+		self["text"] = Label(text)
+		self["hint"] = Label(hint)
+		self["actions"] = ActionMap(["OkCancelActions", "ColorActions"],
+			{"ok": self.agree, "green": self.agree, "cancel": self.decline, "red": self.decline}, -1)
+
+	def agree(self):
+		self.close(True)
+
+	def decline(self):
+		self.close(not self.asks)
 
 
 class SettingList(MenuList):
@@ -456,7 +484,7 @@ class MohammedSkinSetup(Screen):
 			U.save_settings(d)
 		except Exception:
 			pass
-		self.session.open(MessageBox, self.m(
+		self.openNotice(lambda *a: None, self.m(
 			u"تنبيه مهم\n\n"
 			u"نستسمحكم عذراً، تم حذف مفاتيح البوسترات من السكن لأسباب تقنية، وتم حذف البوسترات المخزّنة.\n\n"
 			u"والمطوّر يبرئ ذمته أمام الله من استخدام أي مفاتيح لعرض البوسترات أو تنزيل صور النساء أو العري، وذلك لمخالفته تعاليم الشريعة الإسلامية.\n\n"
@@ -466,8 +494,7 @@ class MohammedSkinSetup(Screen):
 			"We apologize: the poster keys were removed from the skin for technical reasons, and the stored posters were deleted.\n\n"
 			"The developer declares himself free before God of any use of keys to show posters or download pictures of women or nudity, because that goes against the teachings of Islamic Sharia.\n\n"
 			"If you enter your own key, you take full responsibility for it, and the developer is not responsible for you, your actions or how you use it.\n\n"
-			"Without a key the skin works as usual and shows the channel logos."),
-			MessageBox.TYPE_INFO)
+			"Without a key the skin works as usual and shows the channel logos."), False)
 
 	def valueText(self, cfg):
 		if isinstance(cfg, ConfigYesNo):
@@ -741,7 +768,7 @@ class MohammedSkinSetup(Screen):
 			self.chooseCountry()
 			return
 		if cur and cur[1] in (self.tmdb, self.omdb, self.fanart) and not U.settings().get("terms_ok") and not getattr(self, "termsOk", False):
-			self.session.openWithCallback(self.keyTermsAnswer, MessageBox, self.termsText(), MessageBox.TYPE_YESNO, default=False)
+			self.openNotice(self.keyTermsAnswer, self.termsText(), True)
 			return
 		if cur and isinstance(cur[1], ConfigText):
 			self.session.openWithCallback(lambda text, c=cur[1]: self.gotText(c, text), VirtualKeyBoard, title=cur[0], text=cur[1].value)
@@ -793,6 +820,11 @@ class MohammedSkinSetup(Screen):
 		else:
 			self.status("This colour needs python3-pillow. Update the skin (it installs it) and try again.")
 
+	def openNotice(self, callback, text, asks):
+		title, _, body = text.partition("\n\n")
+		hint = self.m(u"OK = أوافق وأتعهد          EXIT = لا أوافق", "OK = I agree          EXIT = I do not agree") if asks else self.m(u"OK = متابعة", "OK = Continue")
+		self.session.openWithCallback(callback, MohammedNotice, title, body, hint, asks)
+
 	def termsText(self):
 		return self.m(
 			u"تعهد وإخلاء مسؤولية\n\n"
@@ -822,7 +854,7 @@ class MohammedSkinSetup(Screen):
 		if self.updating:
 			return
 		if (self.tmdb.value.strip() or self.omdb.value.strip() or self.fanart.value.strip()) and not U.settings().get("terms_ok") and not getattr(self, "termsOk", False):
-			self.session.openWithCallback(self.termsAnswer, MessageBox, self.termsText(), MessageBox.TYPE_YESNO, default=False)
+			self.openNotice(self.termsAnswer, self.termsText(), True)
 			return
 		if self.theme.value != self.startTheme and U.theme_missing(self.theme.value):
 			self.makeTheme()
