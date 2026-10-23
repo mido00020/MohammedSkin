@@ -473,6 +473,12 @@ class MohammedSkinSetup(Screen):
 
 	def showNotice(self):
 		if U.settings().get("notice_solid"):
+			if self.isTop():
+				self.afterNotice()
+			else:
+				self.noticeTries += 1
+				if self.noticeTries < 10:
+					self.noticeTimer.start(800, True)
 			return
 		if not self.isTop():
 			self.noticeTries += 1
@@ -485,7 +491,7 @@ class MohammedSkinSetup(Screen):
 			U.save_settings(d)
 		except Exception:
 			pass
-		self.openNotice(lambda *a: None, self.m(
+		self.openNotice(lambda *a: self.afterNotice(), self.m(
 			u"تنبيه مهم\n\n"
 			u"نستسمحكم عذراً، تم حذف مفاتيح البوسترات من السكن لأسباب تقنية، وتم حذف البوسترات المخزّنة.\n\n"
 			u"والمطوّر يبرئ ذمته أمام الله من استخدام أي مفاتيح لعرض البوسترات أو تنزيل صور النساء أو العري، وذلك لمخالفته تعاليم الشريعة الإسلامية.\n\n"
@@ -496,6 +502,28 @@ class MohammedSkinSetup(Screen):
 			"The developer declares himself free before God of any use of keys to show posters or download pictures of women or nudity, because that goes against the teachings of Islamic Sharia.\n\n"
 			"If you enter your own key, you take full responsibility for it, and the developer is not responsible for you, your actions or how you use it.\n\n"
 			"Without a key the skin works as usual and shows the channel logos."), False)
+
+	def afterNotice(self):
+		"""Keys that came in from a text file are used only after the pledge: asked once, then kept (or deleted)."""
+		st = U.settings()
+		if st.get("terms_ok") or not (st.get("tmdb") or st.get("omdb") or st.get("fanart")) or not self.isTop():
+			return
+		self.openNotice(self.fileKeysAnswer, self.termsText(), True)
+
+	def fileKeysAnswer(self, answer):
+		if answer:
+			self.acceptTerms()
+			return
+		try:
+			d = dict(U.settings())
+			for k in ("tmdb", "omdb", "fanart"):
+				d[k] = ""
+			U.save_settings(d)
+			for cfg in (self.tmdb, self.omdb, self.fanart):
+				cfg.value = ""
+			self["config"].invalidateCurrent()
+		except Exception as e:
+			print("[MohammedSkin] keys: %s" % e)
 
 	def valueText(self, cfg):
 		if isinstance(cfg, ConfigYesNo):

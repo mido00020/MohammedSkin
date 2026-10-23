@@ -1,0 +1,21 @@
+# MohammedSkin - keys file / ملف المفاتيح
+#
+# ========== تعهد وإخلاء مسؤولية ==========
+# السكن لا يحتوي على أي مفتاح بوسترات. إضافة مفتاحك الخاص هنا تعني أنك المسؤول مسؤولية كاملة أمام الله ثم أمام القانون
+# عن كل ما يجلبه مفتاحك ويظهر على جهازك، بما في ذلك أي صور أو محتوى محرّم أو مخلّ بالآداب، مثل صور النساء والعري وما شابهها.
+# وصاحب السكن بريء أمام الله سبحانه وتعالى من ذلك كله، ولا يتحمل أي مسؤولية عن المحتوى القادم من تلك المصادر ولا عن استخدامك لمفتاحك.
+# عند فتح البلقن ستظهر لك رسالة التعهد، ولن يعمل المفتاح إلا بعد موافقتك عليها.
+#
+# ========== Pledge and disclaimer ==========
+# The skin comes with no poster key. Adding your own key here means you alone are fully responsible, before God and before the law,
+# for everything your key fetches and shows on your receiver, including any forbidden or immoral pictures or content, such as pictures
+# of women, nudity and the like. The skin owner is free of all of it before God Almighty and takes no responsibility for the content
+# that comes from those sources or for how you use your key.
+# When you open the plugin a pledge message appears, and the key works only after you accept it.
+#
+# Write your keys below (remove the # in front of a line), save this file as /tmp/MohammedSkin_keys.txt
+# (or on /media/usb, /media/hdd, /media/mmc as MohammedSkin_keys.txt), then open the plugin.
+#
+# tmdb=
+# omdb=
+# fanart=

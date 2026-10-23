@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.102"
+SKIN_VERSION = "2.1.103"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -84,6 +84,44 @@ _settings_mtime = -1
 _settings_checked = [0.0]
 
 
+KEYS_FILES = ("/tmp/MohammedSkin_keys.txt", "/media/usb/MohammedSkin_keys.txt", "/media/hdd/MohammedSkin_keys.txt", "/media/mmc/MohammedSkin_keys.txt")
+_KEY_NAMES = {"tmdb": "tmdb", "omdb": "omdb", "fanart": "fanart", "fanart.tv": "fanart", "fanarttv": "fanart"}
+
+
+def import_keys_file():
+	"""Personal keys dropped as a text file (tmdb=..., omdb=..., fanart=...): taken into the settings, then the file is removed."""
+	for path in KEYS_FILES:
+		if not os.path.isfile(path):
+			continue
+		found = {}
+		try:
+			with open(path) as f:
+				for line in f:
+					m = re.match(r"\s*([A-Za-z.]+)\s*[=:]\s*['\"]?([^'\"\s]+)", line)
+					if m and m.group(1).lower() in _KEY_NAMES:
+						found[_KEY_NAMES[m.group(1).lower()]] = m.group(2).strip()
+		except Exception as e:
+			print("[MohammedSkin] keys file %s: %s" % (path, e))
+			continue
+		if found:
+			data = {}
+			try:
+				with open(SETTINGS_FILE) as f:
+					data = json.load(f)
+			except Exception:
+				pass
+			data.update(found)
+			save_settings(data)
+			print("[MohammedSkin] keys taken from %s: %s" % (path, ", ".join(sorted(found))))
+		try:
+			os.rename(path, path + ".done")
+		except Exception:
+			try:
+				os.remove(path)
+			except Exception:
+				pass
+
+
 _purged = [False]
 
 
@@ -131,6 +169,10 @@ def settings():
 	_settings_checked[0] = now
 	try:
 		purge_posters_once()
+	except Exception:
+		pass
+	try:
+		import_keys_file()  # keys from a text file count only after the pledge was accepted in the setup
 	except Exception:
 		pass
 	try:
