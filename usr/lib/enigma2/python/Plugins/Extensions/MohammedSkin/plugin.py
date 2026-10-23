@@ -857,11 +857,11 @@ class MohammedSkinSetup(Screen):
 	def termsText(self):
 		return self.m(
 			u"تعهد وإخلاء مسؤولية\n\n"
-			u"السكن لا يحتوي على أي مفتاح بوسترات. أنت من يسجّل في موقع المصدر (TMDB وغيره) ويأخذ مفتاحك الخاص ويضعه هنا، فهو باسمك وتحت مسؤوليتك.\n\n"
+			u"السكن لا يحتوي على أي مفتاح بوسترات. أي مفتاح تضيفه هنا هو مفتاحك الخاص وتحت مسؤوليتك.\n\n"
 			u"بوضعك المفتاح تقرّ وتتعهد بأنك المسؤول مسؤولية كاملة أمام الله ثم أمام القانون عن كل ما يجلبه مفتاحك ويظهر على جهازك، بما في ذلك أي صور أو محتوى محرّم أو مخلّ بالآداب، مثل صور النساء والعري وما شابهها. وأشهد الله على ذلك، وصاحب السكن بريء أمام الله سبحانه وتعالى من ذلك كله، ولا يتحمل أي مسؤولية عن المحتوى القادم من تلك المصادر ولا عن استخدامك لمفتاحك.\n\n"
 			u"هل توافق وتتعهد؟",
 			"Pledge and disclaimer\n\n"
-			"The skin comes with no poster key. You register with the source website (TMDB or others), get your own key and enter it here, so it is in your name and your responsibility.\n\n"
+			"The skin comes with no poster key. Any key you add here is your own key and your responsibility.\n\n"
 			"By entering a key you confirm that you alone are fully responsible, before God and before the law, for everything your key fetches and shows on your receiver, including any forbidden or immoral pictures or content, such as pictures of women, nudity and the like. I call God as my witness, and the skin owner is free of all of it before God Almighty and takes no responsibility for the content that comes from those sources or for how you use your key.\n\n"
 			"Do you agree and accept?")
 
