@@ -837,14 +837,24 @@ class MohammedSkinSetup(Screen):
 			"By entering a key you confirm that you alone are fully responsible, before God and before the law, for everything your key fetches and shows on your receiver, including any forbidden or immoral pictures or content, such as pictures of women, nudity and the like. I call God as my witness, and the skin owner is free of all of it before God Almighty and takes no responsibility for the content that comes from those sources or for how you use your key.\n\n"
 			"Do you agree and accept?")
 
+	def acceptTerms(self):
+		"""The pledge is shown once: the acceptance is kept at once, not only when the settings are saved."""
+		self.termsOk = True
+		try:
+			d = dict(U.settings())
+			d["terms_ok"] = True
+			U.save_settings(d)
+		except Exception as e:
+			print("[MohammedSkin] pledge: %s" % e)
+
 	def keyTermsAnswer(self, answer):
 		if answer:
-			self.termsOk = True
+			self.acceptTerms()
 			self.keyOK()
 
 	def termsAnswer(self, answer):
 		if answer:
-			self.termsOk = True
+			self.acceptTerms()
 		else:
 			for cfg in (self.tmdb, self.omdb, self.fanart):
 				cfg.value = ""

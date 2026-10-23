@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.100"
+SKIN_VERSION = "2.1.101"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -148,10 +148,11 @@ def purge_posters_once():
 	except Exception:
 		pass
 	if data:
-		for k in ("tmdb", "omdb", "fanart"):
-			data[k] = ""  # keys put in by older versions are deleted: they are typed again after reading the notice
-		data["terms_ok"] = False
-		data["notice_solid"] = False
+		if not data.get("terms_ok"):
+			# keys from older versions were never accepted with the pledge: deleted once, typed again after the notice
+			for k in ("tmdb", "omdb", "fanart"):
+				data[k] = ""
+			data["notice_solid"] = False
 		data["purged_2198"] = True
 		try:
 			with open(SETTINGS_FILE, "w") as f:
@@ -206,6 +207,7 @@ def save_settings(data):
 	global _settings, _settings_mtime
 	merged = dict(DEFAULT_SETTINGS)
 	merged.update(data)
+	merged.setdefault("purged_2198", True)  # a new install is never cleaned afterwards: keys typed later stay
 	with open(SETTINGS_FILE, "w") as f:
 		json.dump(merged, f, indent=1)
 	_settings, _settings_mtime = merged, -1  # read back on the next call
