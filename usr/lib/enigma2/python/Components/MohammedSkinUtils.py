@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.104"
+SKIN_VERSION = "2.1.105"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -122,6 +122,42 @@ def import_keys_file():
 				pass
 
 
+_tag = []
+
+
+def device_tag():
+	"""Something that belongs to this receiver only (machine id or network address)."""
+	if _tag:
+		return _tag[0]
+	value = ""
+	for path in ("/etc/machine-id", "/var/lib/dbus/machine-id"):
+		lines = _read_lines(path) if "_read_lines" in globals() else []
+		if lines and lines[0].strip():
+			value = lines[0].strip()
+			break
+	if not value:
+		try:
+			for n in sorted(os.listdir("/sys/class/net")):
+				if n != "lo":
+					with open("/sys/class/net/%s/address" % n) as f:
+						value += f.read().strip()
+		except Exception:
+			pass
+	_tag.append(value or "receiver")
+	return _tag[0]
+
+
+def terms_sig():
+	import hashlib
+	return hashlib.sha256(("MohammedSkin|pledge|v2|" + device_tag()).encode("utf-8")).hexdigest()[:32]
+
+
+def terms_accepted(data=None):
+	"""True only when the pledge was accepted on THIS receiver (a copied or hand-written settings file does not count)."""
+	st = data if data is not None else settings()
+	return bool(st.get("terms_sig")) and st.get("terms_sig") == terms_sig()
+
+
 _purged = [False]
 
 
@@ -148,7 +184,7 @@ def purge_posters_once():
 	except Exception:
 		pass
 	if data:
-		if not data.get("terms_ok"):
+		if not terms_accepted(data):
 			# keys from older versions were never accepted with the pledge: deleted once, typed again after the notice
 			for k in ("tmdb", "omdb", "fanart"):
 				data[k] = ""
@@ -666,7 +702,7 @@ SCENES = 5
 def user_key(name):
 	"""A key typed in by the user. Nothing comes with the skin; keys count only after the user accepted the terms in the setup."""
 	st = settings()
-	if not st.get("terms_ok"):
+	if not terms_accepted(st):
 		return ""
 	return (st.get(name, "") or "").strip()
 
@@ -3930,6 +3966,43 @@ def image_key(root=""):
 	if os.path.exists(root + "/etc/vixversion"):
 		return "openvix"
 	return ""
+
+
+_NOT_SUPPORTED = re.compile(r"\bopen[\s_\-]*spa\b", re.I)
+
+
+def blocked_image(root=""):
+	"""True on images the skin does not work with (OpenSPA)."""
+	for path in ("/usr/lib/enigma.info", "/etc/image-version", "/etc/issue", "/etc/issue.net", "/etc/os-release"):
+		for line in _read_lines(root + path)[:80]:
+			if _NOT_SUPPORTED.search(line):
+				return True
+	return False
+
+
+def original_skin():
+	"""The image's own skin (file name for config.skin.primary_skin) or "" when it cannot be found."""
+	try:
+		from Components.config import config
+		default = config.skin.primary_skin.default
+	except Exception:
+		default = "skin.xml"
+	for name in (default, "skin.xml"):
+		if name and not name.startswith("MohammedSkin") and os.path.isfile("/usr/share/enigma2/" + name):
+			return name
+	return ""
+
+
+def switch_to_original_skin():
+	"""Back to the skin the image came with. Returns True when the setting was changed."""
+	from Components.config import config, configfile
+	name = original_skin()
+	if not name or not config.skin.primary_skin.value.startswith("MohammedSkin"):
+		return False
+	config.skin.primary_skin.value = name
+	config.skin.primary_skin.save()
+	configfile.save()
+	return True
 
 
 def image_name(root=""):

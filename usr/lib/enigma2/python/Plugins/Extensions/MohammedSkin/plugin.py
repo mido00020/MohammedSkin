@@ -506,7 +506,7 @@ class MohammedSkinSetup(Screen):
 	def afterNotice(self):
 		"""Keys that came in from a text file are used only after the pledge: asked once, then kept (or deleted)."""
 		st = U.settings()
-		if st.get("terms_ok") or not (st.get("tmdb") or st.get("omdb") or st.get("fanart")) or not self.isTop():
+		if U.terms_accepted(st) or not (st.get("tmdb") or st.get("omdb") or st.get("fanart")) or not self.isTop():
 			return
 		self.openNotice(self.fileKeysAnswer, self.termsText(), True)
 
@@ -524,6 +524,7 @@ class MohammedSkinSetup(Screen):
 			self["config"].invalidateCurrent()
 		except Exception as e:
 			print("[MohammedSkin] keys: %s" % e)
+		self.close()  # no pledge, no setup
 
 	def valueText(self, cfg):
 		if isinstance(cfg, ConfigYesNo):
@@ -796,7 +797,7 @@ class MohammedSkinSetup(Screen):
 		if cur and cur[1] is self.weatherLoc:
 			self.chooseCountry()
 			return
-		if cur and cur[1] in (self.tmdb, self.omdb, self.fanart) and not U.settings().get("terms_ok") and not getattr(self, "termsOk", False):
+		if cur and cur[1] in (self.tmdb, self.omdb, self.fanart) and not U.terms_accepted() and not getattr(self, "termsOk", False):
 			self.openNotice(self.keyTermsAnswer, self.termsText(), True)
 			return
 		if cur and isinstance(cur[1], ConfigText):
@@ -871,6 +872,7 @@ class MohammedSkinSetup(Screen):
 		try:
 			d = dict(U.settings())
 			d["terms_ok"] = True
+			d["terms_sig"] = U.terms_sig()  # tied to this receiver: a copied settings file does not carry the acceptance
 			U.save_settings(d)
 		except Exception as e:
 			print("[MohammedSkin] pledge: %s" % e)
@@ -892,7 +894,7 @@ class MohammedSkinSetup(Screen):
 	def keySave(self):
 		if self.updating:
 			return
-		if (self.tmdb.value.strip() or self.omdb.value.strip() or self.fanart.value.strip()) and not U.settings().get("terms_ok") and not getattr(self, "termsOk", False):
+		if (self.tmdb.value.strip() or self.omdb.value.strip() or self.fanart.value.strip()) and not U.terms_accepted() and not getattr(self, "termsOk", False):
 			self.openNotice(self.termsAnswer, self.termsText(), True)
 			return
 		if self.theme.value != self.startTheme and U.theme_missing(self.theme.value):
@@ -902,7 +904,8 @@ class MohammedSkinSetup(Screen):
 			data = dict(U.settings())
 			data.update({
 				"tmdb": self.tmdb.value.strip(), "omdb": self.omdb.value.strip(), "fanart": self.fanart.value.strip(),
-				"terms_ok": bool(U.settings().get("terms_ok") or getattr(self, "termsOk", False)),
+				"terms_ok": bool(U.terms_accepted() or getattr(self, "termsOk", False)),
+				"terms_sig": U.terms_sig() if (U.terms_accepted() or getattr(self, "termsOk", False)) else "",
 				"language": self.language.value, "posters": self.posters.value, "backdrops": self.backdrops.value,
 				"translate": self.translate.value, "clock_smooth": self.smooth.value == "smooth", "rating": self.rating.value,
 				"ch_font": self.chFont.value, "ch_rows": self.chRows.value, "pl_font": self.plFont.value,
@@ -1087,7 +1090,30 @@ class MohammedSkinSetup(Screen):
 		self.restartNow()
 
 
+def blockedText():
+	ar = U.settings().get("ui_lang") == "ar"
+	name = "OpenSPA"
+	if ar:
+		return (u"تعذّر التشغيل", u"السكن لا يتعامل مع هذه الصورة (%s).\n\nسيتم الرجوع إلى السكن الأصلي للصورة وإعادة تشغيل الواجهة." % name, u"OK = رجوع للسكن الأصلي")
+	return ("Not supported", "This skin does not work with this image (%s).\n\nThe image's own skin will be restored and the GUI will restart." % name, "OK = restore the original skin")
+
+
+def showBlocked(session):
+	"""This image is not supported: say so, then give the image its own skin back (nothing else is touched)."""
+	def done(*args):
+		try:
+			if U.switch_to_original_skin():
+				session.open(TryQuitMainloop, 3)
+		except Exception as e:
+			print("[MohammedSkin] original skin: %s" % e)
+	t, b, h = blockedText()
+	session.openWithCallback(done, MohammedNotice, t, b, h, False)
+
+
 def main(session, **kwargs):
+	if U.blocked_image():
+		showBlocked(session)
+		return
 	def closed(answer=None, *args):
 		if answer == "reopen":
 			session.openWithCallback(closed, MohammedSkinSetup)
@@ -1142,6 +1168,23 @@ def sessionstart(reason, session=None, **kwargs):
 	except Exception as e:
 		print("[MohammedSkin] sessionstart: %s" % e)
 		return
+	try:
+		if U.blocked_image():
+			if session is not None:
+				try:
+					from enigma import eTimer
+					t = eTimer()
+					try:
+						t.callback.append(lambda: showBlocked(session))
+					except AttributeError:
+						t.conn = t.timeout.connect(lambda: showBlocked(session))
+					t.start(6000, True)
+					_restartTimer[:] = [t]
+				except Exception as e:
+					print("[MohammedSkin] blocked image: %s" % e)
+			return  # nothing of the skin runs on this image
+	except Exception as e:
+		print("[MohammedSkin] blocked image: %s" % e)
 	try:
 		U.auto_fit_osd()  # a reduced screen position of the image leaves gaps around full-screen pictures: set it to full, once
 	except Exception as e:
