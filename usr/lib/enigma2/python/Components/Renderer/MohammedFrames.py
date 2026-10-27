@@ -73,9 +73,23 @@ class MohammedFrames(Renderer):
 			return self.interval or 250
 		return 1000
 
+	def still(self):
+		# decorative movement (running lights, glows) can be switched off in the setup; the clocks always run
+		return self.mode in ("cycle", "bounce", "once") and not U.settings().get("anim", True)
+
+	def still_index(self):
+		if self.mode == "once":
+			return self.count - 1
+		if self.mode == "bounce":
+			return self.count // 2
+		return 0
+
 	def frame_index(self, now=None):
 		t = time() if now is None else now
 		lt = localtime(t)
+		if self.still():
+			self.k = self.still_index()
+			return self.k
 		if self.mode == "once":
 			self.k = min(self.k + 1, self.count - 1)
 			return self.k
@@ -112,6 +126,8 @@ class MohammedFrames(Renderer):
 					self.instance.setPixmap(ptr)
 			except Exception as e:
 				print("[MohammedFrames] %s" % e)
+		if self.still():
+			return  # animations are off: one fixed picture, no timer
 		if self.mode == "once" and self.k >= self.count - 1:
 			return  # played: the last frame stays, no timer
 		if self.mode == "second" and not self.smooth():

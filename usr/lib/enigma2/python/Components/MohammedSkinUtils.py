@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.107"
+SKIN_VERSION = "2.1.108"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -41,6 +41,7 @@ DEFAULT_SETTINGS = {
 	"theme": "red",
 	"clock": "royal",
 	"clock_smooth": True,
+	"anim": True,      # animated lights and glows (running lights, pulsing frames); off = they stay still
 	"menu_style": "classic",
 	"channels_style": "classic",
 	"infobar_style": "classic",  # first infobar: classic | red3d | holo | film | diagonal | s1 .. s4 | filmstrip | capsule

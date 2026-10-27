@@ -68,45 +68,27 @@
 			<convert type="MohammedInfo">Remaining</convert>
 		</widget>
 
-		<!-- transponder capsule (title row): pulsing glow in the theme colour -->
-		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/tp_%02d.png" count="24" interval="70" position="758,896" size="404,68" alphatest="blend" zPosition="4" cache="1" />
-		<widget source="session.CurrentService" render="Label" position="770,911" size="66,13" font="Regular;11" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
-			<convert type="MohammedTransponder">Caption:Orbital</convert>
-		</widget>
-		<widget source="session.CurrentService" render="Label" position="771,925" size="64,24" font="Semi;16" halign="center" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+				<!-- transponder capsule (compact, under the next programme): pulsing glow in the theme colour -->
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/tpc_%02d.png" count="24" interval="70" position="1466,1000" size="300,30" alphatest="blend" zPosition="4" cache="1" />
+		<widget source="session.CurrentService" render="Label" position="1476,1003" size="42,24" font="Semi;15" halign="center" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">Orbital</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="836,911" size="96,13" font="Regular;11" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
-			<convert type="MohammedTransponder">Caption:Frequency</convert>
-		</widget>
-		<widget source="session.CurrentService" render="Label" position="838,925" size="68,24" font="Semi;17" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+		<widget source="session.CurrentService" render="Label" position="1518,1003" size="56,24" font="Semi;15" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">Frequency</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="908,927" size="20,20" font="Semi;13" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+		<widget source="session.CurrentService" render="Label" position="1576,1003" size="18,24" font="Semi;11" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">Polarization</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="932,911" size="64,13" font="Regular;11" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
-			<convert type="MohammedTransponder">Caption:SymbolRate</convert>
-		</widget>
-		<widget source="session.CurrentService" render="Label" position="933,925" size="62,24" font="Semi;17" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+		<widget source="session.CurrentService" render="Label" position="1596,1003" size="54,24" font="Semi;15" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">SymbolRate</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="996,911" size="46,13" font="Regular;11" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
-			<convert type="MohammedTransponder">Caption:FEC</convert>
-		</widget>
-		<widget source="session.CurrentService" render="Label" position="997,925" size="44,24" font="Semi;17" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+		<widget source="session.CurrentService" render="Label" position="1652,1003" size="32,24" font="Semi;15" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">FEC</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="1042,911" size="64,13" font="Regular;11" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
-			<convert type="MohammedTransponder">Caption:Modulation</convert>
-		</widget>
-		<widget source="session.CurrentService" render="Label" position="1043,925" size="62,24" font="Semi;16" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+		<widget source="session.CurrentService" render="Label" position="1686,1003" size="44,24" font="Semi;15" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">Modulation</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="1106,911" size="44,13" font="Regular;11" halign="center" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
-			<convert type="MohammedTransponder">Caption:System</convert>
-		</widget>
-		<widget source="session.CurrentService" render="Label" position="1107,925" size="42,24" font="Semi;17" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+		<widget source="session.CurrentService" render="Label" position="1732,1003" size="28,24" font="Semi;15" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">System</convert>
 		</widget>
 
@@ -122,7 +104,7 @@
 		<widget source="session.Event_Next" render="Label" position="1368,949" size="390,51" font="Title;34" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3">
 			<convert type="EventName">Name</convert>
 		</widget>
-		<widget source="session.Event_Next" render="Label" position="1368,1000" size="390,28" font="Regular;18" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="3">
+		<widget source="session.Event_Next" render="Label" position="1368,1000" size="92,28" font="Regular;18" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="3">
 			<convert type="MohammedInfo">Duration</convert>
 		</widget>
 		<widget source="session.Event_Next" render="MohammedPoster" kind="poster" cornerRadius="12" position="1774,918" size="76,114" zPosition="4" />

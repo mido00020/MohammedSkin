@@ -289,6 +289,7 @@ class MohammedSkinSetup(Screen):
 		self.adult = ConfigSelection(choices=[("off", t("Off")), ("normal", t("On (adult and erotic titles)")),
 			("strict", t("Strict (also nudity, R and TV-MA)"))], default=U.adult_level())
 		self.backdrops = ConfigYesNo(default=bool(s.get("backdrops", True)))
+		self.anim = ConfigYesNo(default=bool(s.get("anim", True)))
 		self.fitScreens = ConfigYesNo(default=bool(s.get("fit_screens", True)))
 		self.ibBackdrop = ConfigSelection(choices=[(n, t(l)) for n, l in U.IB_BACKDROP], default=U.ib_backdrop())
 		self.ibLed = ConfigYesNo(default=bool(s.get("ib_led", True)))
@@ -322,6 +323,7 @@ class MohammedSkinSetup(Screen):
 			id(self.language): "Language used for TMDB searches.",
 			id(self.posters): "Show posters in the infobars and channel list.",
 			id(self.backdrops): "Show backdrops behind the event.",
+			id(self.anim): "Running lights and glowing frames (like the transponder box). Turn off to keep them still. Moving event names and the clocks are not affected.",
 			id(self.chFont): "Size of the channel names, numbers and event text in the channel list. Saving restarts the GUI.",
 			id(self.chRows): "Height of each channel row: compact shows more channels, large and extra large show fewer and bigger. Saving restarts the GUI.",
 			id(self.plFont): "Size of the text and rows in the plugin list (Menu > Plugins). Saving restarts the GUI.",
@@ -382,6 +384,7 @@ class MohammedSkinSetup(Screen):
 			id(self.arPosters): {"auto": "Arabic poster on Nilesat, Arabsat and Badr channels.", "always": "Arabic poster on every channel when there is one.", "off": "Always the English poster."},
 			id(self.translate): {Y: "Titles and descriptions are translated to the language below.", N: "Everything stays in the language the channel sends."},
 			id(self.trService): {"auto": "Free, no key needed.", "microsoft": "Uses your own Microsoft key (set below).", "deepl": "Uses your own DeepL key (set below)."},
+			id(self.anim): {Y: "Lights and glows move and pulse.", N: "Lights and glows stay still."},
 			id(self.smooth): {"smooth": "The seconds hand glides.", "tick": "The seconds hand jumps once a second (lighter for slow boxes)."},
 			id(self.weather): {Y: "Weather card in the infobars.", N: "No weather."},
 			id(self.weatherLoc): {"auto": "Found from your internet connection.", "list": "The city you picked from the list (press OK).", "city": "The city you typed below."},
@@ -393,7 +396,7 @@ class MohammedSkinSetup(Screen):
 		self.groups = [
 			[E("Skin colour theme", self.theme), E("Menu style", self.menuStyle), E("Main menu background", self.menuBg), E("Menu animation", self.menuAnim), E("Fill the whole screen", self.osdFit), E("Arabic text font", self.arText), E("Arabic title font", self.arTitle),
 				E("Fit plugin windows to the screen", self.fitScreens)],
-			[E("Infobar style", self.ibxStyle), E("Infobar transparency", self.ibAlpha), E("Channel logo and name size", self.ibChan), E("Backdrop above the infobar", self.ibBackdrop), E("Light line on the infobar", self.ibLed), E("Infobar texts language", self.labelLang), E("Date format", self.dateFormat), E("Signal bars colour", self.ibMeterColor), E("Dark backing behind signal bars", self.meterBack), E("Signal bars shape", self.ibMeterShape), E("Second infobar style", self.sibStyle),
+			[E("Infobar style", self.ibxStyle), E("Infobar transparency", self.ibAlpha), E("Channel logo and name size", self.ibChan), E("Backdrop above the infobar", self.ibBackdrop), E("Light line on the infobar", self.ibLed), E("Animated lights and glows", self.anim), E("Infobar texts language", self.labelLang), E("Date format", self.dateFormat), E("Signal bars colour", self.ibMeterColor), E("Dark backing behind signal bars", self.meterBack), E("Signal bars shape", self.ibMeterShape), E("Second infobar style", self.sibStyle),
 				E("Classic infobar poster", self.ibStyle), E("Show rating stars", self.rating), E("3D channel logo when no poster", self.logo3d)],
 			[E("Channel list style", self.chStyle), E("Channel list text size", self.chFont), E("Channel list rows", self.chRows), E("Channel list picture", self.chPreview), E("Programme name colour", self.eventColor),
 				E("Plugin list layout", self.plLayout), E("Plugin list text size", self.plFont)],
@@ -907,7 +910,7 @@ class MohammedSkinSetup(Screen):
 				"terms_ok": bool(U.terms_accepted() or getattr(self, "termsOk", False)),
 				"terms_sig": U.terms_sig() if (U.terms_accepted() or getattr(self, "termsOk", False)) else "",
 				"language": self.language.value, "posters": self.posters.value, "backdrops": self.backdrops.value,
-				"translate": self.translate.value, "clock_smooth": self.smooth.value == "smooth", "rating": self.rating.value,
+				"translate": self.translate.value, "clock_smooth": self.smooth.value == "smooth", "anim": self.anim.value, "rating": self.rating.value,
 				"ch_font": self.chFont.value, "ch_rows": self.chRows.value, "pl_font": self.plFont.value,
 				"ib_alpha": self.ibAlpha.value, "ib_chan": self.ibChan.value, "ch_preview": self.chPreview.value, "event_color": self.eventColor.value, "adult_filter": self.adult.value if U.is_owner() else "strict",
 				"ar_text_font": self.arText.value, "ar_title_font": self.arTitle.value,
