@@ -11,7 +11,7 @@
 		<widget source="session.CurrentService" render="Label" position="300,806" size="470,40" font="Semi;30" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="ServiceName">Name</convert>
 		</widget>
-		<widget source="session.Event_Now" render="Label" position="300,852" size="470,46" font="Title;36" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.Event_Now" render="MohammedRunning" position="300,852" size="470,46" font="Title;36" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="EventName">Name</convert>
 		</widget>
 		<widget source="session.Event_Now" render="Label" position="300,902" size="76,30" font="Regular;22" halign="left" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
@@ -78,7 +78,7 @@
 		<widget source="session.FrontendStatus" render="Label" position="1324,896" size="120,30" font="Semi;21" halign="left" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="FrontendInfo">SNRdB</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_iptv.png" position="1554,942" size="54,26" alphatest="blend" zPosition="7">
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_iptv.png" position="1544,942" size="54,26" alphatest="blend" zPosition="7">
 			<convert type="MohammedBox">IPTV</convert>
 			<convert type="ConditionalShowHide" />
 		</widget>

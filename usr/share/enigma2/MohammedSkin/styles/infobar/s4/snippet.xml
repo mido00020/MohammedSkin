@@ -20,7 +20,7 @@
 		<widget source="session.CurrentService" render="Label" position="570,784" size="420,60" font="Regular;27" halign="left" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="ServiceName">Name</convert>
 		</widget>
-		<widget source="session.Event_Now" render="Label" position="340,852" size="1000,76" font="Title;58" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.Event_Now" render="MohammedRunning" position="340,852" size="1000,76" font="Title;58" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="EventName">Name</convert>
 		</widget>
 		<widget source="session.Event_Now" render="Label" position="340,936" size="76,32" font="Regular;23" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
@@ -62,27 +62,27 @@
 			<convert type="ConditionalShowHide" />
 		</widget>
 		<!-- transponder line: pulsing glow in the theme colour -->
-		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/ibx_tp_%02d.png" count="24" interval="70" position="1336,696" size="560,44" alphatest="blend" zPosition="3" cache="1" />
-		<widget source="session.CurrentService" render="Label" position="1356,705" size="76,26" font="Semi;20" halign="center" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="/usr/share/enigma2/MohammedSkin/img/ibx_tp_%02d.png" count="24" interval="70" position="560,987" size="560,44" alphatest="blend" zPosition="3" cache="1" />
+		<widget source="session.CurrentService" render="Label" position="580,996" size="76,26" font="Semi;20" halign="center" valign="center" foregroundColor="ember" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedTransponder">Orbital</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="1434,705" size="78,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="Label" position="658,996" size="78,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedTransponder">Frequency</convert>
 		</widget>
-		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_pol.png" position="1516,705" size="26,26" alphatest="blend" zPosition="4" />
-		<widget source="session.CurrentService" render="Label" position="1516,705" size="26,26" font="Semi;17" halign="center" valign="center" foregroundColor="white" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
+		<ePixmap pixmap="/usr/share/enigma2/MohammedSkin/img/ibx_pol.png" position="740,996" size="26,26" alphatest="blend" zPosition="4" />
+		<widget source="session.CurrentService" render="Label" position="740,996" size="26,26" font="Semi;17" halign="center" valign="center" foregroundColor="white" backgroundColor="ink" transparent="1" noWrap="1" zPosition="5">
 			<convert type="MohammedTransponder">Polarization</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="1548,705" size="80,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="Label" position="772,996" size="80,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedTransponder">SymbolRate</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="1630,705" size="56,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="Label" position="854,996" size="56,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedTransponder">FEC</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="1688,705" size="84,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="Label" position="912,996" size="84,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedTransponder">Modulation</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="1774,705" size="60,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="Label" position="998,996" size="60,26" font="Semi;20" halign="center" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedTransponder">System</convert>
 		</widget>
 		<!-- DOTS OFFSET 140,-68 -->
@@ -188,7 +188,7 @@
 		<widget source="session.CurrentService" render="Label" position="686,1036" size="172,32" font="Regular;19" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="6">
 			<convert type="MohammedBox">IP</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_iptv.png" position="1354,705" size="54,26" alphatest="blend" zPosition="7">
+		<widget source="session.CurrentService" render="Pixmap" pixmap="/usr/share/enigma2/MohammedSkin/img/tag_iptv.png" position="504,968" size="54,26" alphatest="blend" zPosition="7">
 			<convert type="MohammedBox">IPTV</convert>
 			<convert type="ConditionalShowHide" />
 		</widget>
