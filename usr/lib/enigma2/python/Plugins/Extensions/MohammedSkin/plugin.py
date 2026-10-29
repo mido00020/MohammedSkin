@@ -795,7 +795,7 @@ class MohammedSkinSetup(Screen):
     def startAutoUpdate(self, latest):
         from Screens.Console import Console
         self.updating = True
-        U._guard['autoupdate_busy'] = True
+        U._k9h['autoupdate_busy'] = True
         self['key_blue'].setText(self.t('Updating...'))
         self.status(self.m(u'جاري التحديث إلى %s ...', 'Updating to %s ...') % latest)
         title = self.m(u'تحديث MohammedSkin إلى %s - انتظر، الواجهة تعيد التشغيل بنفسها', 'Updating MohammedSkin to %s - please wait, the GUI restarts by itself') % latest
@@ -803,7 +803,7 @@ class MohammedSkinSetup(Screen):
 
     def consoleClosed(self, *args):
         self.updating = False
-        U._guard['autoupdate_busy'] = False
+        U._k9h['autoupdate_busy'] = False
         try:
             self['key_blue'].setText(self.t('Update'))
         except Exception:
@@ -838,31 +838,31 @@ class MohammedSkinSetup(Screen):
         self.updating = True
         self.restartNow()
 
-def blockedText():
+def _p4t():
     ar = U.settings().get('ui_lang') == 'ar'
-    name = 'OpenSPA'
+    name = U._k9n()
     if ar:
         return (u'تعذّر التشغيل', u'السكن لا يتعامل مع هذه الصورة (%s).\n\nسيتم الرجوع إلى السكن الأصلي للصورة وإعادة تشغيل الواجهة.' % name, u'OK = رجوع للسكن الأصلي')
     return ('Not supported', "This skin does not work with this image (%s).\n\nThe image's own skin will be restored and the GUI will restart." % name, 'OK = restore the original skin')
 
-def showBlocked(session):
+def _p4s(session):
     try:
-        U._guard['shown'] = True
+        U._k9h['shown'] = True
     except Exception:
         pass
 
     def done(*args):
         try:
-            if U.switch_to_original_skin():
+            if U._k9b():
                 session.open(TryQuitMainloop, 3)
         except Exception as e:
             print('[MohammedSkin] original skin: %s' % e)
-    t, b, h = blockedText()
+    t, b, h = _p4t()
     session.openWithCallback(done, MohammedNotice, t, b, h, False)
 
 def main(session, **kwargs):
-    if U.blocked_image():
-        showBlocked(session)
+    if U._k9a():
+        _p4s(session)
         return
 
     def closed(answer=None, *args):
@@ -916,9 +916,9 @@ def sessionstart(reason, session=None, **kwargs):
                     from enigma import eTimer
                     t = eTimer()
                     try:
-                        t.callback.append(lambda: showBlocked(session))
+                        t.callback.append(lambda: _p4s(session))
                     except AttributeError:
-                        t.conn = t.timeout.connect(lambda: showBlocked(session))
+                        t.conn = t.timeout.connect(lambda: _p4s(session))
                     t.start(6000, True)
                     _restartTimer[:] = [t]
                 except Exception as e:

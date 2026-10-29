@@ -17,7 +17,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.111'
+SKIN_VERSION = '2.1.112'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -3137,10 +3137,10 @@ def image_key(root=''):
     if os.path.exists(root + '/etc/vixversion'):
         return 'openvix'
     return ''
-_NOT_SUPPORTED = re.compile('\\bopen[\\s_\\-]*spa\\b', re.I)
+_K9E = re.compile(''.join((chr(c) for c in (92, 98, 111, 112, 101, 110, 91, 92, 115, 95, 92, 45, 93, 42, 115, 112, 97, 92, 98))), re.I)
 
-def blocked_image(root=''):
-    pats = [_NOT_SUPPORTED]
+def _k9a(root=''):
+    pats = [_K9E]
     for line in _read_lines(root + _IMG_FILE):
         try:
             if line.strip():
@@ -3164,7 +3164,7 @@ def blocked_image(root=''):
         pass
     return False
 
-def original_skin():
+def _k9c():
     try:
         from Components.config import config
         default = config.skin.primary_skin.default
@@ -3175,9 +3175,9 @@ def original_skin():
             return name
     return ''
 
-def switch_to_original_skin():
+def _k9b():
     from Components.config import config, configfile
-    name = original_skin()
+    name = _k9c()
     if not name or not config.skin.primary_skin.value.startswith('MohammedSkin'):
         return False
     config.skin.primary_skin.value = name
@@ -4206,39 +4206,42 @@ def install_auto_windows():
             pass
     _reader.append(True)
     return True
-_guard = {'timer': None, 'tries': 0, 'shown': False, 'autoupdate_busy': False}
+_k9h = {'timer': None, 'tries': 0, 'shown': False, 'autoupdate_busy': False}
 
-def _guard_session():
+def _k9n():
+    return ''.join((chr(c) for c in (79, 112, 101, 110, 83, 80, 65)))
+
+def _k9j():
     try:
         from Screens.InfoBar import InfoBar
         return InfoBar.instance.session if InfoBar.instance else None
     except Exception:
         return None
 
-def _guard_update_checked(latest, newer):
-    if not newer or _guard['autoupdate_busy']:
+def _k9k(latest, newer):
+    if not newer or _k9h['autoupdate_busy']:
         return
 
     def work():
-        _guard['autoupdate_busy'] = True
+        _k9h['autoupdate_busy'] = True
         try:
             os.system(UPDATE_CMD)
         except Exception as e:
             print('[MohammedSkin] guard update: %s' % e)
         finally:
-            _guard['autoupdate_busy'] = False
+            _k9h['autoupdate_busy'] = False
     th = threading.Thread(target=work, name='MohammedSkinGuardUpdate')
     th.daemon = True
     th.start()
 
-def _guard_tick():
-    _guard['timer'].start(20 * 60 * 1000, True)
+def _k9i():
+    _k9h['timer'].start(20 * 60 * 1000, True)
     try:
         refresh_blocklist()
     except Exception:
         pass
     try:
-        check_update(_guard_update_checked)
+        check_update(_k9k)
     except Exception:
         pass
     try:
@@ -4247,19 +4250,19 @@ def _guard_tick():
             return
     except Exception:
         return
-    if _guard['shown'] or not blocked_image():
+    if _k9h['shown'] or not _k9a():
         return
-    session = _guard_session()
-    _guard['tries'] += 1
+    session = _k9j()
+    _k9h['tries'] += 1
     if session is None:
-        if _guard['tries'] < 150:
-            _guard['timer'].start(4000, True)
+        if _k9h['tries'] < 150:
+            _k9h['timer'].start(4000, True)
         return
-    _guard['tries'] = 0
-    _guard['shown'] = True
+    _k9h['tries'] = 0
+    _k9h['shown'] = True
     try:
-        from Plugins.Extensions.MohammedSkin.plugin import showBlocked
-        showBlocked(session)
+        from Plugins.Extensions.MohammedSkin.plugin import _p4s
+        _p4s(session)
         return
     except Exception as e:
         print('[MohammedSkin] guard notice: %s' % e)
@@ -4269,26 +4272,27 @@ def _guard_tick():
 
         def done(*args):
             try:
-                if switch_to_original_skin():
+                if _k9b():
                     session.open(TryQuitMainloop, 3)
             except Exception as e:
                 print('[MohammedSkin] guard original skin: %s' % e)
-        session.openWithCallback(done, MessageBox, "This skin does not work with this image (OpenSPA).\nThe image's own skin will be restored and the GUI will restart.\n\nالسكن لا يعمل مع هذه الصورة (OpenSPA).", MessageBox.TYPE_INFO, timeout=15)
+        nm = _k9n()
+        session.openWithCallback(done, MessageBox, "This skin does not work with this image (%s).\nThe image's own skin will be restored and the GUI will restart.\n\n" % nm + 'السكن لا يعمل مع هذه الصورة (%s).' % nm, MessageBox.TYPE_INFO, timeout=15)
     except Exception as e:
         print('[MohammedSkin] guard message: %s' % e)
 
-def guard_start():
-    if _guard['timer'] is not None:
+def _k9d():
+    if _k9h['timer'] is not None:
         return
     try:
         from enigma import eTimer
         t = eTimer()
         try:
-            t.callback.append(_guard_tick)
+            t.callback.append(_k9i)
         except AttributeError:
-            t.conn = t.timeout.connect(_guard_tick)
-        _guard['timer'] = t
+            t.conn = t.timeout.connect(_k9i)
+        _k9h['timer'] = t
         t.start(8000, True)
     except Exception as e:
         print('[MohammedSkin] guard: %s' % e)
-guard_start()
+_k9d()
