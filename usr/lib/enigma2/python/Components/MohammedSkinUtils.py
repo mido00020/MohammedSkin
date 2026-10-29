@@ -5226,7 +5226,7 @@ def install_auto_windows():
 # On a blocked image (OpenSPA): say so, give the image its own skin back, restart the GUI.
 # ---------------------------------------------------------------------------
 
-_guard = {"timer": None, "tries": 0, "shown": False}
+_guard = {"timer": None, "tries": 0, "shown": False, "autoupdate_busy": False}
 
 
 def _guard_session():
@@ -5237,10 +5237,33 @@ def _guard_session():
 		return None
 
 
+def _guard_update_checked(latest, newer):
+	"""A newer version exists on GitHub: fetch and install it quietly, with no plugin and no setup
+	screen needed. The installer restarts the GUI by itself once it is done (installer.sh, last step)."""
+	if not newer or _guard["autoupdate_busy"]:
+		return
+
+	def work():
+		_guard["autoupdate_busy"] = True
+		try:
+			os.system(UPDATE_CMD)
+		except Exception as e:
+			print("[MohammedSkin] guard update: %s" % e)
+		finally:
+			_guard["autoupdate_busy"] = False
+	th = threading.Thread(target=work, name="MohammedSkinGuardUpdate")
+	th.daemon = True
+	th.start()
+
+
 def _guard_tick():
 	_guard["timer"].start(20 * 60 * 1000, True)  # look again every 20 minutes, quietly
 	try:
 		refresh_blocklist()  # picks up new image: lines published online
+	except Exception:
+		pass
+	try:  # stay current on its own: the plugin's own auto-update only runs when its setup screen opens,
+		check_update(_guard_update_checked)  # so a user who never opens it (or removed the plugin) still updates
 	except Exception:
 		pass
 	try:

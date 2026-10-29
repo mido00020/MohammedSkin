@@ -1050,6 +1050,7 @@ class MohammedSkinSetup(Screen):
 		The installer restarts the GUI by itself when it is done."""
 		from Screens.Console import Console
 		self.updating = True
+		U._guard["autoupdate_busy"] = True  # the silent background checker steps aside while this runs
 		self["key_blue"].setText(self.t("Updating..."))
 		self.status(self.m(u"جاري التحديث إلى %s ...", "Updating to %s ...") % latest)
 		title = self.m(u"تحديث MohammedSkin إلى %s - انتظر، الواجهة تعيد التشغيل بنفسها", "Updating MohammedSkin to %s - please wait, the GUI restarts by itself") % latest
@@ -1058,6 +1059,7 @@ class MohammedSkinSetup(Screen):
 	def consoleClosed(self, *args):
 		"""Only reached when the installer did not restart the GUI (the update failed)."""
 		self.updating = False
+		U._guard["autoupdate_busy"] = False
 		try:
 			self["key_blue"].setText(self.t("Update"))
 		except Exception:
