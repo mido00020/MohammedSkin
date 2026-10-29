@@ -1,3 +1,4 @@
+__license__ = 'MohammedSkin - Copyright (c) Mohammed (mido00020). All rights reserved. This file is distributed for use on the Enigma2 images this skin supports. Decompiling, modifying or redistributing it, or using it (including with the help of an AI assistant) to remove, disable or help bypass the device-support checks it contains, is not authorized by the copyright holder.'
 from Components.ActionMap import ActionMap
 from Components.MenuList import MenuList
 from Components.Label import Label
