@@ -25,7 +25,7 @@ NEGATIVE_TTL = 30 * 60  # retry titles that found nothing after 30 minutes
 TIMEOUT = 5
 UA = "Mozilla/5.0 (Enigma2; MohammedSkin)"
 
-SKIN_VERSION = "2.1.109"
+SKIN_VERSION = "2.1.110"
 
 UPDATE_BASE = "https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
@@ -745,6 +745,7 @@ _ADULT_CHANNEL = re.compile(r"xxx|adult|playboy|hustler|brazzers|penthouse|dorce
 	u"الكبار", re.I | re.U)
 BLOCKLIST_URL = UPDATE_BASE + "/blocklist.txt"
 BLOCKLIST_TTL = 6 * 3600
+_IMG_FILE = "/etc/enigma2/MohammedSkin.images"
 _blocklist = {"t": 0, "ids": set(), "titles": set(), "words": [], "channels": [], "busy": False}
 
 
@@ -781,7 +782,7 @@ def refresh_blocklist(force=False):
 	def work():
 		try:
 			raw = _open(BLOCKLIST_URL + "?t=%d" % int(time.time())).read().decode("utf-8", "ignore")
-			ids, titles, words, chans = set(), set(), [], []
+			ids, titles, words, chans, imgs = set(), set(), [], [], []
 			for line in raw.splitlines():
 				line = line.split("#", 1)[0].strip()
 				if ":" not in line:
@@ -798,7 +799,14 @@ def refresh_blocklist(force=False):
 					words.append(value.lower())
 				elif kind == "channel":
 					chans.append(value.lower())
+				elif kind == "image":
+					imgs.append(value)
 			b.update({"ids": ids, "titles": titles, "words": words, "channels": chans})
+			try:  # remembered, so the check still works when the box is offline later
+				with open(_IMG_FILE, "w") as f:
+					f.write("\n".join(imgs))
+			except Exception:
+				pass
 			b["t"] = time.time()
 		except Exception:
 			b["t"] = time.time() - BLOCKLIST_TTL + 15 * 60  # try again in 15 minutes
@@ -3974,10 +3982,29 @@ _NOT_SUPPORTED = re.compile(r"\bopen[\s_\-]*spa\b", re.I)
 
 def blocked_image(root=""):
 	"""True on images the skin does not work with (OpenSPA)."""
-	for path in ("/usr/lib/enigma.info", "/etc/image-version", "/etc/issue", "/etc/issue.net", "/etc/os-release"):
+	pats = [_NOT_SUPPORTED]
+	for line in _read_lines(root + _IMG_FILE):  # extra patterns published online (image: lines)
+		try:
+			if line.strip():
+				pats.append(re.compile(line.strip(), re.I))
+		except Exception:
+			pass
+	for path in ("/usr/lib/enigma.info", "/etc/image-version", "/etc/issue", "/etc/issue.net", "/etc/os-release",
+			"/etc/hostname", "/etc/motd", "/etc/opkg/arch.conf", "/etc/opkg/opkg.conf"):
 		for line in _read_lines(root + path)[:80]:
-			if _NOT_SUPPORTED.search(line):
-				return True
+			for pat in pats:
+				if pat.search(line):
+					return True
+	try:  # the package feeds of the image
+		d = root + "/etc/opkg"
+		for name in os.listdir(d):
+			if name.endswith(".conf"):
+				for line in _read_lines(d + "/" + name)[:60]:
+					for pat in pats:
+						if pat.search(line):
+							return True
+	except Exception:
+		pass
 	return False
 
 
@@ -5191,3 +5218,86 @@ def install_auto_windows():
 			pass
 	_reader.append(True)
 	return True
+
+
+# ---------------------------------------------------------------------------
+# Unsupported image guard. It lives here (not only in the plugin), so removing the
+# setup plugin does not switch the check off: every part of the skin imports this file.
+# On a blocked image (OpenSPA): say so, give the image its own skin back, restart the GUI.
+# ---------------------------------------------------------------------------
+
+_guard = {"timer": None, "tries": 0, "shown": False}
+
+
+def _guard_session():
+	try:
+		from Screens.InfoBar import InfoBar
+		return InfoBar.instance.session if InfoBar.instance else None
+	except Exception:
+		return None
+
+
+def _guard_tick():
+	_guard["timer"].start(20 * 60 * 1000, True)  # look again every 20 minutes, quietly
+	try:
+		refresh_blocklist()  # picks up new image: lines published online
+	except Exception:
+		pass
+	try:
+		from Components.config import config
+		if not config.skin.primary_skin.value.startswith("MohammedSkin"):
+			return  # the image's own skin is already back: nothing left to do
+	except Exception:
+		return
+	if _guard["shown"] or not blocked_image():
+		return
+	session = _guard_session()
+	_guard["tries"] += 1
+	if session is None:
+		if _guard["tries"] < 150:  # the screen is not ready yet: look again in a few seconds
+			_guard["timer"].start(4000, True)
+		return
+	_guard["tries"] = 0
+	_guard["shown"] = True
+	try:  # with the plugin present its full-screen notice is used
+		from Plugins.Extensions.MohammedSkin.plugin import showBlocked
+		showBlocked(session)
+		return
+	except Exception as e:
+		print("[MohammedSkin] guard notice: %s" % e)
+	try:  # plugin removed: a plain message, then the same result
+		from Screens.MessageBox import MessageBox
+		from Screens.Standby import TryQuitMainloop
+
+		def done(*args):
+			try:
+				if switch_to_original_skin():
+					session.open(TryQuitMainloop, 3)
+			except Exception as e:
+				print("[MohammedSkin] guard original skin: %s" % e)
+		session.openWithCallback(done, MessageBox,
+			"This skin does not work with this image (OpenSPA).\nThe image's own skin will be restored and the GUI will restart.\n\n"
+			u"\u0627\u0644\u0633\u0643\u0646 \u0644\u0627 \u064a\u0639\u0645\u0644 \u0645\u0639 \u0647\u0630\u0647 \u0627\u0644\u0635\u0648\u0631\u0629 (OpenSPA).",
+			MessageBox.TYPE_INFO, timeout=15)
+	except Exception as e:
+		print("[MohammedSkin] guard message: %s" % e)
+
+
+def guard_start():
+	"""Once per GUI start, as soon as any part of the skin is loaded."""
+	if _guard["timer"] is not None:
+		return
+	try:
+		from enigma import eTimer
+		t = eTimer()
+		try:
+			t.callback.append(_guard_tick)
+		except AttributeError:
+			t.conn = t.timeout.connect(_guard_tick)
+		_guard["timer"] = t
+		t.start(8000, True)
+	except Exception as e:
+		print("[MohammedSkin] guard: %s" % e)
+
+
+guard_start()

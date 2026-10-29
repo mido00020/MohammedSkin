@@ -1103,6 +1103,10 @@ def blockedText():
 
 def showBlocked(session):
 	"""This image is not supported: say so, then give the image its own skin back (nothing else is touched)."""
+	try:
+		U._guard["shown"] = True
+	except Exception:
+		pass
 	def done(*args):
 		try:
 			if U.switch_to_original_skin():
