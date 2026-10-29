@@ -269,6 +269,8 @@ if quick_update; then
 	sync
 	sleep 1
 	killall -9 enigma2 >/dev/null 2>&1
+	pkill -9 -f /usr/bin/enigma2 >/dev/null 2>&1
+	[ -x /etc/init.d/enigma2 ] && /etc/init.d/enigma2 restart >/dev/null 2>&1 &
 	exit 0
 fi
 rm -rf "$WORK/mohammedskin-quick"
@@ -417,4 +419,6 @@ info "Restarting the GUI ..."
 sync
 sleep 1
 killall -9 enigma2 >/dev/null 2>&1
+pkill -9 -f /usr/bin/enigma2 >/dev/null 2>&1
+[ -x /etc/init.d/enigma2 ] && /etc/init.d/enigma2 restart >/dev/null 2>&1 &
 exit 0
