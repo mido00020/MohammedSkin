@@ -75,7 +75,7 @@
 		<widget source="session.CurrentService" render="Label" position="414,820" size="70,40" font="Title;30" halign="left" valign="center" foregroundColor="crimson" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedInfo">Number</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="480,820" size="300,40" font="Semi;27" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="MohammedRunning" position="488,820" size="292,40" font="Semi;27" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="ServiceName">Name</convert>
 		</widget>
 		<widget source="session.Event_Now" render="MohammedRunning" position="320,866" size="470,40" font="Title;31" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">

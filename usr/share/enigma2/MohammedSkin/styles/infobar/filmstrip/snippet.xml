@@ -9,7 +9,7 @@
 		<widget source="session.CurrentService" render="Label" position="636,842" size="70,40" font="Title;30" halign="left" valign="center" foregroundColor="crimson" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedInfo">Number</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="712,842" size="300,40" font="Semi;30" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="MohammedRunning" position="708,842" size="300,40" font="Semi;30" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="ServiceName">Name</convert>
 		</widget>
 		<widget source="session.Event_Now" render="MohammedRunning" position="522,900" size="840,52" font="Title;44" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">

@@ -20,7 +20,7 @@
 		<widget source="session.CurrentService" render="Label" position="720,772" size="70,60" font="Title;34" halign="left" valign="center" foregroundColor="crimson" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="MohammedInfo">Number</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="790,772" size="380,60" font="Regular;27" halign="left" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
+		<widget source="session.CurrentService" render="MohammedRunning" position="790,772" size="380,60" font="Regular;27" halign="left" valign="center" foregroundColor="ivorydim" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">
 			<convert type="ServiceName">Name</convert>
 		</widget>
 		<widget source="session.Event_Now" render="MohammedRunning" position="560,836" size="700,74" font="Title;56" halign="left" valign="center" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="4">

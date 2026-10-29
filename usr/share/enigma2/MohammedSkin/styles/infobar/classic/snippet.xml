@@ -22,7 +22,7 @@
 		<widget source="session.CurrentService" render="Picon" position="366,794" size="160,96" alphatest="blend" zPosition="3">
 			<convert type="ServiceName">Reference</convert>
 		</widget>
-		<widget source="session.CurrentService" render="Label" position="544,822" size="236,40" font="Regular;22" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3">
+		<widget source="session.CurrentService" render="MohammedRunning" position="544,822" size="236,40" font="Regular;22" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="3">
 			<convert type="ServiceName">Name</convert>
 		</widget>
 		<!-- CLOCK START (royal) -->
