@@ -17,7 +17,7 @@ pk.MohammedSkinUtils = m
 m.reapply_all()
 PY
 # last step: mark the install complete (the setup offers a repair when this mark is missing)
-python3 -c "import re;v=re.search(r'SKIN_VERSION = \"([^\"]+)\"',open('/usr/lib/enigma2/python/Components/MohammedSkinUtils.py').read()).group(1);open('/usr/share/enigma2/MohammedSkin/.installed','w').write(v)" 2>/dev/null || true
+python3 -c "import re;v=re.search(r'SKIN_VERSION\s*=\s*[\'\"]([^\'\"]+)[\'\"]',open('/usr/lib/enigma2/python/Components/MohammedSkinUtils.py').read()).group(1);open('/usr/share/enigma2/MohammedSkin/.installed','w').write(v)" 2>/dev/null || true
 # keep only the compiled code on the receiver (same speed: python runs the compiled form anyway)
 python3 - <<'PY' || true
 import os, py_compile, shutil
