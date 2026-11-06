@@ -3089,7 +3089,7 @@ def check_update(callback):
     th = threading.Thread(target=work, name='MohammedSkinUpdate')
     th.daemon = True
     th.start()
-IMAGE_NAMES = {'openvix': 'OpenViX', 'openbh': 'OpenBlackHole', 'openatv': 'OpenATV', 'pure2': 'PurE2', 'egami': 'EGAMI'}
+IMAGE_NAMES = {'openvix': 'OpenViX', 'openbh': 'OpenBlackHole', 'openatv': 'OpenATV', 'pure2': 'PurE2', 'egami': 'EGAMI', 'vti': 'VTi'}
 IMAGE_ALIASES = {'openblackhole': 'openbh', 'blackhole': 'openbh', 'bh': 'openbh', 'vix': 'openvix', 'atv': 'openatv', 'purezwei': 'pure2', 'pure': 'pure2', 'egamiimage': 'egami'}
 VIX_FAMILY = ('openvix', 'openbh')
 ATV_FAMILY = ('openatv', 'pure2', 'egami')
@@ -3194,7 +3194,7 @@ def image_label(root=''):
     return name + ' Moh' if name else 'Moh'
 
 def skin_family(root=''):
-    for fn in ('enigma.py', 'enigma.pyc'):
+    for fn in ('enigma.py', 'enigma.pyc', 'enigma.pyo'):
         try:
             with open(root + '/usr/lib/enigma2/python/' + fn, 'rb') as f:
                 data = f.read()
