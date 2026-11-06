@@ -2,7 +2,7 @@
 
 A cinematic Full HD skin for Enigma2 (1920x1080).
 
-Works on **OpenViX**, **OpenBlackHole**, **OpenATV**, **PurE2** and **EGAMI**. The installer checks which image the receiver runs and the skin adapts itself to it, so the same command works on all of them.
+Works on **OpenViX**, **OpenBlackHole**, **OpenATV**, **PurE2**, **EGAMI** and **VTi**. The installer checks which image the receiver runs and the skin adapts itself to it, so the same command works on all of them.
 
 - The image name glows in the middle of the infobar (OpenViX, OpenBlackHole, OpenATV, PurE2, EGAMI)
 - Posters, backdrops and scenes fetched online (kept in RAM only, nothing saved to flash)

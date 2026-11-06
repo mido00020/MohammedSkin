@@ -1,6 +1,6 @@
 #!/bin/sh
 # MohammedSkin online installer / updater
-# Works on OpenViX, OpenBlackHole, OpenATV, PurE2 and EGAMI (Enigma2).
+# Works on OpenViX, OpenBlackHole, OpenATV, PurE2, EGAMI and VTi (Enigma2).
 #   wget -q --no-check-certificate "https://raw.githubusercontent.com/mido00020/MohammedSkin/main/installer.sh" -O - | /bin/sh
 
 BASE="https://raw.githubusercontent.com/mido00020/MohammedSkin/main"
@@ -53,6 +53,7 @@ case "$(echo "$DISTRO" | tr 'A-Z' 'a-z' | tr -d ' _-')" in
 	openatv*) IMAGE="OpenATV" ;;
 	pure2*) IMAGE="PurE2" ;;
 	egami*) IMAGE="EGAMI" ;;
+	vti*) IMAGE="VTi" ;;
 	*) IMAGE="" ;;
 esac
 
