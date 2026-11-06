@@ -18,7 +18,10 @@ m.reapply_all()
 PY
 # last step: mark the install complete (the setup offers a repair when this mark is missing)
 python3 -c "import re;v=re.search(r'SKIN_VERSION\s*=\s*[\'\"]([^\'\"]+)[\'\"]',open('/usr/lib/enigma2/python/Components/MohammedSkinUtils.py').read()).group(1);open('/usr/share/enigma2/MohammedSkin/.installed','w').write(v)" 2>/dev/null || true
-# keep only the compiled code on the receiver (same speed: python runs the compiled form anyway)
+# keep only the compiled code on the receiver (same speed: python runs the compiled form anyway) -
+# but ONLY on images whose enigma2 itself runs under Python 3: a .pyc built by python3 cannot be
+# loaded by a Python 2 enigma2 (e.g. VTi), so on those images the plain .py files must stay.
+if [ ! -f /usr/lib/enigma2/python/enigma.pyo ]; then
 python3 - <<'PY' || true
 import os, py_compile, shutil
 files = ["/usr/lib/enigma2/python/Components/MohammedSkinUtils.py"]
@@ -39,5 +42,6 @@ for f in files:
 			if c.startswith(base):
 				os.remove(os.path.join(cache, c))
 PY
+fi
 echo "MohammedSkin installed. Select it in Menu > Setup > User Interface > Skin, then restart the GUI."
 exit 0
