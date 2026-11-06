@@ -20,7 +20,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.119'
+SKIN_VERSION = '2.1.120'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -29,6 +29,26 @@ _settings_mtime = -1
 _settings_checked = [0.0]
 KEYS_FILES = ('/tmp/MohammedSkin_keys.txt', '/media/usb/MohammedSkin_keys.txt', '/media/hdd/MohammedSkin_keys.txt', '/media/mmc/MohammedSkin_keys.txt')
 _KEY_NAMES = {'tmdb': 'tmdb', 'omdb': 'omdb', 'fanart': 'fanart', 'fanart.tv': 'fanart', 'fanarttv': 'fanart'}
+
+def restart_gui(session=None):
+    # TryQuitMainloop's numeric retvalue is translated to a process exit code by
+    # enigma2 itself, and that translation is not the same on every image: on the
+    # images this skin was first built for, retvalue 3 means "restart enigma2",
+    # but on some other engines (confirmed on VTi, whose enigma2 runs under
+    # Python 2) the very same call reboots the whole receiver instead of just
+    # restarting the GUI. On those engines, exiting the process directly with
+    # code 0 is what VTi's own enigma2 launcher documents as "restart enigma",
+    # so that path is used there instead of trusting TryQuitMainloop's mapping.
+    import sys
+    if sys.version_info[0] < 3:
+        import os
+        os._exit(0)
+    try:
+        from Screens.Standby import TryQuitMainloop
+        session.open(TryQuitMainloop, 3)
+    except Exception:
+        import os
+        os._exit(0)
 
 def import_keys_file():
     for path in KEYS_FILES:
@@ -4271,12 +4291,11 @@ def _k9i():
         print('[MohammedSkin] guard notice: %s' % e)
     try:
         from Screens.MessageBox import MessageBox
-        from Screens.Standby import TryQuitMainloop
 
         def done(*args):
             try:
                 if _k9b():
-                    session.open(TryQuitMainloop, 3)
+                    restart_gui(session)
             except Exception as e:
                 print('[MohammedSkin] guard original skin: %s' % e)
         nm = _k9n()

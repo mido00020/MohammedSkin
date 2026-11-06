@@ -537,9 +537,9 @@ class MohammedSkinSetup(Screen):
         from enigma import eTimer
         self.restartTimer = eTimer()
         try:
-            self.restartTimer.callback.append(lambda: self.session.open(TryQuitMainloop, 3))
+            self.restartTimer.callback.append(lambda: U.restart_gui(self.session))
         except AttributeError:
-            self.restartConn = self.restartTimer.timeout.connect(lambda: self.session.open(TryQuitMainloop, 3))
+            self.restartConn = self.restartTimer.timeout.connect(lambda: U.restart_gui(self.session))
         self.restartTimer.start(300, True)
 
     def updateHelp(self):
@@ -739,7 +739,7 @@ class MohammedSkinSetup(Screen):
 
     def restartAnswer(self, answer):
         if answer:
-            self.session.open(TryQuitMainloop, 3)
+            U.restart_gui(self.session)
         else:
             self.close()
 
@@ -856,7 +856,7 @@ def _p4s(session):
     def done(*args):
         try:
             if U._k9b():
-                session.open(TryQuitMainloop, 3)
+                U.restart_gui(session)
         except Exception as e:
             print('[MohammedSkin] original skin: %s' % e)
     t, b, h = _p4t()
@@ -888,7 +888,7 @@ def askRestart(session, name):
 
     def ask():
         try:
-            session.openWithCallback(lambda answer: answer and session.open(TryQuitMainloop, 3), MessageBox, 'MohammedSkin has been adapted to %s.\nRestart the GUI now to load it?' % (name or 'this image'), MessageBox.TYPE_YESNO, timeout=20)
+            session.openWithCallback(lambda answer: answer and U.restart_gui(session), MessageBox, 'MohammedSkin has been adapted to %s.\nRestart the GUI now to load it?' % (name or 'this image'), MessageBox.TYPE_YESNO, timeout=20)
         except Exception as e:
             print('[MohammedSkin] restart question: %s' % e)
     try:

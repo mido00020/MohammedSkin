@@ -185,10 +185,9 @@ def _q2_gunzip(data):
 def _q2_restart():
     try:
         from Screens.InfoBar import InfoBar
-        from Screens.Standby import TryQuitMainloop
         session = InfoBar.instance.session if InfoBar.instance else None
         if session is not None:
-            session.open(TryQuitMainloop, 3)
+            U.restart_gui(session)
             return
     except Exception:
         pass
