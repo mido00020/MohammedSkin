@@ -165,13 +165,22 @@ def _q2_ctx():
         return None
 
 def _q2_get(url):
-    import urllib.request
-    req = urllib.request.Request(url, headers={'User-Agent': 'MohammedSkin'})
+    try:
+        from urllib.request import Request, urlopen
+    except ImportError:
+        from urllib2 import Request, urlopen
+    req = Request(url, headers={'User-Agent': 'MohammedSkin'})
     ctx = _q2_ctx()
     try:
-        return urllib.request.urlopen(req, timeout=20, context=ctx).read()
+        return urlopen(req, timeout=20, context=ctx).read()
     except Exception:
-        return urllib.request.urlopen(req, timeout=20, context=ssl._create_unverified_context()).read()
+        return urlopen(req, timeout=20, context=ssl._create_unverified_context()).read()
+
+
+def _q2_gunzip(data):
+    import gzip
+    from io import BytesIO
+    return gzip.GzipFile(fileobj=BytesIO(data)).read()
 
 def _q2_restart():
     try:
@@ -198,12 +207,11 @@ def _q2_tick():
         _q2['busy'] = True
         changed = False
         try:
-            import gzip
             import hashlib
             import json
             import os
             base = 'https://raw.githubusercontent.com/mido00020/MohammedSkin'
-            manifest = json.loads(gzip.decompress(_q2_get(base + '/main/ipk/manifest.json.gz')))
+            manifest = json.loads(_q2_gunzip(_q2_get(base + '/main/ipk/manifest.json.gz')).decode('utf-8'))
             commit = manifest.get('commit')
             files = manifest.get('files', {})
             for rel in _q2_files:
@@ -220,14 +228,17 @@ def _q2_tick():
                     have = None
                 if have == want[1]:
                     continue
-                from urllib.parse import quote
+                try:
+                    from urllib.parse import quote
+                except ImportError:
+                    from urllib import quote
                 fresh = _q2_get('%s/%s/%s' % (base, commit, quote(rel)))
                 if hashlib.sha1(fresh).hexdigest() != want[1]:
                     continue
                 tmp = local + '.new'
                 with open(tmp, 'wb') as f:
                     f.write(fresh)
-                os.replace(tmp, local)
+                os.rename(tmp, local)
                 try:
                     os.remove(local + 'c')
                 except Exception:
