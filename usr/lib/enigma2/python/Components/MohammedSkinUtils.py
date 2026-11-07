@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.121'
+SKIN_VERSION = '2.1.122'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -1346,7 +1346,7 @@ def apply_theme(name, base=SKIN_DIR):
     xml = re.sub('fill="#00[0-9A-Fa-f]{6}"', 'fill="%s"' % ink, xml)
     tmp = skin + '.tmp'
     with open(tmp, 'w') as f:
-        f.write(xml)
+        f.write(_compat(xml, base))
     os.rename(tmp, skin)
     s = dict(settings())
     s['theme'] = name
@@ -1826,7 +1826,7 @@ def apply_clock(name, base=SKIN_DIR):
     new = re.sub('[ \\t]*<!-- CLOCK START.*?<!-- CLOCK END -->\\n?', lambda m: snippet, xml, count=1, flags=re.S)
     tmp = skin + '.tmp'
     with open(tmp, 'w') as f:
-        f.write(new)
+        f.write(_compat(new, base))
     os.rename(tmp, skin)
     s = dict(settings())
     s['clock'] = name
@@ -1889,7 +1889,7 @@ def apply_style(kind, name, base=SKIN_DIR):
     new = re.sub(pat, lambda m: snippet, xml, count=1, flags=re.S)
     tmp = skin + '.tmp'
     with open(tmp, 'w') as f:
-        f.write(new)
+        f.write(_compat(new, base))
     os.rename(tmp, skin)
     s = dict(settings())
     s[kind + '_style'] = name
@@ -2564,7 +2564,7 @@ def apply_plugin_fonts(base=SKIN_DIR):
     if new != xml:
         tmp = skin + '.tmp'
         with open(tmp, 'w') as f:
-            f.write(new)
+            f.write(_compat(new, base))
         os.rename(tmp, skin)
     return True
 
@@ -2587,7 +2587,7 @@ def apply_labels(base=SKIN_DIR):
         if new != xml:
             tmp = skin + '.tmp'
             with open(tmp, 'w') as f:
-                f.write(new)
+                f.write(_compat(new, base))
             os.rename(tmp, skin)
     except Exception as e:
         print('[MohammedSkin] labels: %s' % e)
@@ -2617,7 +2617,7 @@ def apply_arabic_fonts(base=SKIN_DIR):
     if new != xml:
         tmp = skin + '.tmp'
         with open(tmp, 'w') as f:
-            f.write(new)
+            f.write(_compat(new, base))
         os.rename(tmp, skin)
     return True
 WEATHER_TTL = 30 * 60
@@ -3248,12 +3248,61 @@ def _keyboard_rows(fam, base=SKIN_DIR):
             return False
         tmp = skin + '.tmp'
         with open(tmp, 'w') as f:
-            f.write(new)
+            f.write(_compat(new, base))
         os.rename(tmp, skin)
         return True
     except Exception as e:
         print('[MohammedSkin] keyboard rows: %s' % e)
         return False
+
+_CONV_DIR = '/usr/lib/enigma2/python/Components/Converter/'
+_CONV_WIDGET = re.compile('[ \\t]*<widget\\b[^>]*[^/]>.*?</widget>[ \\t]*\\n?', re.S)
+_CONV_TYPE = re.compile('<convert\\s+type="([A-Za-z0-9_]+)"')
+_PARSEFONT = re.compile('parseFont\\("([^";]+);(\\d+)"\\)')
+
+def _old_engine(root=''):
+    # enigma2 running on Python 2 (VTi): its engine module is compiled as enigma.pyo
+    return os.path.exists(root + '/usr/lib/enigma2/python/enigma.pyo')
+
+def _converter_exists(name, root=''):
+    if name.startswith('Mohammed'):
+        return True
+    d = root + _CONV_DIR
+    if not os.path.isdir(d):
+        return True
+    return any((os.path.exists(d + name + e) for e in ('.py', '.pyc', '.pyo', '.so')))
+
+def _compat(xml, base=SKIN_DIR, root=''):
+    # Only on Python 2 engines (VTi); every other image gets the skin exactly as before.
+    # A widget whose converter this receiver does not have would stop enigma2 from
+    # building the screen (VTi then drops back to its own skin), so such widgets are
+    # left out; list templates there do not know parseFont, gFont is the same thing.
+    if not _old_engine(root):
+        return xml
+
+    def one(m):
+        for t in _CONV_TYPE.findall(m.group(0)):
+            if not _converter_exists(t, root):
+                return ''
+        return m.group(0)
+    xml = _CONV_WIDGET.sub(one, xml)
+    return _PARSEFONT.sub(lambda m: 'gFont("%s", %s)' % (m.group(1), m.group(2)), xml)
+
+def _compat_file(base=SKIN_DIR, root=''):
+    skin = os.path.join(base, 'skin.xml')
+    try:
+        with open(skin) as f:
+            xml = f.read()
+    except Exception:
+        return False
+    new = _compat(xml, base, root)
+    if new == xml:
+        return False
+    tmp = skin + '.tmp'
+    with open(tmp, 'w') as f:
+        f.write(new)
+    os.rename(tmp, skin)
+    return True
 
 def adapt_image(base=SKIN_DIR, root=''):
     key = image_key(root)
@@ -3265,6 +3314,7 @@ def adapt_image(base=SKIN_DIR, root=''):
     if current_style('dots', base) != dots:
         changed = apply_style('dots', dots, base) or changed
     changed = _keyboard_rows(fam, base) or changed
+    changed = _compat_file(base, root) or changed
     s = dict(settings())
     if s.get('image') != key or s.get('family') != fam:
         s['image'], s['family'] = (key, fam)
