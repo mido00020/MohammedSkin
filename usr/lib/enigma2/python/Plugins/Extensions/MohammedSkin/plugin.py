@@ -16,8 +16,42 @@ from Tools.LoadPixmap import LoadPixmap
 from enigma import ePicLoad, eListboxPythonMultiContent, gFont, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_VALIGN_CENTER, RT_WRAP
 from .lang import tr, UI_LANGS, RTL
 from Components import MohammedSkinUtils as U
-LANGUAGES = [('en-US', 'English'), ('ar-SA', 'العربية'), ('zh-CN', '简体中文'), ('uk-UA', 'Українська'), ('ru-RU', 'Русский'), ('de-DE', 'Deutsch'), ('fr-FR', 'Français'), ('tr-TR', 'Türkçe'), ('es-ES', 'Español'), ('it-IT', 'Italiano'), ('pt-PT', 'Português'), ('nl-NL', 'Nederlands'), ('pl-PL', 'Polski'), ('fa-IR', 'فارسی'), ('ja-JP', '日本語')]
+LANGUAGES = [('en-US', u'English'), ('ar-SA', u'العربية'), ('zh-CN', u'简体中文'), ('uk-UA', u'Українська'), ('ru-RU', u'Русский'), ('de-DE', u'Deutsch'), ('fr-FR', u'Français'), ('tr-TR', u'Türkçe'), ('es-ES', u'Español'), ('it-IT', u'Italiano'), ('pt-PT', u'Português'), ('nl-NL', u'Nederlands'), ('pl-PL', u'Polski'), ('fa-IR', u'فارسی'), ('ja-JP', u'日本語')]
 IMG = '/usr/share/enigma2/MohammedSkin/img/'
+_s = U.to_s
+if U.PY2:
+    # Python 2 images (VTi): text is kept as unicode inside this screen and turned into
+    # UTF-8 bytes only where it is handed to enigma2, which takes nothing else there.
+    # These wrappers exist only on Python 2; Python 3 images use the classes untouched.
+    _Label, _StaticText, _MCET, _MessageBox = (Label, StaticText, MultiContentEntryText, MessageBox)
+
+    class Label(_Label):
+
+        def __init__(self, text='', *a, **k):
+            _Label.__init__(self, _s(text), *a, **k)
+
+        def setText(self, text):
+            _Label.setText(self, _s(text))
+        text = property(lambda self: self.getText(), lambda self, v: self.setText(v))
+
+    class StaticText(_StaticText):
+
+        def __init__(self, text='', *a, **k):
+            _StaticText.__init__(self, _s(text), *a, **k)
+
+        def setText(self, text):
+            _StaticText.setText(self, _s(text))
+        text = property(lambda self: self.getText(), lambda self, v: self.setText(v))
+
+    def MultiContentEntryText(*a, **k):
+        if 'text' in k:
+            k['text'] = _s(k['text'])
+        return _MCET(*a, **k)
+
+    class MessageBox(_MessageBox):
+
+        def __init__(self, session, text, *a, **k):
+            _MessageBox.__init__(self, session, _s(text), *a, **k)
 try:
     from Components.config import KEY_LEFT, KEY_RIGHT
 except ImportError:
@@ -167,7 +201,7 @@ class MohammedSkinSetup(Screen):
 
     def __init__(self, session):
         self.lang = ui_lang()
-        self.skin = build_skin(self.lang)
+        self.skin = _s(build_skin(self.lang))
         Screen.__init__(self, session)
         self.skinName = 'MohammedSkinSetup'
         L = self.lang
@@ -175,7 +209,7 @@ class MohammedSkinSetup(Screen):
         self.t = t
         self.m = lambda ar, en: ar if L == 'ar' else t(en)
         name = U.image_name()
-        self.setTitle('MohammedSkin Setup  -  %s' % name if name else 'MohammedSkin Setup')
+        self.setTitle(_s('MohammedSkin Setup  -  %s' % name if name else 'MohammedSkin Setup'))
         self['subtitle'] = StaticText(t('Setup'))
         self['imagename'] = StaticText(name or 'Enigma2')
         self['langname'] = StaticText(t('Language: English'))
@@ -560,7 +594,7 @@ class MohammedSkinSetup(Screen):
         if not places:
             return
         items = [(u'%s   %s' % (c['ar'], c['en']) if c['ar'] != c['en'] else c['en'], i) for i, c in enumerate(places)]
-        self.session.openWithCallback(self.countryChosen, ChoiceBox, title=self.m(u'اختر الدولة', 'Choose the country'), list=items)
+        self.session.openWithCallback(self.countryChosen, ChoiceBox, title=_s(self.m(u'اختر الدولة', 'Choose the country')), list=[(_s(a), b) for a, b in items])
 
     def countryChosen(self, choice):
         if not choice:
@@ -568,7 +602,7 @@ class MohammedSkinSetup(Screen):
         from Screens.ChoiceBox import ChoiceBox
         self.country = U.weather_places()[choice[1]]
         items = [(u'%s   %s' % (c[1], c[0]) if c[1] != c[0] else c[0], i) for i, c in enumerate(self.country['cities'])]
-        self.session.openWithCallback(self.cityChosen, ChoiceBox, title=self.m(u'اختر المدينة (%s)', 'Choose the city (%s)') % self.country['en'], list=items)
+        self.session.openWithCallback(self.cityChosen, ChoiceBox, title=_s(self.m(u'اختر المدينة (%s)', 'Choose the city (%s)') % self.country['en']), list=[(_s(a), b) for a, b in items])
 
     def cityChosen(self, choice):
         if not choice:
@@ -591,7 +625,7 @@ class MohammedSkinSetup(Screen):
             self.openNotice(self.keyTermsAnswer, self.termsText(), True)
             return
         if cur and isinstance(cur[1], ConfigText):
-            self.session.openWithCallback(lambda text, c=cur[1]: self.gotText(c, text), VirtualKeyBoard, title=cur[0], text=cur[1].value)
+            self.session.openWithCallback(lambda text, c=cur[1]: self.gotText(c, text), VirtualKeyBoard, title=_s(cur[0]), text=_s(cur[1].value))
 
     def gotText(self, cfg, text):
         if text is not None:
@@ -801,7 +835,7 @@ class MohammedSkinSetup(Screen):
         self['key_blue'].setText(self.t('Updating...'))
         self.status(self.m(u'جاري التحديث إلى %s ...', 'Updating to %s ...') % latest)
         title = self.m(u'تحديث MohammedSkin إلى %s - انتظر، الواجهة تعيد التشغيل بنفسها', 'Updating MohammedSkin to %s - please wait, the GUI restarts by itself') % latest
-        self.session.openWithCallback(self.consoleClosed, Console, title=title, cmdlist=[U.UPDATE_CMD])
+        self.session.openWithCallback(self.consoleClosed, Console, title=_s(title), cmdlist=[U.UPDATE_CMD])
 
     def consoleClosed(self, *args):
         self.updating = False

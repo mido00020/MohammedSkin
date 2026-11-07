@@ -274,7 +274,7 @@ class MohammedPoster(Renderer):
 		self.loading = path
 		self.decoding = True
 		self.picload.setPara([size.width(), size.height(), 1, 1, False, 1, self.fill])
-		if self.picload.startDecode(path) != 0:
+		if self.picload.startDecode(U.to_s(path)) != 0:
 			self.decoding = False
 			self.hide()
 

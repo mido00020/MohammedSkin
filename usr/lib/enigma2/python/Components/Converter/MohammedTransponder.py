@@ -187,3 +187,14 @@ class MohammedTransponder(Poll, Converter):
 		return bool(info is not None and fields(tp)["Tuner"])
 
 	boolean = property(getBoolean)
+
+
+# Python 2 images (VTi): enigma2 there only takes UTF-8 byte strings, a unicode text would crash the GUI.
+import sys as _sys
+if _sys.version_info[0] == 2:
+	def _py2_bytes(get):
+		def text(self):
+			v = get(self)
+			return v.encode("utf-8") if isinstance(v, unicode) else v
+		return property(text)
+	MohammedTransponder.text = _py2_bytes(MohammedTransponder.text.fget)

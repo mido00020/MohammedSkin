@@ -64,7 +64,7 @@ class MohammedWeatherIcon(Renderer):
 				self.shown = None
 				self.instance.hide()
 				return
-		path = self.pattern % icon
+		path = U.to_s(self.pattern % icon)
 		if path != self.shown:
 			try:
 				self.instance.setPixmap(LoadPixmap(path))

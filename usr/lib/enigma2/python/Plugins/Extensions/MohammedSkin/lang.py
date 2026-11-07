@@ -222,9 +222,20 @@ AR.update({
 	'White and silver.': 'أبيض وفضي.',
 })
 
-def tr(lang, text):
+def _tr(lang, text):
 	if lang == "ar":
 		return AR.get(text, text)
 	if lang == "en" or not lang:
 		return text
 	return _table(lang).get(text, text)
+
+
+import sys as _sys
+if _sys.version_info[0] == 2:
+	# Python 2 images (VTi): some texts above are byte strings, others unicode. Hand out
+	# unicode only, so the setup never mixes the two (it turns them into bytes for enigma2 itself).
+	def tr(lang, text):
+		v = _tr(lang, text)
+		return v.decode("utf-8", "replace") if isinstance(v, str) else v
+else:
+	tr = _tr

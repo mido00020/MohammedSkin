@@ -124,3 +124,14 @@ class MohammedBox(Poll, Converter):
 
 	def changed(self, what):
 		Converter.changed(self, what)
+
+
+# Python 2 images (VTi): enigma2 there only takes UTF-8 byte strings, a unicode text would crash the GUI.
+import sys as _sys
+if _sys.version_info[0] == 2:
+	def _py2_bytes(get):
+		def text(self):
+			v = get(self)
+			return v.encode("utf-8") if isinstance(v, unicode) else v
+		return property(text)
+	MohammedBox.text = _py2_bytes(MohammedBox.text.fget)

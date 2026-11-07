@@ -27,6 +27,13 @@ except ImportError:
 GAP = 80  # space between the end of the text and its start coming round again
 
 
+def _b(t):
+	# Python 2 images (VTi): enigma2 only takes UTF-8 byte strings (str is bytes there)
+	if str is bytes and isinstance(t, type(u"")):
+		return t.encode("utf-8")
+	return t
+
+
 def _rtl(text):
 	try:
 		t = text if isinstance(text, type(u"")) else text.decode("utf-8", "ignore")
@@ -136,7 +143,7 @@ class MohammedRunning(Renderer):
 		if self.up:
 			return self.layout_up(w, h)
 		self.label.resize(eSize(4000, h))
-		self.label.setText(self.text)
+		self.label.setText(_b(self.text))
 		try:
 			self.tw = self.label.calculateSize().width()
 		except Exception:
@@ -160,7 +167,7 @@ class MohammedRunning(Renderer):
 	def layout_up(self, w, h):
 		self.label.setHAlign({"center": eLabel.alignCenter, "right": eLabel.alignRight}.get(self.halign, eLabel.alignLeft))
 		self.label.resize(eSize(w, 4000))
-		self.label.setText(self.text)
+		self.label.setText(_b(self.text))
 		try:
 			self.tw = self.label.calculateSize().height()  # here: the height of the text
 		except Exception:

@@ -74,7 +74,7 @@ class MohammedStars(Renderer):
 		path = self.pattern % idx
 		if path != self.shown:
 			try:
-				ptr = LoadPixmap(path, cached=True)
+				ptr = LoadPixmap(U.to_s(path), cached=True)
 			except Exception:
 				ptr = None
 			if ptr is None:
