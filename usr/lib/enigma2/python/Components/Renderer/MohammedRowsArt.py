@@ -40,7 +40,7 @@ class MohammedRowsArt(Renderer):
 		self.delay = 250
 		self.items = {}      # service -> (programme key, picture or "") once known
 		self.busy = {}       # service -> programme key being made
-		self.visible = None  # (width, row height, rows, [services])
+		self.page = None  # (width, row height, rows, [services])
 		self.sig = None      # page currently shown
 		self.making = None   # page being made
 		self.timer = _timer(self.refresh)
@@ -134,7 +134,7 @@ class MohammedRowsArt(Renderer):
 			refs = lst.getList()[top:top + n]
 		except Exception:
 			return
-		self.visible = (w, h, n, refs)
+		self.page = (w, h, n, refs)
 		if len(self.items) > 600:
 			self.items = {}
 		for ref in refs:
@@ -238,9 +238,9 @@ class MohammedRowsArt(Renderer):
 		return path
 
 	def compose(self):
-		if not self.instance or not self.visible:
+		if not self.instance or not self.page:
 			return
-		w, h, n, refs = self.visible
+		w, h, n, refs = self.page
 		arts = []
 		for ref in refs:
 			try:
@@ -253,7 +253,7 @@ class MohammedRowsArt(Renderer):
 			return
 		out = os.path.join(U.CACHE_DIR, "rows_%s.png" % hashlib.md5(sig.encode("utf-8")).hexdigest())
 		if os.path.exists(out):
-			self.show(sig, out)
+			self.showPage(sig, out)
 			return
 		self.making = sig
 		U.in_background(lambda: U.rows_page(arts, w, h, n, row, out), lambda res, s=sig: self.pageMade(s, res))
@@ -262,10 +262,10 @@ class MohammedRowsArt(Renderer):
 		if self.making == sig:
 			self.making = None
 		if path and self.instance:
-			self.show(sig, path)
+			self.showPage(sig, path)
 		self.drawTimer.start(50, True)  # something may have arrived while this page was made
 
-	def show(self, sig, path):
+	def showPage(self, sig, path):
 		try:
 			ptr = LoadPixmap(U.to_s(path), cached=False)
 		except Exception:
