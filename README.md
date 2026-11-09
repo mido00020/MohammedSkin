@@ -24,7 +24,9 @@ Works on **OpenViX**, **OpenBlackHole**, **OpenATV**, **PurE2**, **EGAMI** and *
 - Every new option has a preview picture in the setup
 - Ten colour themes: red, blue, turquoise, sky blue (fayrouzi), gold, black, purple, emerald green, orange and rose pink (the new ones are prepared on the receiver the first time you pick them)
 - Five glass channel list styles: gold glass with All / Satellites / Favourites / Providers tabs, glass sidebar, sidebar with big logos, neon sidebar and featured channel card
-- Plugin list as a grid of tiles (OpenViX / OpenBH with grid support, OpenATV) or as a list
+- Plugin list as a grid of tiles, tall cards (OpenViX / OpenBH with grid support, OpenATV) or as a list
+- Plugin list designs: classic, glass glow, neon, aurora colours, royal gold and crystal 3D, each with its own background and tiles
+- Channel list with a picture behind every channel (the programme picture, or the channel logo when there is none), in two styles
 - Weather position: top right, top centre, or above the infobar (right or left)
 - Classic analog clocks with a smooth seconds hand, or no centre clock
 - Arabic auto-translation of event titles and descriptions
