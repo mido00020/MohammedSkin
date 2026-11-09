@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.122'
+SKIN_VERSION = '2.1.123'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -1169,6 +1169,100 @@ def cover_crop_async(path, w, h, callback):
             except Exception:
                 pass
     th = threading.Thread(target=work, name='MohammedSkinCrop')
+    th.daemon = True
+    th.start()
+    return None
+
+def _hex_rgb(h, default=(200, 16, 46)):
+    try:
+        h = str(h).lstrip('#')[-6:]
+        return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+    except Exception:
+        return default
+
+def row_art(path, w, h, accent='#C8102E', ink='#060304'):
+    # The programme picture made into one channel-list row: the picture on the right,
+    # fading into the skin's dark colour under the channel name on the left, with a
+    # glowing frame in the theme colour. Fully opaque inside (lists only alpha-test the
+    # selection picture), transparent only in the rounded corners. Needs python3-pillow.
+    if not path or w <= 0 or h <= 0:
+        return None
+    tag = ('%s%s' % (str(accent).lstrip('#'), str(ink).lstrip('#'))).replace('/', '')
+    out = '%s_r%dx%d_%s.png' % (os.path.splitext(path)[0], w, h, tag)
+    if os.path.exists(out):
+        return out
+    try:
+        from PIL import Image, ImageDraw, ImageFilter
+        lz = Image.LANCZOS if hasattr(Image, 'LANCZOS') else Image.ANTIALIAS
+        im = Image.open(path).convert('RGB')
+        iw, ih = im.size
+        want = float(w) / h
+        if float(iw) / ih > want:
+            nw = int(ih * want)
+            im = im.crop(((iw - nw) // 2, 0, (iw - nw) // 2 + nw, ih))
+        else:
+            nh = int(iw / want)
+            top = max(0, int((ih - nh) * 0.38))
+            im = im.crop((0, top, iw, top + nh))
+        im = im.resize((w, h), lz)
+        dark = Image.new('RGB', (w, h), _hex_rgb(ink, (6, 3, 4)))
+        ramp = Image.new('L', (256, 1))
+        for x in range(256):
+            f = x / 255.0
+            a = 0.93 - 0.48 * (f / 0.45) if f < 0.45 else 0.45 - 0.45 * ((f - 0.45) / 0.55)
+            ramp.putpixel((x, 0), int(max(0.0, min(1.0, a)) * 255))
+        im = Image.composite(dark, im, ramp.resize((w, h)))
+        acc = _hex_rgb(accent)
+        glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        r = max(6, min(16, h // 6))
+        ImageDraw.Draw(glow).rounded_rectangle((2, 2, w - 3, h - 3), r, outline=acc + (255,), width=4) if hasattr(ImageDraw.Draw(glow), 'rounded_rectangle') else ImageDraw.Draw(glow).rectangle((2, 2, w - 3, h - 3), outline=acc + (255,))
+        glow = glow.filter(ImageFilter.GaussianBlur(3))
+        out_im = im.convert('RGBA')
+        out_im.alpha_composite(glow)
+        d = ImageDraw.Draw(out_im)
+        if hasattr(d, 'rounded_rectangle'):
+            d.rounded_rectangle((1, 1, w - 2, h - 2), r, outline=acc + (255,), width=2)
+            mask = Image.new('L', (w, h), 0)
+            ImageDraw.Draw(mask).rounded_rectangle((0, 0, w - 1, h - 1), r, fill=255)
+        else:
+            d.rectangle((1, 1, w - 2, h - 2), outline=acc + (255,))
+            mask = Image.new('L', (w, h), 255)
+        out_im.putalpha(mask)
+        out_im.save(out + '.part', 'PNG')
+        os.rename(out + '.part', out)
+        return out
+    except Exception as e:
+        print('[MohammedSkin] row picture: %s' % e)
+        return None
+_art_busy = {}
+
+def row_art_async(path, w, h, accent, ink, callback):
+    if not path or w <= 0 or h <= 0:
+        return None
+    tag = ('%s%s' % (str(accent).lstrip('#'), str(ink).lstrip('#'))).replace('/', '')
+    out = '%s_r%dx%d_%s.png' % (os.path.splitext(path)[0], w, h, tag)
+    if os.path.exists(out):
+        return out
+    with _lock:
+        if out in _art_busy:
+            _art_busy[out].append(callback)
+            return None
+        _art_busy[out] = [callback]
+
+    def work():
+        try:
+            res = row_art(path, w, h, accent, ink)
+        except Exception:
+            res = None
+        with _lock:
+            cbs = _art_busy.pop(out, [])
+        for cb in cbs:
+            try:
+                from twisted.internet import reactor
+                reactor.callFromThread(cb, res)
+            except Exception:
+                pass
+    th = threading.Thread(target=work, name='MohammedSkinRowArt')
     th.daemon = True
     th.start()
     return None

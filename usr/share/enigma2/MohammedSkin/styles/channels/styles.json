@@ -21,7 +21,8 @@
   "synth",
   "cinerows",
   "postercol",
-  "hero"
+  "hero",
+  "picrows"
  ],
  "labels": {
   "classic": "Classic",
@@ -45,6 +46,7 @@
   "synth": "18  Neon glass - full picture behind",
   "cinerows": "19  Cinema rows - wide glass rows",
   "postercol": "20  Poster column + wide rows",
-  "hero": "21  Hero banner + wide rows"
+  "hero": "21  Hero banner + wide rows",
+  "picrows": "22  Programme picture behind the channel"
  }
 }
