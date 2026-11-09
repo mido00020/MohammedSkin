@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.123'
+SKIN_VERSION = '2.1.124'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -1180,14 +1180,14 @@ def _hex_rgb(h, default=(200, 16, 46)):
     except Exception:
         return default
 
-def row_art(path, w, h, accent='#C8102E', ink='#060304'):
+def row_art(path, w, h, accent='#C8102E', ink='#060304', frame=True):
     # The programme picture made into one channel-list row: the picture on the right,
     # fading into the skin's dark colour under the channel name on the left, with a
     # glowing frame in the theme colour. Fully opaque inside (lists only alpha-test the
     # selection picture), transparent only in the rounded corners. Needs python3-pillow.
     if not path or w <= 0 or h <= 0:
         return None
-    tag = ('%s%s' % (str(accent).lstrip('#'), str(ink).lstrip('#'))).replace('/', '')
+    tag = ('%s%s%s' % (str(accent).lstrip('#'), str(ink).lstrip('#'), '' if frame else 'n')).replace('/', '')
     out = '%s_r%dx%d_%s.png' % (os.path.splitext(path)[0], w, h, tag)
     if os.path.exists(out):
         return out
@@ -1213,8 +1213,10 @@ def row_art(path, w, h, accent='#C8102E', ink='#060304'):
             ramp.putpixel((x, 0), int(max(0.0, min(1.0, a)) * 255))
         im = Image.composite(dark, im, ramp.resize((w, h)))
         acc = _hex_rgb(accent)
-        glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
         r = max(6, min(16, h // 6))
+        if not frame:
+            return _round_save(im.convert('RGBA'), w, h, r, out)
+        glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
         ImageDraw.Draw(glow).rounded_rectangle((2, 2, w - 3, h - 3), r, outline=acc + (255,), width=4) if hasattr(ImageDraw.Draw(glow), 'rounded_rectangle') else ImageDraw.Draw(glow).rectangle((2, 2, w - 3, h - 3), outline=acc + (255,))
         glow = glow.filter(ImageFilter.GaussianBlur(3))
         out_im = im.convert('RGBA')
@@ -1266,6 +1268,119 @@ def row_art_async(path, w, h, accent, ink, callback):
     th.daemon = True
     th.start()
     return None
+
+def _round_save(im, w, h, r, out):
+    from PIL import Image, ImageDraw
+    d = ImageDraw.Draw(im)
+    mask = Image.new('L', (w, h), 0)
+    md = ImageDraw.Draw(mask)
+    if hasattr(md, 'rounded_rectangle'):
+        md.rounded_rectangle((0, 0, w - 1, h - 1), r, fill=255)
+        d.rounded_rectangle((0, 0, w - 1, h - 1), r, outline=(242, 236, 226, 46), width=1)
+    else:
+        md.rectangle((0, 0, w - 1, h - 1), fill=255)
+    im.putalpha(mask)
+    im.save(out + '.part', 'PNG')
+    os.rename(out + '.part', out)
+    return out
+
+def picon_art(picon, w, h, accent='#C8102E', ink='#060304'):
+    # A channel with no programme picture: its logo on the right of the row, with a large blurred
+    # copy of it behind as a coloured glow, fading into the skin's dark colour on the left.
+    if not picon or w <= 0 or h <= 0:
+        return None
+    tag = ('%s%s' % (str(accent).lstrip('#'), str(ink).lstrip('#'))).replace('/', '')
+    name = os.path.splitext(os.path.basename(picon))[0]
+    out = os.path.join(CACHE_DIR, 'pa_%s_%dx%d_%s.png' % (name, w, h, tag))
+    if os.path.exists(out):
+        return out
+    try:
+        from PIL import Image, ImageFilter
+        lz = Image.LANCZOS if hasattr(Image, 'LANCZOS') else Image.ANTIALIAS
+        if not os.path.isdir(CACHE_DIR):
+            os.makedirs(CACHE_DIR)
+        logo = Image.open(picon).convert('RGBA')
+        bb = logo.getbbox()
+        if bb:
+            logo = logo.crop(bb)
+        lw, lh = logo.size
+        ink_rgb = _hex_rgb(ink, (6, 3, 4))
+        im = Image.new('RGBA', (w, h), ink_rgb + (255,))
+        gh = int(h * 1.5)
+        gw = max(int(lw * gh / float(lh)), int(w * 0.62))  # the logo pulled out along the row
+        rad = max(8, h // 4)
+        pad = rad * 3
+        glow = Image.new('RGBA', (gw + 2 * pad, gh + 2 * pad), (0, 0, 0, 0))
+        glow.paste(logo.resize((gw, gh), lz), (pad, pad))
+        glow = glow.filter(ImageFilter.GaussianBlur(rad))
+        a = glow.getchannel('A').point(lambda v: int(v * 0.75))
+        glow.putalpha(a)
+        free = 150  # the right end of the row stays clear: the list draws the programme progress bar there
+        im.alpha_composite(glow, (w - gw - pad - free + 40, (h - gh) // 2 - pad))
+        ph = int(h * 0.74)
+        pw = max(1, int(lw * ph / float(lh)))
+        if pw > int(w * 0.26):
+            pw = int(w * 0.26)
+            ph = max(1, int(lh * pw / float(lw)))
+        crisp = logo.resize((pw, ph), lz)
+        im.alpha_composite(crisp, (w - pw - free, (h - ph) // 2))
+        dark = Image.new('RGBA', (w, h), ink_rgb + (255,))
+        ramp = Image.new('L', (256, 1))
+        for x in range(256):
+            f = x / 255.0
+            ramp.putpixel((x, 0), int(max(0.0, min(1.0, 0.9 - 0.9 * f / 0.6 if f < 0.6 else 0.0)) * 255))
+        im = Image.composite(dark, im, ramp.resize((w, h)))
+        return _round_save(im, w, h, max(6, min(16, h // 6)), out)
+    except Exception as e:
+        print('[MohammedSkin] picon picture: %s' % e)
+        return None
+
+def rows_page(arts, w, h, n, default_row, out):
+    # One picture for the visible page of the channel list: each channel's picture in its row,
+    # the skin's plain row where a channel has none, nothing below the end of the list.
+    try:
+        from PIL import Image
+        page = Image.new('RGBA', (w, h * n), (0, 0, 0, 0))
+        base = None
+        if default_row and os.path.exists(default_row):
+            base = Image.open(default_row).convert('RGBA')
+            if base.size != (w, h):
+                base = base.resize((w, h))
+        for i, p in enumerate(arts[:n]):
+            im = None
+            if p:
+                try:
+                    im = Image.open(p).convert('RGBA')
+                    if im.size != (w, h):
+                        im = im.resize((w, h))
+                except Exception:
+                    im = None
+            if im is None:
+                im = base
+            if im is not None:
+                page.alpha_composite(im, (0, i * h))
+        page.save(out + '.part', 'PNG')
+        os.rename(out + '.part', out)
+        return out
+    except Exception as e:
+        print('[MohammedSkin] rows page: %s' % e)
+        return None
+
+def in_background(work, done):
+    # run work() in a thread and done(result) back in the GUI thread
+    def run():
+        try:
+            res = work()
+        except Exception:
+            res = None
+        try:
+            from twisted.internet import reactor
+            reactor.callFromThread(done, res)
+        except Exception:
+            pass
+    th = threading.Thread(target=run, name='MohammedSkinRows')
+    th.daemon = True
+    th.start()
 
 def clear_cache():
     with _lock:
@@ -2602,7 +2717,121 @@ def plugin_browser_kind(root=''):
                 return 'atv'
     return ''
 
-def _grid_screens(level, kind):
+PL_STYLES = (('classic', 'Classic'), ('glass', 'Glass glow'), ('neon', 'Neon'), ('aurora', 'Aurora colours'), ('gold', 'Royal gold'), ('crystal', 'Crystal 3D'))
+PL_LAYOUTS = (('grid', 'Grid (tiles side by side)'), ('cards', 'Tall cards'), ('list', 'List'))
+PL_THEMED = ('glass', 'neon', 'crystal')
+
+def pl_style():
+    v = settings().get('pl_style', 'classic')
+    return v if v in [n for n, l in PL_STYLES] else 'classic'
+
+def pl_background(style, base=SKIN_DIR):
+    theme = settings().get('theme', 'red')
+    d = os.path.join(base, 'plstyles')
+    for name in ((style + '_' + theme, style + '_red', style) if style in PL_THEMED else (style,)):
+        if os.path.isfile(os.path.join(d, name + '.jpg')):
+            return '%s/plstyles/%s.jpg' % (SKIN_DIR, name)
+    return ''
+
+def _vgrad(w, h, top, bottom):
+    from PIL import Image
+    g = Image.new('RGBA', (1, h))
+    for y in range(h):
+        f = y / float(max(1, h - 1))
+        g.putpixel((0, y), tuple(int(top[i] + (bottom[i] - top[i]) * f) for i in range(4)))
+    return g.resize((w, h))
+
+def _hgrad(w, h, stops):
+    from PIL import Image
+    g = Image.new('RGBA', (w, 1))
+    n = len(stops) - 1
+    for x in range(w):
+        f = x / float(max(1, w - 1)) * n
+        i = min(int(f), n - 1)
+        t = f - i
+        a, b = stops[i], stops[i + 1]
+        g.putpixel((x, 0), tuple(int(a[k] + (b[k] - a[k]) * t) for k in range(4)))
+    return g.resize((w, h))
+
+def pl_cell(style, which, w, h, accent='#C8102E', m=6, out=None):
+    # One plugin tile / row picture for a plugin list design: which = 'bg' (every item) or 'sel'
+    # (the selected item). Drawn inside a margin m so items keep a gap between them.
+    from PIL import Image, ImageDraw, ImageFilter
+    acc = _hex_rgb(accent)
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    iw, ih = w - 2 * m, h - 2 * m
+    if iw < 8 or ih < 8:
+        return None
+    r = max(6, min(18, ih // 5))
+    mask = Image.new('L', (iw, ih), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, iw - 1, ih - 1), r, fill=255)
+    sel = which == 'sel'
+    if style == 'glass':
+        body = _vgrad(iw, ih, acc + (225,), (int(acc[0] * .45), int(acc[1] * .45), int(acc[2] * .45), 235)) if sel else _vgrad(iw, ih, (255, 255, 255, 34), (255, 255, 255, 12))
+        gloss = _vgrad(iw, ih // 2, (255, 255, 255, 70 if sel else 30), (255, 255, 255, 0))
+        body.alpha_composite(gloss, (0, 0))
+        line = (255, 255, 255, 200) if sel else (255, 255, 255, 48)
+    elif style == 'neon':
+        body = Image.new('RGBA', (iw, ih), (8, 8, 12, 215 if sel else 160))
+        body.alpha_composite(_vgrad(iw, ih, acc + (90 if sel else 26,), acc + (25 if sel else 0,)))
+        line = acc + (255,) if sel else acc + (170,)
+    elif style == 'aurora':
+        if sel:
+            body = _hgrad(iw, ih, [(255, 46, 148, 235), (255, 128, 40, 235), (255, 214, 64, 235)])
+        else:
+            body = _hgrad(iw, ih, [(110, 60, 220, 70), (40, 120, 240, 70), (20, 200, 180, 70)])
+        body.alpha_composite(_vgrad(iw, ih // 2, (255, 255, 255, 60 if sel else 24), (255, 255, 255, 0)))
+        line = (255, 255, 255, 230) if sel else (255, 255, 255, 60)
+    elif style == 'gold':
+        body = _vgrad(iw, ih, (120, 84, 28, 235), (52, 34, 10, 240)) if sel else _vgrad(iw, ih, (24, 20, 14, 200), (8, 6, 4, 210))
+        line = (255, 214, 130, 255) if sel else (201, 166, 107, 150)
+    else:  # crystal
+        top = tuple(min(255, int(c * .55 + 70)) for c in acc) + (235,) if sel else (70, 70, 80, 150)
+        bot = tuple(int(c * .35) for c in acc) + (240,) if sel else (14, 14, 18, 170)
+        body = _vgrad(iw, ih, top, bot)
+        band = _vgrad(iw, max(2, ih // 3), (255, 255, 255, 90 if sel else 36), (255, 255, 255, 0))
+        body.alpha_composite(band, (0, 1))
+        sh = _vgrad(iw, max(2, ih // 6), (0, 0, 0, 0), (0, 0, 0, 110))
+        body.alpha_composite(sh, (0, ih - sh.size[1]))
+        line = (255, 255, 255, 170) if sel else (255, 255, 255, 50)
+    body.putalpha(Image.composite(body.getchannel('A'), Image.new('L', (iw, ih), 0), mask))
+    if sel and style in ('neon', 'aurora', 'glass', 'crystal'):
+        glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        gcol = acc if style != 'aurora' else (255, 120, 60)
+        ImageDraw.Draw(glow).rounded_rectangle((m - 2, m - 2, w - m + 1, h - m + 1), r + 2, outline=gcol + (230,), width=4)
+        im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(max(2, m // 2))))
+    im.alpha_composite(body, (m, m))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((m, m, m + iw - 1, m + ih - 1), r, outline=line, width=2 if sel else 1)
+    if style == 'gold':
+        k = max(6, min(16, ih // 6))
+        for cx, cy, sx, sy in ((m + 5, m + 5, 1, 1), (m + iw - 6, m + 5, -1, 1), (m + 5, m + ih - 6, 1, -1), (m + iw - 6, m + ih - 6, -1, -1)):
+            d.line((cx, cy, cx + sx * k, cy), fill=line, width=2)
+            d.line((cx, cy, cx, cy + sy * k), fill=line, width=2)
+        if sel:
+            d.rounded_rectangle((m + 4, m + 4, m + iw - 5, m + ih - 5), max(2, r - 4), outline=(255, 236, 180, 160), width=1)
+    if out:
+        d2 = os.path.dirname(out)
+        if not os.path.isdir(d2):
+            os.makedirs(d2)
+        im.save(out + '.part', 'PNG')
+        os.rename(out + '.part', out)
+        return out
+    return im
+
+def pl_cell_file(style, which, w, h, m=6, base=SKIN_DIR):
+    accent = (load_themes(base).get(settings().get('theme', 'red')) or {}).get('accent', '#C8102E')
+    name = 'pl_%s_%s_%dx%d_%d_%s.png' % (style, which, w, h, m, accent.lstrip('#'))
+    out = os.path.join(base, 'img', TUNE_DIR, name)
+    try:
+        if not os.path.isfile(out) and not pl_cell(style, which, w, h, accent, m, out):
+            return None
+    except Exception as e:
+        print('[MohammedSkin] plugin tile: %s' % e)
+        return None
+    return '%s/img/%s/%s' % (SKIN_DIR, TUNE_DIR, name)
+
+def _grid_screens_classic(level, kind):
     f = _factor(PL_FONT, level)
     cw, ch = (int(round(296 * f)), int(round(206 * f)))
     area_w, area_h = (1800, 800)
@@ -2626,10 +2855,10 @@ def _grid_screens(level, kind):
         out += '\t<screen name="PluginBrowser" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">\n%(common)s\t\t<widget source="list" render="Listbox" position="60,110" size="%(gw)d,%(gh)d" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1">\n\t\t\t<convert type="TemplatedMultiContent">%(tpl)s</convert>\n\t\t</widget>\n\t\t<widget name="key_red" position="88,%(ky)d" size="300,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n\t\t<widget name="key_green" position="448,%(ky)d" size="300,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n\t\t<widget name="key_yellow" position="808,%(ky)d" size="360,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n\t\t<eLabel position="60,%(kd)d" size="18,18" backgroundColor="keyred" />\n\t\t<eLabel position="420,%(kd)d" size="18,18" backgroundColor="keygreen" />\n\t\t<eLabel position="780,%(kd)d" size="18,18" backgroundColor="keyyellow" />\n\t</screen>\n' % dict(common=common.replace('<widget name="description"', '<widget source="description"').replace('font="Regular;26" foregroundColor="ivorydim"', 'render="Label" font="Regular;26" foregroundColor="ivorydim"'), gw=cols * cw, gh=gh, sh=1080, ky=1010, kd=1021, tpl=template % dict(vals, orient=',\n\t\t\t\t"orientation": "orGrid"'))
     return out
 
-def plugins_block(level):
+def _plugins_block_classic(level):
     layout = settings().get('pl_layout', 'grid')
     kind = plugin_browser_kind()
-    grid = _grid_screens(level, kind if layout == 'grid' else '') if kind else ''
+    grid = _grid_screens_classic(level, kind if layout == 'grid' else '') if kind else ''
     f = _factor(PL_FONT, level)
     f0, f1, rowh = (int(round(30 * f)), int(round(24 * f)), int(round(75 * f)))
     iw, ih = (int(round(150 * f)), int(round(60 * f)))
@@ -2639,11 +2868,178 @@ def plugins_block(level):
     listh = 820 // rowh * rowh
     return ('\t<!-- PLUGINS START (%(level)s) -->\n\t<parameters>\n\t\t<!-- lists of the image (choice boxes, multiboot, file and selection lists): text boxes sized to the fonts above -->\n\t\t<parameter name="AllowUserDatesAndTimes" value="1,1" />\n\t\t<parameter name="ChoicelistDash" value="0,4,1100,46" />\n\t\t<parameter name="ChoicelistName" value="62,4,1030,46" />\n\t\t<parameter name="ChoicelistNameSingle" value="12,4,1080,46" />\n\t\t<parameter name="ChoicelistIcon" value="10,8,42,34" />\n\t\t<parameter name="SelectionListDescr" value="62,4,1500,46" />\n\t\t<parameter name="SelectionListLock" value="12,10,30,30" />\n\t\t<parameter name="SelectionListLockOff" value="12,10,30,30" />\n\t\t<parameter name="FileListName" value="52,4,1500,46" />\n\t\t<parameter name="FileListIcon" value="12,12,26,26" />\n\t\t<parameter name="FileListMultiName" value="92,4,1460,46" />\n\t\t<parameter name="FileListMultiIcon" value="52,12,26,26" />\n\t\t<parameter name="FileListMultiLock" value="12,10,30,30" />\n\t\t<parameter name="ServiceInfo" value="0,4,450,46" />\n\t\t<parameter name="ServiceInfoLeft" value="0,4,450,46" />\n\t\t<parameter name="ServiceInfoRight" value="460,4,1000,46" />\n\t\t<parameter name="PluginBrowserName" value="%(nx)d,%(ny)d,%(nh)d" />\n\t\t<parameter name="PluginBrowserDescr" value="%(nx)d,%(dy)d,%(dh)d" />\n\t\t<parameter name="PluginBrowserIcon" value="%(ix)d,%(iy)d,%(iw)d,%(ih)d" />\n\t</parameters>\n\t<screen name="PluginBrowserList" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">\n\t\t<eLabel position="0,0" size="1920,4" backgroundColor="crimson" />\n\t\t<widget source="Title" render="Label" position="60,22" size="1800,56" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" />\n\t\t<widget source="pluginList" render="Listbox" position="60,104" size="1800,%(listh)d" conditional="pluginList" listOrientation="vertical" scrollbarMode="showOnDemand" backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg" transparent="1">\n\t\t\t<convert type="TemplatedMultiContent">\n\t\t\t\t{\n\t\t\t\t"template":\n\t\t\t\t\t[\n\t\t\t\t\tMultiContentEntryPixmapAlphaBlend(pos=(%(ix)d, %(iy)d), size=(%(iw)d, %(ih)d), png=3, flags=BT_SCALE),\n\t\t\t\t\tMultiContentEntryText(pos=(%(nx)d, %(ny)d), size=(%(tw)d, %(nh)d), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=1),\n\t\t\t\t\tMultiContentEntryText(pos=(%(nx)d, %(dy)d), size=(%(tw)d, %(dh)d), font=1, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=2)\n\t\t\t\t\t],\n\t\t\t\t"fonts": [parseFont("Semi;%(f0)d"), parseFont("Regular;%(f1)d")],\n\t\t\t\t"itemHeight": %(rowh)d\n\t\t\t\t}\n\t\t\t</convert>\n\t\t</widget>\n\t\t<widget name="quickselect" position="60,104" size="1800,%(listh)d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />\n\t\t<widget name="description" position="60,950" size="1800,40" font="Regular;26" foregroundColor="ivorydim" backgroundColor="panel" valign="center" transparent="1" />\n\t\t<eLabel position="60,1021" size="18,18" backgroundColor="keyred" />\n\t\t<widget source="key_red" render="Label" position="88,1010" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n\t\t<eLabel position="360,1021" size="18,18" backgroundColor="keygreen" />\n\t\t<widget source="key_green" render="Label" position="388,1010" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n\t\t<eLabel position="660,1021" size="18,18" backgroundColor="keyyellow" />\n\t\t<widget source="key_yellow" render="Label" position="688,1010" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" conditional="key_yellow" transparent="1" />\n\t\t<eLabel position="960,1021" size="18,18" backgroundColor="keyblue" />\n\t\t<widget source="key_blue" render="Label" position="988,1010" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" conditional="key_blue" transparent="1" />\n\t\t<widget source="key_menu" render="Label" position="1640,1010" size="100,40" font="Regular;22" foregroundColor="ivorydim" backgroundColor="panel" halign="center" valign="center" conditional="key_menu" transparent="1" />\n\t\t<widget source="key_help" render="Label" position="1760,1010" size="100,40" font="Regular;22" foregroundColor="ivorydim" backgroundColor="panel" halign="center" valign="center" conditional="key_help" transparent="1" />\n\t</screen>\n%(grid)s\t<!-- PLUGINS END -->\n' % dict(grid=grid, level=level, nx=nx, ny=ny, nh=nh, dy=dy, dh=dh, ix=ix, iy=iy, iw=iw, ih=ih, tw=1800 - nx - 30, f0=f0, f1=f1, rowh=rowh, listh=listh), f0, f1, rowh)
 
+_PL_END = '\t<!-- PLUGINS END -->\n'
+
+def _pl_keys(vix, ky=1010, kd=1021):
+    # colour keys exactly as the image's screen names them (OpenViX: Button widgets, others: StaticText sources)
+    if vix:
+        return ('\t\t<widget name="key_red" position="88,%(ky)d" size="300,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n'
+            '\t\t<widget name="key_green" position="448,%(ky)d" size="300,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n'
+            '\t\t<widget name="key_yellow" position="808,%(ky)d" size="360,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n'
+            '\t\t<eLabel position="60,%(kd)d" size="18,18" backgroundColor="keyred" />\n\t\t<eLabel position="420,%(kd)d" size="18,18" backgroundColor="keygreen" />\n'
+            '\t\t<eLabel position="780,%(kd)d" size="18,18" backgroundColor="keyyellow" />\n') % dict(ky=ky, kd=kd)
+    return ('\t\t<eLabel position="60,%(kd)d" size="18,18" backgroundColor="keyred" />\n'
+        '\t\t<widget source="key_red" render="Label" position="88,%(ky)d" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n'
+        '\t\t<eLabel position="360,%(kd)d" size="18,18" backgroundColor="keygreen" />\n'
+        '\t\t<widget source="key_green" render="Label" position="388,%(ky)d" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" transparent="1" />\n'
+        '\t\t<eLabel position="660,%(kd)d" size="18,18" backgroundColor="keyyellow" />\n'
+        '\t\t<widget source="key_yellow" render="Label" position="688,%(ky)d" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" conditional="key_yellow" transparent="1" />\n'
+        '\t\t<eLabel position="960,%(kd)d" size="18,18" backgroundColor="keyblue" />\n'
+        '\t\t<widget source="key_blue" render="Label" position="988,%(ky)d" size="260,40" font="Regular;24" foregroundColor="ivory" backgroundColor="panel" valign="center" conditional="key_blue" transparent="1" />\n'
+        '\t\t<widget source="key_menu" render="Label" position="1640,%(ky)d" size="100,40" font="Regular;22" foregroundColor="ivorydim" backgroundColor="panel" halign="center" valign="center" conditional="key_menu" transparent="1" />\n'
+        '\t\t<widget source="key_help" render="Label" position="1760,%(ky)d" size="100,40" font="Regular;22" foregroundColor="ivorydim" backgroundColor="panel" halign="center" valign="center" conditional="key_help" transparent="1" />\n') % dict(ky=ky, kd=kd)
+
+def _pl_look(style, w, h, m):
+    # list widget colours and pictures for a design; classic keeps the plain colours
+    if style == 'classic':
+        return ' backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg"', True
+    bg = pl_cell_file(style, 'bg', w, h, m)
+    sel = pl_cell_file(style, 'sel', w, h, m)
+    if not (bg and sel):  # no python3-pillow: the plain colours
+        return ' backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg"', True
+    fg = 'ink' if style == 'aurora' else 'white'
+    return ' backgroundPixmap="%s" selectionPixmap="%s" foregroundColor="ivory" foregroundColorSelected="%s"' % (bg, sel, fg), False
+
+def _pl_head(style, name, vix=False):
+    top = '\t\t<eLabel position="0,0" size="1920,4" backgroundColor="crimson" />\n' if style == 'classic' else ''
+    return ('\t<screen name="%s" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">\n%s'
+        '\t\t<widget source="Title" render="Label" position="60,22" size="1800,56" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" />\n') % (name, top)
+
+def _pl_desc(vix, x, y, w, h=40, font='Regular;26'):
+    if vix:
+        return '\t\t<widget source="description" render="Label" position="%d,%d" size="%d,%d" font="%s" foregroundColor="ivorydim" backgroundColor="panel" valign="top" transparent="1" />\n' % (x, y, w, h, font)
+    return '\t\t<widget name="description" position="%d,%d" size="%d,%d" font="%s" foregroundColor="ivorydim" backgroundColor="panel" valign="top" transparent="1" />\n' % (x, y, w, h, font)
+
+def _pl_tiles(level, layout, style):
+    f = _factor(PL_FONT, level)
+    m = 7
+    if layout == 'cards':
+        cw, ch = (int(round(236 * f)), int(round(262 * f)))
+    else:
+        cw, ch = (int(round(296 * f)), int(round(206 * f)))
+    cols = max(2, 1800 // cw)
+    cw = 1800 // cols
+    rows = max(1, 800 // ch)
+    gh = rows * ch
+    look, plain = _pl_look(style, cw, ch, m)
+    ink = _theme_rgb('ink', '#060304')
+    tile = 0 | min(255, ink[0] + 30) << 16 | min(255, ink[1] + 28) << 8 | min(255, ink[2] + 30)
+    back = 'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, backcolor=0x%08X),\n\t\t\t\t\t' % (m, m, cw - 2 * m, ch - 2 * m, tile) if plain else ''
+    if layout == 'cards':
+        iw = cw - 2 * m - 28
+        ih = int(round(iw / 2.5))
+        ix, iy = ((cw - iw) // 2, m + int(round(20 * f)))
+        f0, f1 = (int(round(24 * f)), int(round(19 * f)))
+        ny = iy + ih + int(round(12 * f))
+        nh = int(round(f0 * 2.5))
+        dy = ny + nh + int(round(4 * f))
+        dh = ch - dy - m - int(round(12 * f))
+        tx, tw = (m + 12, cw - 2 * m - 24)
+        items = ('MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE | BT_KEEP_ASPECT_RATIO | BT_HALIGN_CENTER | BT_VALIGN_CENTER),\n\t\t\t\t\t'
+            'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER | RT_WRAP, text=1),\n\t\t\t\t\t'
+            'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=1, flags=RT_HALIGN_CENTER | RT_VALIGN_TOP | RT_WRAP, text=2)') % (ix, iy, iw, ih, tx, ny, tw, nh, tx, dy, tw, dh)
+        fonts = '[parseFont("Semi;%d"), parseFont("Regular;%d")]' % (f0, f1)
+    else:
+        iw = cw - 2 * m - 40
+        ih = int(round(iw / 2.5))
+        ix, iy = ((cw - iw) // 2, m + int(round(18 * f)))
+        ty = iy + ih + int(round(10 * f))
+        th = ch - ty - m - 6
+        items = ('MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE),\n\t\t\t\t\t'
+            'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER | RT_WRAP, text=1)') % (ix, iy, iw, ih, m + 8, ty, cw - 2 * m - 16, th)
+        fonts = '[parseFont("Semi;%d")]' % int(round(25 * f))
+    return dict(cw=cw, ch=ch, gw=cols * cw, gh=gh, look=look, items=back + items, fonts=fonts)
+
+def _pl_tpl(items, fonts, h, w=None, grid=False):
+    extra = ',\n\t\t\t\t"itemWidth": %d' % w if w else ''
+    orient = ',\n\t\t\t\t"orientation": "orGrid"' if grid else ''
+    return '\n\t\t\t\t{\n\t\t\t\t"template":\n\t\t\t\t\t[\n\t\t\t\t\t%s\n\t\t\t\t\t],\n\t\t\t\t"fonts": %s%s,\n\t\t\t\t"itemHeight": %d%s\n\t\t\t\t}\n\t\t\t' % (items, fonts, extra, h, orient)
+
+def _pl_grid_screens(level, kind, layout, style):
+    g = _pl_tiles(level, layout, style)
+    dy = 110 + g['gh'] + 14
+    out = _pl_head(style, 'PluginBrowserGrid') + _pl_desc(False, 60, dy, 1800)
+    out += ('\t\t<widget source="pluginGrid" render="Listbox" position="60,110" size="%d,%d" conditional="pluginGrid" listOrientation="grid" scrollbarMode="showOnDemand"%s transparent="1">\n'
+        '\t\t\t<convert type="TemplatedMultiContent">%s</convert>\n\t\t</widget>\n'
+        '\t\t<widget name="quickselect" position="60,110" size="%d,%d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />\n') % (
+        g['gw'], g['gh'], g['look'], _pl_tpl(g['items'], g['fonts'], g['ch'], g['cw']), g['gw'], g['gh'])
+    out += _pl_keys(False) + '\t</screen>\n'
+    if kind == 'vix':
+        out += _pl_head(style, 'PluginBrowser', True) + _pl_desc(True, 60, dy, 1800)
+        out += ('\t\t<widget source="list" render="Listbox" position="60,110" size="%d,%d" scrollbarMode="showOnDemand"%s transparent="1">\n'
+            '\t\t\t<convert type="TemplatedMultiContent">%s</convert>\n\t\t</widget>\n') % (g['gw'], g['gh'], g['look'], _pl_tpl(g['items'], g['fonts'], g['ch'], g['cw'], True))
+        out += _pl_keys(True) + '\t</screen>\n'
+    return out
+
+def _pl_list_screens(level, kind, style):
+    # the list: plugins on the left, the TV picture on the right in the designed looks
+    f = _factor(PL_FONT, level)
+    f0, f1, rowh = (int(round(30 * f)), int(round(24 * f)), int(round(75 * f)))
+    rowh = max(rowh, int(round(80 * f)))
+    m = 4
+    iw, ih = (int(round(150 * f)), int(round(60 * f)))
+    ix, iy = (m + 14, (rowh - ih) // 2)
+    nx, ny, nh = (ix + iw + 20, int(round(8 * f)), int(round(38 * f)))
+    dy, dh = (ny + nh, int(round(30 * f)))
+    designed = style != 'classic'
+    lw = 1110 if designed else 1800
+    listh = 840 // rowh * rowh
+    look, plain = _pl_look(style, lw, rowh, m)
+    items = ('MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE),\n\t\t\t\t\t'
+        'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=1),\n\t\t\t\t\t'
+        'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=1, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=2)') % (ix, iy, iw, ih, nx, ny, lw - nx - 30, nh, nx, dy, lw - nx - 30, dh)
+    tpl = _pl_tpl(items, '[parseFont("Semi;%d"), parseFont("Regular;%d")]' % (f0, f1), rowh)
+    side = ''
+    if designed:
+        side = ('\t\t<eLabel position="1206,120" size="668,380" backgroundColor="line" zPosition="1" />\n'
+            '\t\t<widget source="session.VideoPicture" render="Pig" position="1210,124" size="660,372" backgroundColor="transparent" zPosition="2" />\n')
+    names = []
+    if kind != 'vix':
+        names.append(('PluginBrowserList', False))
+    if kind == 'vix':
+        names.append(('PluginBrowser', True))
+    out = ''
+    for name, vix in names:
+        src = 'source="list"' if vix else 'source="pluginList" conditional="pluginList"'
+        out += _pl_head(style, name, vix)
+        out += ('\t\t<widget %s render="Listbox" position="60,110" size="%d,%d" listOrientation="vertical" scrollbarMode="showOnDemand"%s transparent="1">\n'
+            '\t\t\t<convert type="TemplatedMultiContent">%s</convert>\n\t\t</widget>\n') % (src, lw, listh, look, tpl)
+        if not vix:
+            out += '\t\t<widget name="quickselect" position="60,110" size="%d,%d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />\n' % (lw, listh)
+        out += side
+        out += _pl_desc(vix, 1210, 520, 660, 400, 'Regular;28') if designed else _pl_desc(vix, 60, 950, 1800)
+        out += _pl_keys(vix) + '\t</screen>\n'
+    return out
+
+def plugins_block(level):
+    block, f0, f1, rowh = _plugins_block_classic(level)
+    style = pl_style()
+    layout = settings().get('pl_layout', 'grid')
+    kind = plugin_browser_kind()
+    if style == 'classic' and layout != 'cards':
+        if layout == 'list' and kind == 'vix':
+            # OpenViX opens "PluginBrowser" in list mode too: without it the image's own plain screen showed
+            block = block.replace(_PL_END, _pl_list_screens(level, kind, 'classic') + _PL_END, 1)
+        return (block, f0, f1, rowh)
+    m = re.search('\t<parameters>.*?</parameters>\n', block, re.S)
+    params = m.group(0) if m else ''
+    if layout == 'list':
+        screens = _pl_list_screens(level, kind, style)
+    else:
+        screens = _pl_grid_screens(level, kind, layout, style) if kind else ''
+        if kind != 'vix':
+            screens += _pl_list_screens(level, '', style)  # the other images keep a list screen beside the grid, as before
+    return ('\t<!-- PLUGINS START (%s) -->\n%s%s%s' % (level, params, screens, _PL_END), f0, f1, rowh)
+
 def apply_plugin_fonts(base=SKIN_DIR):
     level = tune_value('pl_font', PL_FONT)
     block, f0, f1, rowh = plugins_block(level)
     bg = menu_bg_name(_choice('menu_bg', MENU_BG, MENU_BG_DEFAULT))
-    if bg != 'off':
+    style = pl_style()
+    plbg = pl_background(style, base) if style != 'classic' else ''
+    if plbg:  # a plugin list design: its own picture behind the plugin screens
+        block = re.sub('(<screen name="PluginBrowser\\w*"[^>]*>)', lambda m: m.group(1) + '\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="-3" />' % plbg, block)
+    elif bg != 'off':
         block = re.sub('(<screen name="PluginBrowser\\w*"[^>]*>)', lambda m: m.group(1) + '\n\t\t<ePixmap pixmap="%s" position="0,0" size="1920,1080" zPosition="-3" />' % menu_bg_pic(bg), block)
     skin = os.path.join(base, 'skin.xml')
     with open(skin) as f:

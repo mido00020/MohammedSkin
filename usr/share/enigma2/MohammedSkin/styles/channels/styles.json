@@ -22,7 +22,8 @@
   "cinerows",
   "postercol",
   "hero",
-  "picrows"
+  "picrows",
+  "picwide"
  ],
  "labels": {
   "classic": "Classic",
@@ -47,6 +48,7 @@
   "cinerows": "19  Cinema rows - wide glass rows",
   "postercol": "20  Poster column + wide rows",
   "hero": "21  Hero banner + wide rows",
-  "picrows": "22  Programme picture behind the channel"
+  "picrows": "22  Picture behind every channel",
+  "picwide": "23  Wide rows - picture behind every channel"
  }
 }
