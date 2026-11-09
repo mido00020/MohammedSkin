@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.126'
+SKIN_VERSION = '2.1.127'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -1285,13 +1285,13 @@ def _round_save(im, w, h, r, out):
     return out
 
 def picon_art(picon, w, h, accent='#C8102E', ink='#060304'):
-    # A channel with no programme picture: its logo on the right of the row, with a large blurred
-    # copy of it behind as a coloured glow, fading into the skin's dark colour on the left.
+    # A channel with no programme picture: the colours of its logo as a soft glow along the row (no
+    # second copy of the logo: the list already shows it on the left), fading into the skin's dark colour.
     if not picon or w <= 0 or h <= 0:
         return None
     tag = ('%s%s' % (str(accent).lstrip('#'), str(ink).lstrip('#'))).replace('/', '')
     name = os.path.splitext(os.path.basename(picon))[0]
-    out = os.path.join(CACHE_DIR, 'pa_%s_%dx%d_%s.png' % (name, w, h, tag))
+    out = os.path.join(CACHE_DIR, 'pc_%s_%dx%d_%s.png' % (name, w, h, tag))
     if os.path.exists(out):
         return out
     try:
@@ -1313,17 +1313,10 @@ def picon_art(picon, w, h, accent='#C8102E', ink='#060304'):
         glow = Image.new('RGBA', (gw + 2 * pad, gh + 2 * pad), (0, 0, 0, 0))
         glow.paste(logo.resize((gw, gh), lz), (pad, pad))
         glow = glow.filter(ImageFilter.GaussianBlur(rad))
-        a = glow.getchannel('A').point(lambda v: int(v * 0.75))
+        a = glow.getchannel('A').point(lambda v: int(v * 0.85))
         glow.putalpha(a)
         free = 150  # the right end of the row stays clear: the list draws the programme progress bar there
         im.alpha_composite(glow, (w - gw - pad - free + 40, (h - gh) // 2 - pad))
-        ph = int(h * 0.74)
-        pw = max(1, int(lw * ph / float(lh)))
-        if pw > int(w * 0.26):
-            pw = int(w * 0.26)
-            ph = max(1, int(lh * pw / float(lw)))
-        crisp = logo.resize((pw, ph), lz)
-        im.alpha_composite(crisp, (w - pw - free, (h - ph) // 2))
         dark = Image.new('RGBA', (w, h), ink_rgb + (255,))
         ramp = Image.new('L', (256, 1))
         for x in range(256):
