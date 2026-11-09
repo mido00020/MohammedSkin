@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.125'
+SKIN_VERSION = '2.1.126'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -2717,18 +2717,45 @@ def plugin_browser_kind(root=''):
                 return 'atv'
     return ''
 
-PL_STYLES = (('classic', 'Classic'), ('glass', 'Glass glow'), ('neon', 'Neon'), ('aurora', 'Aurora colours'), ('gold', 'Royal gold'), ('crystal', 'Crystal 3D'))
-PL_LAYOUTS = (('grid', 'Grid (tiles side by side)'), ('cards', 'Tall cards'), ('list', 'List'))
-PL_THEMED = ('glass', 'neon', 'crystal')
+PL_STYLES = (('classic', 'Classic'), ('onyx', 'Onyx black'), ('velvet', 'Velvet'), ('glass', 'Frosted glass'), ('gold', 'Royal gold'), ('steel', 'Brushed steel'))
+PL_LAYOUTS = (('grid', 'Tiles (full screen)'), ('cards', 'Tall cards'), ('side', 'Tiles + TV picture'), ('strip', 'TV picture + strip below'), ('list', 'List + TV picture'))
+PL_THEMED = ('onyx', 'velvet', 'glass', 'steel')
+PL_OLD = {'neon': 'velvet', 'aurora': 'glass', 'crystal': 'steel'}  # designs of 2.1.124, renamed
 
 def pl_style():
     v = settings().get('pl_style', 'classic')
+    v = PL_OLD.get(v, v)
     return v if v in [n for n, l in PL_STYLES] else 'classic'
 
+def pl_layout():
+    v = settings().get('pl_layout', 'grid')
+    return v if v in [n for n, l in PL_LAYOUTS] else 'grid'
+
+def _theme_accent_ink(base=SKIN_DIR):
+    t = load_themes(base).get(settings().get('theme', 'red')) or {}
+    return t.get('accent', '#C8102E'), t.get('ink', '#060304')
+
 def pl_background(style, base=SKIN_DIR):
+    # the full-screen picture of a plugin list design: shipped for the shipped themes, drawn here for the others
     theme = settings().get('theme', 'red')
     d = os.path.join(base, 'plstyles')
-    for name in ((style + '_' + theme, style + '_red', style) if style in PL_THEMED else (style,)):
+    name = style + '_' + theme if style in PL_THEMED else style
+    if os.path.isfile(os.path.join(d, name + '.jpg')):
+        return '%s/plstyles/%s.jpg' % (SKIN_DIR, name)
+    accent, ink = _theme_accent_ink(base)
+    tname = 'plbg_%s_%s.jpg' % (style, accent.lstrip('#'))
+    out = os.path.join(base, 'img', TUNE_DIR, tname)
+    try:
+        if not os.path.isfile(out):
+            im = pl_draw_bg(style, accent, ink)
+            if not os.path.isdir(os.path.dirname(out)):
+                os.makedirs(os.path.dirname(out))
+            im.save(out + '.part', 'JPEG', quality=92)
+            os.rename(out + '.part', out)
+        return '%s/img/%s/%s' % (SKIN_DIR, TUNE_DIR, tname)
+    except Exception as e:
+        print('[MohammedSkin] plugin background: %s' % e)
+    for name in (style + '_red', style):
         if os.path.isfile(os.path.join(d, name + '.jpg')):
             return '%s/plstyles/%s.jpg' % (SKIN_DIR, name)
     return ''
@@ -2741,75 +2768,172 @@ def _vgrad(w, h, top, bottom):
         g.putpixel((0, y), tuple(int(top[i] + (bottom[i] - top[i]) * f) for i in range(4)))
     return g.resize((w, h))
 
-def _hgrad(w, h, stops):
-    from PIL import Image
-    g = Image.new('RGBA', (w, 1))
-    n = len(stops) - 1
-    for x in range(w):
-        f = x / float(max(1, w - 1)) * n
-        i = min(int(f), n - 1)
-        t = f - i
-        a, b = stops[i], stops[i + 1]
-        g.putpixel((x, 0), tuple(int(a[k] + (b[k] - a[k]) * t) for k in range(4)))
-    return g.resize((w, h))
+def _mix(a, b, t):
+    return tuple(int(a[i] + (b[i] - a[i]) * t) for i in range(3))
 
-def pl_cell(style, which, w, h, accent='#C8102E', m=6, out=None):
-    # One plugin tile / row picture for a plugin list design: which = 'bg' (every item) or 'sel'
-    # (the selected item). Drawn inside a margin m so items keep a gap between them.
+def _grain(im, sigma=3):
+    # a fine film grain over the soft gradients: no colour bands on the TV
+    from PIL import Image, ImageChops
+    n = Image.effect_noise(im.size, sigma * 8).point(lambda v: 128 + (v - 128) // 8)
+    return ImageChops.add(im.convert('RGB'), Image.merge('RGB', (n, n, n)), 1.0, -128)
+
+def _soft(size, items, blur, base):
+    # soft light fields, drawn small and blurred, then enlarged (fast on a receiver too)
+    from PIL import Image, ImageDraw, ImageFilter
+    W, H = size
+    k = 4
+    w, h = W // k, H // k
+    im = Image.new('RGBA', (w, h), base + (255,))
+    lay = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    for (cx, cy, rx, ry, col) in items:
+        d.ellipse(((cx - rx) * w, (cy - ry) * h, (cx + rx) * w, (cy + ry) * h), fill=col)
+    im.alpha_composite(lay.filter(ImageFilter.GaussianBlur(blur // k)))
+    return im.resize((W, H), Image.BICUBIC)
+
+def _vignette(im, strength):
+    from PIL import Image, ImageDraw, ImageFilter
+    W, H = im.size
+    m = Image.new('L', (W // 4, H // 4), 0)
+    ImageDraw.Draw(m).ellipse((-W * .06, -H * .10, W * .31, H * .35), fill=255)
+    m = m.filter(ImageFilter.GaussianBlur(40)).resize((W, H), Image.BICUBIC)
+    dark = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    dark.putalpha(m.point(lambda v: int((255 - v) * strength / 255)))
+    im.alpha_composite(dark)
+
+def _hairline(im, y, col, alpha, x0=60, x1=1860, width=1):
+    # a fine line that fades out at both ends
+    from PIL import Image
+    w = x1 - x0
+    line = Image.new('RGBA', (w, width), col + (0,))
+    a = Image.new('L', (w, 1))
+    for x in range(w):
+        t = x / float(w - 1)
+        a.putpixel((x, 0), int(alpha * min(1.0, min(t, 1 - t) * 5)))
+    line.putalpha(a.resize((w, width)))
+    im.alpha_composite(line, (x0, y))
+
+def pl_draw_bg(style, accent='#C8102E', ink='#060304'):
+    from PIL import Image, ImageDraw
+    W, H = 1920, 1080
+    acc, ink = _hex_rgb(accent), _hex_rgb(ink, (6, 3, 4))
+    if style == 'onyx':
+        im = _soft((W, H), [(.5, -.12, .62, .42, (40, 40, 46, 255)), (.5, 1.12, .55, .22, acc + (34,))], 260, (9, 9, 11))
+        _vignette(im, 120)
+        _hairline(im, 98, (255, 255, 255), 70)
+        _hairline(im, 994, (255, 255, 255), 44)
+    elif style == 'velvet':
+        deep = _mix(ink, acc, .16)
+        im = _soft((W, H), [(.16, .12, .55, .62, _mix(deep, acc, .55) + (255,)), (.92, .96, .45, .45, _mix(deep, acc, .32) + (255,)), (.55, .5, .3, .3, _mix(deep, acc, .2) + (120,))], 340, _mix((0, 0, 0), deep, .7))
+        _vignette(im, 165)
+        tint = _mix(acc, (255, 255, 255), .55)
+        _hairline(im, 98, tint, 90)
+        _hairline(im, 994, tint, 55)
+    elif style == 'glass':
+        import colorsys
+        r, g, b = [c / 255.0 for c in acc]
+        hh, ll, ss = colorsys.rgb_to_hls(r, g, b)
+        comp = tuple(int(c * 255) for c in colorsys.hls_to_rgb((hh + .58) % 1.0 if ss > .15 else .62, .22, .45))
+        im = _soft((W, H), [(.18, .28, .36, .5, acc + (190,)), (.84, .74, .4, .55, comp + (200,)), (.62, .12, .26, .3, (150, 160, 182, 60)), (.4, .96, .3, .26, _mix(acc, comp, .5) + (90,))], 320, (7, 9, 14))
+        veil = Image.new('RGBA', (W, H), (4, 6, 10, 110))
+        im.alpha_composite(veil)
+        _vignette(im, 120)
+        _hairline(im, 98, (255, 255, 255), 95)
+        _hairline(im, 994, (255, 255, 255), 55)
+    elif style == 'gold':
+        im = _soft((W, H), [(.5, .5, .62, .6, (44, 32, 17, 255)), (.5, -.08, .4, .2, (92, 68, 34, 150))], 320, (8, 6, 4))
+        _vignette(im, 175)
+        g = (201, 166, 107)
+        d = ImageDraw.Draw(im)
+        d.rectangle((22, 22, W - 23, H - 23), outline=g + (120,), width=1)
+        d.rectangle((28, 28, W - 29, H - 29), outline=g + (46,), width=1)
+        _hairline(im, 98, (224, 190, 120), 150)
+        _hairline(im, 994, (224, 190, 120), 85)
+    else:  # steel
+        from PIL import ImageFilter
+        im = _vgrad(W, H, (34, 37, 41, 255), (13, 14, 16, 255))
+        n = Image.effect_noise((W // 24, H), 60).resize((W, H), Image.BICUBIC).filter(ImageFilter.GaussianBlur(1))
+        streak = Image.merge('RGBA', (n, n, n, Image.new('L', (W, H), 13)))
+        im.alpha_composite(streak)
+        light = _soft((W, H), [(.5, -.1, .55, .35, (70, 74, 80, 255))], 260, (0, 0, 0))
+        light.putalpha(light.convert('L').point(lambda v: min(255, v * 2)))
+        im.alpha_composite(light)
+        _vignette(im, 150)
+        _hairline(im, 98, (255, 255, 255), 80)
+        _hairline(im, 99, (0, 0, 0), 120)
+        _hairline(im, 994, (255, 255, 255), 45)
+    return _grain(im)
+
+def pl_cell(style, which, w, h, accent='#C8102E', m=8, out=None):
+    # One plugin tile / row picture for a plugin list design: which = 'bg' (every item), 'sel' (the
+    # selected item) or 'tv' (the frame around the TV picture, hollow). Drawn inside a margin m.
     from PIL import Image, ImageDraw, ImageFilter
     acc = _hex_rgb(accent)
     im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
     iw, ih = w - 2 * m, h - 2 * m
     if iw < 8 or ih < 8:
         return None
-    r = max(6, min(18, ih // 5))
+    sel, tv = which == 'sel', which == 'tv'
+    r = max(8, min(18, min(iw, ih) // 7))
     mask = Image.new('L', (iw, ih), 0)
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, iw - 1, ih - 1), r, fill=255)
-    sel = which == 'sel'
-    if style == 'glass':
-        body = _vgrad(iw, ih, acc + (225,), (int(acc[0] * .45), int(acc[1] * .45), int(acc[2] * .45), 235)) if sel else _vgrad(iw, ih, (255, 255, 255, 34), (255, 255, 255, 12))
-        gloss = _vgrad(iw, ih // 2, (255, 255, 255, 70 if sel else 30), (255, 255, 255, 0))
-        body.alpha_composite(gloss, (0, 0))
-        line = (255, 255, 255, 200) if sel else (255, 255, 255, 48)
-    elif style == 'neon':
-        body = Image.new('RGBA', (iw, ih), (8, 8, 12, 215 if sel else 160))
-        body.alpha_composite(_vgrad(iw, ih, acc + (90 if sel else 26,), acc + (25 if sel else 0,)))
-        line = acc + (255,) if sel else acc + (170,)
-    elif style == 'aurora':
-        if sel:
-            body = _hgrad(iw, ih, [(255, 46, 148, 235), (255, 128, 40, 235), (255, 214, 64, 235)])
-        else:
-            body = _hgrad(iw, ih, [(110, 60, 220, 70), (40, 120, 240, 70), (20, 200, 180, 70)])
-        body.alpha_composite(_vgrad(iw, ih // 2, (255, 255, 255, 60 if sel else 24), (255, 255, 255, 0)))
-        line = (255, 255, 255, 230) if sel else (255, 255, 255, 60)
+    if sel or tv:  # a soft shadow under the lifted tile
+        sh = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).rounded_rectangle((m, m + 3, m + iw - 1, m + ih + 2), r, fill=(0, 0, 0, 170))
+        im.alpha_composite(sh.filter(ImageFilter.GaussianBlur(max(2, m // 2))))
+    glow = None
+    bar = False
+    if style == 'onyx':
+        body = Image.new('RGBA', (iw, ih), (40, 40, 46, 246) if sel else (23, 23, 27, 228))
+        line, lw = ((255, 255, 255, 215), 2) if sel else ((255, 255, 255, 22), 1)
+        bar = sel and ih > 120
+        hi = 16
+    elif style == 'velvet':
+        lite = _mix(acc, (255, 255, 255), .22)
+        body = _vgrad(iw, ih, lite + (238,), _mix(acc, (0, 0, 0), .45) + (244,)) if sel else Image.new('RGBA', (iw, ih), (0, 0, 0, 108))
+        line, lw = ((255, 255, 255, 120), 1) if sel else (_mix(acc, (255, 255, 255), .6) + (40,), 1)
+        glow = acc if sel else None
+        hi = 34 if sel else 10
+    elif style == 'glass':
+        body = _vgrad(iw, ih, (255, 255, 255, 64), (255, 255, 255, 30)) if sel else _vgrad(iw, ih, (255, 255, 255, 26), (255, 255, 255, 9))
+        line, lw = ((255, 255, 255, 205), 2) if sel else ((255, 255, 255, 48), 1)
+        bar = sel and ih > 120
+        hi = 70 if sel else 40
     elif style == 'gold':
-        body = _vgrad(iw, ih, (120, 84, 28, 235), (52, 34, 10, 240)) if sel else _vgrad(iw, ih, (24, 20, 14, 200), (8, 6, 4, 210))
-        line = (255, 214, 130, 255) if sel else (201, 166, 107, 150)
-    else:  # crystal
-        top = tuple(min(255, int(c * .55 + 70)) for c in acc) + (235,) if sel else (70, 70, 80, 150)
-        bot = tuple(int(c * .35) for c in acc) + (240,) if sel else (14, 14, 18, 170)
-        body = _vgrad(iw, ih, top, bot)
-        band = _vgrad(iw, max(2, ih // 3), (255, 255, 255, 90 if sel else 36), (255, 255, 255, 0))
-        body.alpha_composite(band, (0, 1))
-        sh = _vgrad(iw, max(2, ih // 6), (0, 0, 0, 0), (0, 0, 0, 110))
-        body.alpha_composite(sh, (0, ih - sh.size[1]))
-        line = (255, 255, 255, 170) if sel else (255, 255, 255, 50)
+        body = _vgrad(iw, ih, (68, 50, 22, 242), (30, 22, 10, 246)) if sel else _vgrad(iw, ih, (22, 18, 12, 222), (11, 9, 6, 228))
+        line, lw = ((226, 192, 122, 255), 2) if sel else ((201, 166, 107, 88), 1)
+        hi = 22 if sel else 8
+    else:  # steel
+        body = _vgrad(iw, ih, (72, 76, 82, 242), (40, 43, 48, 246)) if sel else _vgrad(iw, ih, (46, 49, 54, 226), (27, 29, 33, 232))
+        line, lw = (acc + (255,), 2) if sel else ((0, 0, 0, 130), 1)
+        glow = acc if sel else None
+        hi = 60
+    if tv:
+        body = Image.new('RGBA', (iw, ih), (0, 0, 0, 255))
+        line = (line[0], line[1], line[2], max(line[3], 110))
+        lw, glow, bar = 2, None, False
+    if glow:
+        g = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        ImageDraw.Draw(g).rounded_rectangle((m - 1, m - 1, w - m, h - m), r + 1, outline=glow + (210,), width=3)
+        im.alpha_composite(g.filter(ImageFilter.GaussianBlur(max(2, m // 2))))
     body.putalpha(Image.composite(body.getchannel('A'), Image.new('L', (iw, ih), 0), mask))
-    if sel and style in ('neon', 'aurora', 'glass', 'crystal'):
-        glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-        gcol = acc if style != 'aurora' else (255, 120, 60)
-        ImageDraw.Draw(glow).rounded_rectangle((m - 2, m - 2, w - m + 1, h - m + 1), r + 2, outline=gcol + (230,), width=4)
-        im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(max(2, m // 2))))
     im.alpha_composite(body, (m, m))
     d = ImageDraw.Draw(im)
-    d.rounded_rectangle((m, m, m + iw - 1, m + ih - 1), r, outline=line, width=2 if sel else 1)
-    if style == 'gold':
-        k = max(6, min(16, ih // 6))
-        for cx, cy, sx, sy in ((m + 5, m + 5, 1, 1), (m + iw - 6, m + 5, -1, 1), (m + 5, m + ih - 6, 1, -1), (m + iw - 6, m + ih - 6, -1, -1)):
-            d.line((cx, cy, cx + sx * k, cy), fill=line, width=2)
-            d.line((cx, cy, cx, cy + sy * k), fill=line, width=2)
-        if sel:
-            d.rounded_rectangle((m + 4, m + 4, m + iw - 5, m + ih - 5), max(2, r - 4), outline=(255, 236, 180, 160), width=1)
+    if hi and not tv:  # the light catching the top edge
+        top = Image.new('RGBA', (iw - 2 * r, 1), (255, 255, 255, hi))
+        im.alpha_composite(top, (m + r, m + 1))
+    d.rounded_rectangle((m, m, m + iw - 1, m + ih - 1), r, outline=line, width=lw)
+    if style == 'gold' and (sel or tv):
+        d.rounded_rectangle((m + 5, m + 5, m + iw - 6, m + ih - 6), max(3, r - 5), outline=(255, 232, 176, 70), width=1)
+    if bar:
+        bw = max(30, iw - 2 * r - 16)
+        bx = m + (iw - bw) // 2
+        by = m + ih - 9
+        d.rounded_rectangle((bx, by, bx + bw, by + 4), 2, fill=acc + (255,))
+    if tv:  # hollow: the TV picture sits inside
+        hole = Image.new('L', (w, h), 255)
+        ImageDraw.Draw(hole).rounded_rectangle((m + 4, m + 4, m + iw - 5, m + ih - 5), max(2, r - 4), fill=0)
+        im.putalpha(Image.composite(im.getchannel('A'), Image.new('L', (w, h), 0), hole))
     if out:
         d2 = os.path.dirname(out)
         if not os.path.isdir(d2):
@@ -2819,9 +2943,9 @@ def pl_cell(style, which, w, h, accent='#C8102E', m=6, out=None):
         return out
     return im
 
-def pl_cell_file(style, which, w, h, m=6, base=SKIN_DIR):
-    accent = (load_themes(base).get(settings().get('theme', 'red')) or {}).get('accent', '#C8102E')
-    name = 'pl_%s_%s_%dx%d_%d_%s.png' % (style, which, w, h, m, accent.lstrip('#'))
+def pl_cell_file(style, which, w, h, m=8, base=SKIN_DIR):
+    accent = _theme_accent_ink(base)[0]
+    name = 'pl2_%s_%s_%dx%d_%d_%s.png' % (style, which, w, h, m, accent.lstrip('#'))
     out = os.path.join(base, 'img', TUNE_DIR, name)
     try:
         if not os.path.isfile(out) and not pl_cell(style, which, w, h, accent, m, out):
@@ -2889,134 +3013,162 @@ def _pl_keys(vix, ky=1010, kd=1021):
         '\t\t<widget source="key_menu" render="Label" position="1640,%(ky)d" size="100,40" font="Regular;22" foregroundColor="ivorydim" backgroundColor="panel" halign="center" valign="center" conditional="key_menu" transparent="1" />\n'
         '\t\t<widget source="key_help" render="Label" position="1760,%(ky)d" size="100,40" font="Regular;22" foregroundColor="ivorydim" backgroundColor="panel" halign="center" valign="center" conditional="key_help" transparent="1" />\n') % dict(ky=ky, kd=kd)
 
+_PL_PLAIN = ' backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg"'
+
 def _pl_look(style, w, h, m):
-    # list widget colours and pictures for a design; classic keeps the plain colours
+    # list widget colours and pictures for a design; classic (or no python3-pillow) keeps the plain colours
     if style == 'classic':
-        return ' backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg"', True
+        return _PL_PLAIN, True
     bg = pl_cell_file(style, 'bg', w, h, m)
     sel = pl_cell_file(style, 'sel', w, h, m)
-    if not (bg and sel):  # no python3-pillow: the plain colours
-        return ' backgroundColor="panel" foregroundColor="ivory" backgroundColorSelected="selbg" foregroundColorSelected="selfg"', True
-    fg = 'ink' if style == 'aurora' else 'white'
-    return ' backgroundPixmap="%s" selectionPixmap="%s" foregroundColor="ivory" foregroundColorSelected="%s"' % (bg, sel, fg), False
+    if not (bg and sel):
+        return _PL_PLAIN, True
+    return ' backgroundPixmap="%s" selectionPixmap="%s" foregroundColor="ivory" foregroundColorSelected="white"' % (bg, sel), False
 
-def _pl_head(style, name, vix=False):
+def _pl_head(style, name):
     top = '\t\t<eLabel position="0,0" size="1920,4" backgroundColor="crimson" />\n' if style == 'classic' else ''
     return ('\t<screen name="%s" title="Plugin Browser" position="0,0" size="1920,1080" backgroundColor="panel" flags="wfNoBorder">\n%s'
-        '\t\t<widget source="Title" render="Label" position="60,22" size="1800,56" font="Title;42" foregroundColor="ivory" backgroundColor="panel" transparent="1" />\n') % (name, top)
+        '\t\t<widget source="Title" render="Label" position="60,22" size="1480,60" font="Title;42" foregroundColor="ivory" backgroundColor="panel" valign="center" noWrap="1" transparent="1" />\n'
+        '\t\t<widget source="global.CurrentTime" render="Label" position="1600,22" size="260,60" font="Title;42" halign="right" valign="center" foregroundColor="ivory" backgroundColor="panel" transparent="1">\n'
+        '\t\t\t<convert type="ClockToText">Format:%%H:%%M</convert>\n\t\t</widget>\n') % (name, top)
 
 def _pl_desc(vix, x, y, w, h=40, font='Regular;26'):
     if vix:
         return '\t\t<widget source="description" render="Label" position="%d,%d" size="%d,%d" font="%s" foregroundColor="ivorydim" backgroundColor="panel" valign="top" transparent="1" />\n' % (x, y, w, h, font)
     return '\t\t<widget name="description" position="%d,%d" size="%d,%d" font="%s" foregroundColor="ivorydim" backgroundColor="panel" valign="top" transparent="1" />\n' % (x, y, w, h, font)
 
-def _pl_tiles(level, layout, style):
-    f = _factor(PL_FONT, level)
-    m = 7
-    if layout == 'cards':
-        cw, ch = (int(round(236 * f)), int(round(262 * f)))
+def _pl_tv(style, x, y, w, h):
+    # the live TV picture in a frame of the design
+    pad = 12
+    fr = pl_cell_file(style, 'tv', w + 2 * pad, h + 2 * pad, 8) if style != 'classic' else None
+    if fr:
+        frame = '\t\t<ePixmap pixmap="%s" position="%d,%d" size="%d,%d" alphatest="blend" zPosition="1" />\n' % (fr, x - pad, y - pad, w + 2 * pad, h + 2 * pad)
     else:
-        cw, ch = (int(round(296 * f)), int(round(206 * f)))
-    cols = max(2, 1800 // cw)
-    cw = 1800 // cols
-    rows = max(1, 800 // ch)
-    gh = rows * ch
-    look, plain = _pl_look(style, cw, ch, m)
+        frame = '\t\t<eLabel position="%d,%d" size="%d,%d" backgroundColor="line" zPosition="1" />\n' % (x - 3, y - 3, w + 6, h + 6)
+    return frame + '\t\t<widget source="session.VideoPicture" render="Pig" position="%d,%d" size="%d,%d" backgroundColor="transparent" zPosition="2" />\n' % (x, y, w, h)
+
+# where everything sits for each layout: the list area, the size each item aims for, the TV picture and the description
+_PL_GEO = {
+    'grid': dict(area=(60, 112, 1800, 846), aim=(300, 212), item='tile', tv=None, desc=(60, 966, 1800, 40, 'Regular;26')),
+    'cards': dict(area=(60, 112, 1800, 846), aim=(250, 270), item='card', tv=None, desc=(60, 966, 1800, 40, 'Regular;26')),
+    'side': dict(area=(740, 112, 1120, 870), aim=(276, 214), item='tile', tv=(60, 128, 640, 360), desc=(60, 520, 640, 440, 'Regular;28')),
+    'strip': dict(area=(60, 742, 1800, 250), aim=(270, 250), item='tile', rows=1, tv=(60, 124, 1040, 585), desc=(1140, 136, 720, 560, 'Regular;30')),
+}
+
+def _pl_items(item, cw, ch, f, m, plain):
     ink = _theme_rgb('ink', '#060304')
     tile = 0 | min(255, ink[0] + 30) << 16 | min(255, ink[1] + 28) << 8 | min(255, ink[2] + 30)
     back = 'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, backcolor=0x%08X),\n\t\t\t\t\t' % (m, m, cw - 2 * m, ch - 2 * m, tile) if plain else ''
-    if layout == 'cards':
+    pic = 'MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE | BT_KEEP_ASPECT_RATIO | BT_HALIGN_CENTER | BT_VALIGN_CENTER),\n\t\t\t\t\t'
+    if item == 'card':
+        f0, f1 = int(round(24 * f)), int(round(19 * f))
+        pad = int(round(18 * f))
         iw = cw - 2 * m - 28
         ih = int(round(iw / 2.5))
-        ix, iy = ((cw - iw) // 2, m + int(round(20 * f)))
-        f0, f1 = (int(round(24 * f)), int(round(19 * f)))
+        ix, iy = (cw - iw) // 2, m + pad
         ny = iy + ih + int(round(12 * f))
         nh = int(round(f0 * 2.5))
-        dy = ny + nh + int(round(4 * f))
-        dh = ch - dy - m - int(round(12 * f))
-        tx, tw = (m + 12, cw - 2 * m - 24)
-        items = ('MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE | BT_KEEP_ASPECT_RATIO | BT_HALIGN_CENTER | BT_VALIGN_CENTER),\n\t\t\t\t\t'
-            'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER | RT_WRAP, text=1),\n\t\t\t\t\t'
-            'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=1, flags=RT_HALIGN_CENTER | RT_VALIGN_TOP | RT_WRAP, text=2)') % (ix, iy, iw, ih, tx, ny, tw, nh, tx, dy, tw, dh)
-        fonts = '[parseFont("Semi;%d"), parseFont("Regular;%d")]' % (f0, f1)
-    else:
-        iw = cw - 2 * m - 40
-        ih = int(round(iw / 2.5))
-        ix, iy = ((cw - iw) // 2, m + int(round(18 * f)))
-        ty = iy + ih + int(round(10 * f))
-        th = ch - ty - m - 6
-        items = ('MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE),\n\t\t\t\t\t'
-            'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER | RT_WRAP, text=1)') % (ix, iy, iw, ih, m + 8, ty, cw - 2 * m - 16, th)
-        fonts = '[parseFont("Semi;%d")]' % int(round(25 * f))
-    return dict(cw=cw, ch=ch, gw=cols * cw, gh=gh, look=look, items=back + items, fonts=fonts)
+        dy = ny + nh + int(round(2 * f))
+        dh = max(f1 + 4, ch - dy - m - 16)
+        tx, tw = m + 12, cw - 2 * m - 24
+        items = (pic + 'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER | RT_WRAP, text=1),\n\t\t\t\t\t'
+            'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=1, flags=RT_HALIGN_CENTER | RT_VALIGN_TOP | RT_WRAP, text=2, color=0x00B9B3AB, color_sel=0x00FFFFFF)') % (ix, iy, iw, ih, tx, ny, tw, nh, tx, dy, tw, dh)
+        return back + items, '[parseFont("Semi;%d"), parseFont("Regular;%d")]' % (f0, f1)
+    fs = int(round(25 * f))
+    nh = int(round(fs * 2.6))
+    gap = int(round(10 * f))
+    iw = cw - 2 * m - 40
+    ih = int(round(iw / 2.5))
+    room = ch - 2 * m - 16 - nh - gap - 12  # 16: the line along the bottom of the selected tile
+    if ih > room:
+        ih = max(20, room)
+        iw = int(ih * 2.5)
+    iy = m + max(8, (ch - 2 * m - 16 - (ih + gap + nh)) // 2)
+    ix = (cw - iw) // 2
+    ny = iy + ih + gap
+    items = (pic + 'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_CENTER | RT_VALIGN_CENTER | RT_WRAP, text=1)') % (ix, iy, iw, ih, m + 10, ny, cw - 2 * m - 20, nh)
+    return back + items, '[parseFont("Semi;%d")]' % fs
 
 def _pl_tpl(items, fonts, h, w=None, grid=False):
     extra = ',\n\t\t\t\t"itemWidth": %d' % w if w else ''
     orient = ',\n\t\t\t\t"orientation": "orGrid"' if grid else ''
     return '\n\t\t\t\t{\n\t\t\t\t"template":\n\t\t\t\t\t[\n\t\t\t\t\t%s\n\t\t\t\t\t],\n\t\t\t\t"fonts": %s%s,\n\t\t\t\t"itemHeight": %d%s\n\t\t\t\t}\n\t\t\t' % (items, fonts, extra, h, orient)
 
+def _pl_cells(layout, level):
+    # columns and rows that fill the whole area: the items grow a little so no empty band is left
+    f = _factor(PL_FONT, level)
+    g = _PL_GEO[layout]
+    ax, ay, aw, ah = g['area']
+    tw, th = int(round(g['aim'][0] * f)), int(round(g['aim'][1] * f))
+    if g.get('rows') == 1:
+        th = ah
+    cols = max(1, aw // tw)
+    rows = 1 if g.get('rows') == 1 else max(1, ah // th)
+    cw, ch = aw // cols, ah // rows
+    return f, g, cols, rows, cw, ch
+
 def _pl_grid_screens(level, kind, layout, style):
-    g = _pl_tiles(level, layout, style)
-    dy = 110 + g['gh'] + 14
-    out = _pl_head(style, 'PluginBrowserGrid') + _pl_desc(False, 60, dy, 1800)
-    out += ('\t\t<widget source="pluginGrid" render="Listbox" position="60,110" size="%d,%d" conditional="pluginGrid" listOrientation="grid" scrollbarMode="showOnDemand"%s transparent="1">\n'
+    f, g, cols, rows, cw, ch = _pl_cells(layout, level)
+    ax, ay, aw, ah = g['area']
+    m = 8
+    gw, gh = cols * cw, rows * ch
+    x, y = ax + (aw - gw) // 2, ay
+    look, plain = _pl_look(style, cw, ch, m)
+    items, fonts = _pl_items(g['item'], cw, ch, f, m, plain)
+    extra = _pl_tv(style, *g['tv']) if g['tv'] else ''
+    dx, dy, dw, dh, dfont = g['desc']
+    out = _pl_head(style, 'PluginBrowserGrid') + extra + _pl_desc(False, dx, dy, dw, dh, dfont)
+    out += ('\t\t<widget source="pluginGrid" render="Listbox" position="%d,%d" size="%d,%d" conditional="pluginGrid" listOrientation="grid" scrollbarMode="showNever"%s transparent="1" zPosition="3">\n'
         '\t\t\t<convert type="TemplatedMultiContent">%s</convert>\n\t\t</widget>\n'
-        '\t\t<widget name="quickselect" position="60,110" size="%d,%d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />\n') % (
-        g['gw'], g['gh'], g['look'], _pl_tpl(g['items'], g['fonts'], g['ch'], g['cw']), g['gw'], g['gh'])
+        '\t\t<widget name="quickselect" position="%d,%d" size="%d,%d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />\n') % (
+        x, y, gw, gh, look, _pl_tpl(items, fonts, ch, cw), x, y, gw, gh)
     out += _pl_keys(False) + '\t</screen>\n'
     if kind == 'vix':
-        out += _pl_head(style, 'PluginBrowser', True) + _pl_desc(True, 60, dy, 1800)
-        out += ('\t\t<widget source="list" render="Listbox" position="60,110" size="%d,%d" scrollbarMode="showOnDemand"%s transparent="1">\n'
-            '\t\t\t<convert type="TemplatedMultiContent">%s</convert>\n\t\t</widget>\n') % (g['gw'], g['gh'], g['look'], _pl_tpl(g['items'], g['fonts'], g['ch'], g['cw'], True))
+        out += _pl_head(style, 'PluginBrowser') + extra + _pl_desc(True, dx, dy, dw, dh, dfont)
+        out += ('\t\t<widget source="list" render="Listbox" position="%d,%d" size="%d,%d" scrollbarMode="showNever"%s transparent="1" zPosition="3">\n'
+            '\t\t\t<convert type="TemplatedMultiContent">%s</convert>\n\t\t</widget>\n') % (x, y, gw, gh, look, _pl_tpl(items, fonts, ch, cw, True))
         out += _pl_keys(True) + '\t</screen>\n'
     return out
 
 def _pl_list_screens(level, kind, style):
-    # the list: plugins on the left, the TV picture on the right in the designed looks
+    # the list: plugins on the left, the TV picture and the description on the right in the designed looks
     f = _factor(PL_FONT, level)
-    f0, f1, rowh = (int(round(30 * f)), int(round(24 * f)), int(round(75 * f)))
-    rowh = max(rowh, int(round(80 * f)))
-    m = 4
-    iw, ih = (int(round(150 * f)), int(round(60 * f)))
-    ix, iy = (m + 14, (rowh - ih) // 2)
-    nx, ny, nh = (ix + iw + 20, int(round(8 * f)), int(round(38 * f)))
-    dy, dh = (ny + nh, int(round(30 * f)))
+    f0, f1 = int(round(30 * f)), int(round(24 * f))
+    rowh = max(int(round(75 * f)), int(round(80 * f)))
+    m = 4 if style == 'classic' else 6
+    iw, ih = int(round(150 * f)), int(round(60 * f))
+    ix, iy = m + 16, (rowh - ih) // 2
+    nx, ny, nh = ix + iw + 22, int(round(8 * f)), int(round(38 * f))
+    dy, dh = ny + nh, int(round(30 * f))
     designed = style != 'classic'
     lw = 1110 if designed else 1800
-    listh = 840 // rowh * rowh
+    listh = 846 // rowh * rowh
     look, plain = _pl_look(style, lw, rowh, m)
-    items = ('MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE),\n\t\t\t\t\t'
+    items = ('MultiContentEntryPixmapAlphaBlend(pos=(%d, %d), size=(%d, %d), png=3, flags=BT_SCALE | BT_KEEP_ASPECT_RATIO | BT_HALIGN_CENTER | BT_VALIGN_CENTER),\n\t\t\t\t\t'
         'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=0, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=1),\n\t\t\t\t\t'
-        'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=1, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=2)') % (ix, iy, iw, ih, nx, ny, lw - nx - 30, nh, nx, dy, lw - nx - 30, dh)
+        'MultiContentEntryText(pos=(%d, %d), size=(%d, %d), font=1, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER, text=2, color=0x00B9B3AB, color_sel=0x00FFFFFF)') % (ix, iy, iw, ih, nx, ny, lw - nx - 30, nh, nx, dy, lw - nx - 30, dh)
     tpl = _pl_tpl(items, '[parseFont("Semi;%d"), parseFont("Regular;%d")]' % (f0, f1), rowh)
-    side = ''
-    if designed:
-        side = ('\t\t<eLabel position="1206,120" size="668,380" backgroundColor="line" zPosition="1" />\n'
-            '\t\t<widget source="session.VideoPicture" render="Pig" position="1210,124" size="660,372" backgroundColor="transparent" zPosition="2" />\n')
-    names = []
-    if kind != 'vix':
-        names.append(('PluginBrowserList', False))
-    if kind == 'vix':
-        names.append(('PluginBrowser', True))
+    side = _pl_tv(style, 1210, 128, 650, 366) if designed else ''
+    names = [('PluginBrowser', True)] if kind == 'vix' else [('PluginBrowserList', False)]
     out = ''
     for name, vix in names:
         src = 'source="list"' if vix else 'source="pluginList" conditional="pluginList"'
-        out += _pl_head(style, name, vix)
-        out += ('\t\t<widget %s render="Listbox" position="60,110" size="%d,%d" listOrientation="vertical" scrollbarMode="showOnDemand"%s transparent="1">\n'
+        out += _pl_head(style, name)
+        out += ('\t\t<widget %s render="Listbox" position="60,112" size="%d,%d" listOrientation="vertical" scrollbarMode="showOnDemand"%s transparent="1" zPosition="3">\n'
             '\t\t\t<convert type="TemplatedMultiContent">%s</convert>\n\t\t</widget>\n') % (src, lw, listh, look, tpl)
         if not vix:
-            out += '\t\t<widget name="quickselect" position="60,110" size="%d,%d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />\n' % (lw, listh)
+            out += '\t\t<widget name="quickselect" position="60,112" size="%d,%d" font="Title;120" foregroundColor="gold" halign="center" valign="center" transparent="1" zPosition="5" />\n' % (lw, listh)
         out += side
-        out += _pl_desc(vix, 1210, 520, 660, 400, 'Regular;28') if designed else _pl_desc(vix, 60, 950, 1800)
+        out += _pl_desc(vix, 1210, 530, 650, 430, 'Regular;28') if designed else _pl_desc(vix, 60, 966, 1800)
         out += _pl_keys(vix) + '\t</screen>\n'
     return out
 
 def plugins_block(level):
     block, f0, f1, rowh = _plugins_block_classic(level)
     style = pl_style()
-    layout = settings().get('pl_layout', 'grid')
+    layout = pl_layout()
     kind = plugin_browser_kind()
-    if style == 'classic' and layout != 'cards':
+    if style == 'classic' and layout in ('grid', 'list'):
         if layout == 'list' and kind == 'vix':
             # OpenViX opens "PluginBrowser" in list mode too: without it the image's own plain screen showed
             block = block.replace(_PL_END, _pl_list_screens(level, kind, 'classic') + _PL_END, 1)
