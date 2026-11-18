@@ -90,37 +90,27 @@ def build_skin(lang):
     hr = 'left' if rtl else 'right'
     e = []
     a = e.append
-    a('<screen name="MohammedSkinSetup" position="0,0" size="1920,1080" title="MohammedSkin Setup" backgroundColor="%s" flags="wfNoBorder">' % ink)
-    a('<ePixmap pixmap="%ssetup_glow_%s.png" position="%d,0" size="1100,700" alphatest="blend" zPosition="0" />' % (IMG, side, X(0, 1100)))
-    a('<eLabel text="MohammedSkin" position="%d,26" size="470,74" font="%s;56" halign="%s" valign="center" foregroundColor="#00F2ECE2" backgroundColor="%s" transparent="1" zPosition="2" />' % (X(64, 470), ft, h, ink))
-    a('<widget source="subtitle" render="Label" position="%d,40" size="250,50" font="Regular;32" halign="%s" valign="center" foregroundColor="#00968C84" backgroundColor="%s" transparent="1" zPosition="2" />' % (X(550, 250), h, ink))
-    a('<ePixmap pixmap="%ssetup_chip.png" position="%d,46" size="112,38" alphatest="blend" zPosition="2" />' % (IMG, X(810, 112)))
-    a('<eLabel text="%s" position="%d,46" size="112,38" font="%s;20" halign="center" valign="center" foregroundColor="%s" backgroundColor="%s" transparent="1" zPosition="3" />' % (U.SKIN_VERSION, X(810, 112), fs, acc2, ink))
-    a('<widget source="global.CurrentTime" render="MohammedFrames" mode="cycle" frames="%sdots_%%02d.png" count="12" interval="90" position="%d,44" size="360,30" alphatest="blend" zPosition="2" />' % (IMG, X(1300, 360)))
-    a('<widget source="imagename" render="Label" position="%d,36" size="460,48" font="%s;32" halign="center" valign="center" foregroundColor="%s" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1250, 460), ft, acc2, ink))
-    a('<widget source="global.CurrentTime" render="Label" position="%d,36" size="130,48" font="%s;36" halign="%s" valign="center" foregroundColor="#0033C8FF" backgroundColor="%s" transparent="1" zPosition="3"><convert type="ClockToText">Format:%%H:%%M</convert></widget>' % (X(1726, 130), ft, hr, ink))
-    a('<ePixmap pixmap="%ssetup_line.png" position="64,106" size="1792,30" alphatest="blend" zPosition="2" />' % IMG)
-    a('<widget name="catsel" pixmap="%ssetup_catsel_%s.png" position="%d,160" size="360,62" alphatest="blend" zPosition="2" />' % (IMG, side, X(64, 360)))
+    bk = '#00050507'
+    a('<screen name="MohammedSkinSetup" position="0,0" size="1920,1080" title="MohammedSkin Setup" backgroundColor="%s" flags="wfNoBorder">' % bk)
+    a('<ePixmap pixmap="%ssetup_bg_%s.jpg" position="0,0" size="1920,1080" zPosition="0" />' % (IMG, side))
+    a('<widget source="global.CurrentTime" render="Label" position="%d,38" size="260,84" font="%s;64" halign="center" valign="center" foregroundColor="#00FFFFFF" backgroundColor="%s" transparent="1" zPosition="3"><convert type="ClockToText">Format:%%H:%%M</convert></widget>' % (X(40, 260), ft, bk))
+    a('<widget source="global.CurrentTime" render="Label" position="%d,112" size="260,34" font="Regular;22" halign="center" valign="center" foregroundColor="#00969AA2" backgroundColor="%s" transparent="1" zPosition="3"><convert type="ClockToText">Format:%%Y  \xb7  %%m  \xb7  %%d</convert></widget>' % (X(40, 260), bk))
+    a('<eLabel text="v%s" position="%d,58" size="130,54" font="%s;22" halign="center" valign="center" foregroundColor="#00D6DAE0" backgroundColor="%s" transparent="1" zPosition="3" />' % (U.SKIN_VERSION, X(334, 130), fs, bk))
+    a('<eLabel position="%d,76" size="2,18" backgroundColor="#00505460" zPosition="3" />' % X(466, 2))
+    a('<widget source="imagename" render="Label" position="%d,58" size="166,54" font="%s;22" halign="center" valign="center" foregroundColor="#00D6DAE0" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(470, 166), fs, bk))
+    a('<widget source="langname" render="Label" position="%d,118" size="320,30" font="Regular;20" halign="center" valign="center" foregroundColor="#00969AA2" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(320, 320), bk))
+    a('<widget source="notice" render="Label" position="%d,152" size="820,38" font="%s;24" halign="%s" valign="center" foregroundColor="%s" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1060, 820), fs, hr, acc2, bk))
+    a('<widget name="catsel" pixmap="%ssetup_catsel2_%s.png" position="%d,218" size="328,58" alphatest="blend" zPosition="2" />' % (IMG, side, X(56, 328)))
     for i in range(len(CATS)):
-        a('<widget source="cat%d" render="Label" position="%d,%d" size="300,62" font="Regular;30" halign="%s" valign="center" foregroundColor="#00C8C2BA" backgroundColor="%s" transparent="1" zPosition="3" />' % (i, X(96, 300), 160 + i * 78, h, ink))
-        if i < len(CATS) - 1:
-            a('<eLabel position="%d,%d" size="320,1" backgroundColor="%s" zPosition="1" />' % (X(84, 320), 160 + i * 78 + 70, line))
-    a('<eLabel position="%d,160" size="2,700" backgroundColor="%s" zPosition="1" />' % (X(460, 2), line))
-    a('<widget name="config" position="%d,160" size="700,656" itemHeight="82" selectionPixmap="%ssetup_rowsel.png" scrollbarMode="showNever" backgroundColor="%s" foregroundColor="#00F2ECE2" foregroundColorSelected="#00FFFFFF" transparent="1" zPosition="3" />' % (X(500, 700), IMG, ink))
-    a('<ePixmap pixmap="%ssetup_frame.png" position="%d,150" size="636,368" alphatest="blend" zPosition="2" />' % (IMG, X(1230, 636)))
-    a('<widget name="preview" position="%d,160" size="616,347" zPosition="3" />' % X(1240, 616))
-    a('<widget source="themename" render="Label" position="%d,526" size="616,44" font="%s;30" halign="%s" valign="center" foregroundColor="#00F2ECE2" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1240, 616), fs, h, ink))
-    a('<widget source="themehint" render="Label" position="%d,570" size="616,62" font="Regular;22" halign="%s" valign="top" foregroundColor="#00B4AAA0" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1240, 616), h, ink))
-    a('<ePixmap pixmap="%ssetup_card_%s.png" position="%d,636" size="616,226" alphatest="blend" zPosition="2" />' % (IMG, side, X(1240, 616)))
-    a('<widget source="help" render="Label" position="%d,652" size="560,196" font="Regular;25" halign="%s" valign="top" foregroundColor="#00D2CCC4" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1268, 560), h, ink))
-    a('<eLabel position="64,900" size="1792,2" backgroundColor="%s" zPosition="1" />' % line)
-    x = 64
-    for key, col in (('key_red', '#00D3202F'), ('key_green', '#002FA84F'), ('key_yellow', '#00E0B321'), ('key_blue', '#001460F0')):
-        a('<eLabel position="%d,936" size="34,16" backgroundColor="%s" zPosition="2" />' % (X(x, 34), col))
-        a('<widget source="%s" render="Label" position="%d,920" size="300,48" font="Regular;27" halign="%s" valign="center" foregroundColor="#00F2ECE2" backgroundColor="%s" transparent="1" zPosition="3" />' % (key, X(x + 48, 300), h, ink))
-        x += 360
-    a('<widget source="langname" render="Label" position="%d,920" size="360,48" font="Regular;24" halign="%s" valign="center" foregroundColor="#00968C84" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1496, 360), hr, ink))
-    a('<eLabel text="Posters, scenes and ratings: TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB." position="64,1012" size="1792,30" font="Regular;18" halign="center" valign="center" foregroundColor="#006E6A65" backgroundColor="%s" transparent="1" zPosition="2" />' % ink)
+        a('<widget source="cat%d" render="Label" position="%d,%d" size="280,58" font="Regular;29" halign="%s" valign="center" foregroundColor="#00C8CACE" backgroundColor="%s" transparent="1" zPosition="3" />' % (i, X(90, 280), 218 + i * 63, h, bk))
+    a('<widget name="config" position="%d,214" size="768,576" itemHeight="72" selectionPixmap="%ssetup_rowsel2_%s.png" scrollbarMode="showNever" backgroundColor="%s" foregroundColor="#00F2ECE2" foregroundColorSelected="#00FFFFFF" transparent="1" zPosition="3" />' % (X(436, 768), IMG, side, bk))
+    a('<widget name="preview" position="%d,218" size="592,333" zPosition="3" />' % X(1264, 592))
+    a('<widget source="themename" render="Label" position="%d,564" size="592,40" font="%s;30" halign="%s" valign="center" foregroundColor="#00FFFFFF" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1264, 592), fs, h, bk))
+    a('<widget source="themehint" render="Label" position="%d,604" size="592,34" font="Regular;22" halign="%s" valign="center" foregroundColor="#00969AA2" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1264, 592), h, bk))
+    a('<widget source="help" render="Label" position="%d,662" size="592,124" font="Regular;24" halign="%s" valign="top" foregroundColor="#00CED0D6" backgroundColor="%s" transparent="1" zPosition="3" />' % (X(1264, 592), h, bk))
+    a('<ePixmap pixmap="%ssetup_paypal.png" position="56,812" size="189,189" alphatest="blend" zPosition="2" />' % IMG)
+    for i, key in enumerate(('key_red', 'key_green', 'key_yellow', 'key_blue')):
+        a('<widget source="%s" render="Label" position="%d,1016" size="370,52" font="%s;25" halign="%s" valign="center" foregroundColor="#00ECEEF2" backgroundColor="%s" transparent="1" zPosition="3" />' % (key, X(40 + i * 468 + 60, 370), fs, h, bk))
     a('<widget name="HelpWindow" conditional="HelpWindow" position="0,1100" size="4,4" pixmap="%sblank.png" alphatest="on" zPosition="-1" />' % IMG)
     a('<widget name="footnote" conditional="footnote" position="0,1100" size="20,20" font="Regular;10" transparent="1" zPosition="-1" />')
     a('</screen>')
@@ -158,7 +148,7 @@ class SettingList(MenuList):
         self.l.setFont(0, gFont('Regular', 29))
         self.l.setFont(1, gFont('Regular', 28))
         self.l.setFont(2, gFont('Regular', 24))
-        self.l.setItemHeight(82)
+        self.l.setItemHeight(72)
         self.items = []
         self.focus = False
         self.valueText = lambda cfg: ''
@@ -182,10 +172,10 @@ class SettingList(MenuList):
                 val = u'‹  %s  ›' % val
             lflag = (RT_HALIGN_RIGHT if ar else RT_HALIGN_LEFT) | RT_VALIGN_CENTER
             vflag = (RT_HALIGN_LEFT if ar else RT_HALIGN_RIGHT) | RT_VALIGN_CENTER
-            lpos, vpos = ((330, 0), (26, 0)) if ar else ((28, 0), (300, 0))
-            lf = 2 if _wide(label, 29) > 336 else 0
-            vf = 2 if _wide(val, 28) > 366 else 1
-            rows.append([(label, cfg), MultiContentEntryText(pos=lpos, size=(344, 82), font=lf, flags=lflag | (RT_WRAP if lf == 2 else 0), text=label, color=15920354 if sel else 14143945, color_sel=16777215), MultiContentEntryText(pos=vpos, size=(374, 82), font=vf, flags=vflag | (RT_WRAP if vf == 2 else 0), text=val, color=self.acc2 if sel else 9866372, color_sel=self.acc2)])
+            lpos, vpos = ((356, 0), (32, 0)) if ar else ((32, 0), (364, 0))
+            lf = 2 if _wide(label, 29) > 372 else 0
+            vf = 2 if _wide(val, 28) > 364 else 1
+            rows.append([(label, cfg), MultiContentEntryText(pos=lpos, size=(380, 72), font=lf, flags=lflag | (RT_WRAP if lf == 2 else 0), text=label, color=15920354 if sel else 14143945, color_sel=16777215), MultiContentEntryText(pos=vpos, size=(372, 72), font=vf, flags=vflag | (RT_WRAP if vf == 2 else 0), text=val, color=self.acc2 if sel else 9866372, color_sel=self.acc2)])
         self.setList(rows)
         if 0 <= cur < len(rows):
             self.moveToIndex(cur)
@@ -214,6 +204,20 @@ class MohammedSkinSetup(Screen):
         self['imagename'] = StaticText(name or 'Enigma2')
         self['langname'] = StaticText(t('Language: English'))
         s = U.settings()
+        notice = u''
+        try:
+            # updated by itself when the receiver started: say so here, quietly, no message box
+            seen = s.get('seen_version')
+            if seen != U.SKIN_VERSION:
+                if seen:
+                    notice = self.m(u'\u2713  تم تحديث السكن تلقائياً إلى الإصدار %s', u'\u2713  Updated automatically to version %s') % U.SKIN_VERSION
+                s2 = dict(s)
+                s2['seen_version'] = U.SKIN_VERSION
+                U.save_settings(s2)
+                s = U.settings()
+        except Exception as e:
+            print('[MohammedSkin] notice: %s' % e)
+        self['notice'] = StaticText(notice)
         self.themes = U.load_themes()
         names = [n for n in ('red', 'blue', 'turquoise', 'sky', 'gold', 'black', 'white', 'purple', 'emerald', 'orange', 'rose') if n in self.themes] or ['red']
         self.startTheme = s.get('theme', 'red') if s.get('theme', 'red') in names else 'red'
@@ -399,8 +403,8 @@ class MohammedSkinSetup(Screen):
             return str(cfg.value)
 
     def showCategory(self):
-        y = 160 + self.cat * 78
-        x = 1920 - 64 - 360 if self.lang in RTL else 64
+        y = 218 + self.cat * 63
+        x = 1920 - 56 - 328 if self.lang in RTL else 56
         try:
             from enigma import ePoint
             self['catsel'].instance.move(ePoint(x, y))
