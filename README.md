@@ -27,6 +27,7 @@ Works on **OpenViX**, **OpenBlackHole**, **OpenATV**, **PurE2**, **EGAMI** and *
 - Plugin list over the whole screen: tiles, tall cards, tiles beside the live TV picture, a strip under the TV picture, or a list with the TV picture (OpenViX / OpenBH with grid support, OpenATV)
 - Plugin list designs: classic, onyx black, velvet, frosted glass, royal gold and brushed steel, each with its own background and tiles
 - Channel list with a picture behind every channel (the programme picture, or the channel logo when there is none), in two styles
+- Football matches in the guide (for example Al Hilal x Al Nassr, Liverpool v Chelsea) show the two club logos against each other with the competition logo, in the channel list, the infobars and the channel rows (free, no key needed)
 - Weather position: top right, top centre, or above the infobar (right or left)
 - Classic analog clocks with a smooth seconds hand, or no centre clock
 - Arabic auto-translation of event titles and descriptions
