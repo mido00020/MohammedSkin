@@ -155,6 +155,8 @@ class MohammedPoster(Renderer):
 			return
 		event = self.getEvent()
 		ref, chname = self.channel()
+		if self.kind in ("poster", "backdrop") and self.showMatch(event, chname):
+			return
 		if self.which == "next" and getattr(self.source, "service", None) is not None:
 			now = getattr(self.source, "event", None)
 			try:
@@ -188,6 +190,41 @@ class MohammedPoster(Renderer):
 		self.pending = (q["title"], q["year"], q["kind"], key)
 		self.timer.stop()
 		self.timer.start(self.delay, True)
+
+	def showMatch(self, event, chname):
+		"""a football match (or a competition) in the guide: the card with the club badges"""
+		try:
+			from Components import MohammedMatch as MM
+			m = MM.find_event(event, chname)
+		except Exception as e:
+			print("[MohammedPoster] match: %s" % e)
+			return False
+		if not m:
+			return False
+		size = self.instance.size()
+		w, h = size.width(), size.height()
+		shape = "wide" if w > h * 1.15 else "poster"
+		key = "match:%s:%s:%s:%s:%dx%d" % (m.get("a"), m.get("b"), m.get("comp"), m.get("begin"), w, h)
+		if key == self.current and self.shown:
+			return True
+		self.current = key
+		self.pending = None
+		self.timer.stop()
+		path = MM.make_async(m, shape, w, h, lambda p, k=key: self.onMatch(k, p))
+		if path:
+			self.showPath(path)
+		else:
+			self.hide()
+		return True
+
+	def onMatch(self, key, path):
+		if not self.instance or key != self.current:
+			return
+		if path:
+			self.showPath(path)
+		else:
+			self.current = None
+			self.showLogo()  # the card could not be drawn: the channel logo as before
 
 	def lookup(self):
 		if not self.pending:

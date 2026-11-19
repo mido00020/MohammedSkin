@@ -166,6 +166,21 @@ class MohammedRowsArt(Renderer):
 			event = eEPGCache.getInstance().lookupEventTime(ref, -1)
 		except Exception:
 			event = None
+		try:
+			from Components import MohammedMatch as MM
+			mt = MM.find_event(event, name)
+		except Exception:
+			mt = None
+		if mt:
+			pkey = "match:%s:%s:%s:%s|%dx%d" % (mt.get("a"), mt.get("b"), mt.get("comp"), mt.get("begin"), w, h)
+			have = self.items.get(key)
+			if (have and have[0] == pkey) or self.busy.get(key) == pkey:
+				return
+			self.busy[key] = pkey
+			got = MM.make_async(mt, "row", w, h, lambda res, k=key, p=pkey, r=ref: self.made(k, p, r, res or "", w, h))
+			if got:
+				self.made(key, pkey, ref, got, w, h)
+			return
 		q = None
 		s = U.settings()
 		if s.get("posters", True) or s.get("backdrops", True):

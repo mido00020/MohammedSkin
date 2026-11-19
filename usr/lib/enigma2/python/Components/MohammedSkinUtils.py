@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.128'
+SKIN_VERSION = '2.1.129'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -1348,8 +1348,8 @@ def rows_page(arts, w, h, n, default_row, out):
                         im = im.resize((w, h))
                 except Exception:
                     im = None
-            if im is None:
-                im = base
+            if base is not None:
+                page.alpha_composite(base, (0, i * h))  # under the picture too: a match card is see-through
             if im is not None:
                 page.alpha_composite(im, (0, i * h))
         page.save(out + '.part', 'PNG')
