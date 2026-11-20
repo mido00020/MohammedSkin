@@ -17,7 +17,7 @@ AR = {
 	"Weather language": u"لغة الطقس", "Show rating stars": u"إظهار التقييم بالنجوم", "Infobar clock": u"ساعة الإنفوبار",
 	"Clock seconds hand": u"عقرب الثواني", "Translate events": u"ترجمة البرامج", "Translate to": u"الترجمة إلى",
 	"Translation service": u"خدمة الترجمة", "Translation key": u"مفتاح الترجمة", "Microsoft key region": u"منطقة مفتاح مايكروسوفت",
-	"TMDB API key": u"مفتاح TMDB", "OMDb API key": u"مفتاح OMDb", "Fanart.tv API key": u"مفتاح Fanart.tv", "Search language": u"لغة البحث",
+	"TMDB API key": u"مفتاح TMDB", "OMDb API key": u"مفتاح OMDb", "Fanart.tv API key": u"مفتاح Fanart.tv", "API-Football key (player photos)": u"مفتاح API-Football (صور اللاعبين)", "Optional. Your own key from api-football.com (free plan: 100 requests a day). Adds a photo of a star player of each club to the football match cards. Press OK to type.": u"اختياري. مفتاحك الخاص من api-football.com (الخطة المجانية: 100 طلب في اليوم). يضيف صورة نجم من كل نادي في بطاقات المباريات. اضغط OK للكتابة.", "Search language": u"لغة البحث",
 	"Show posters": u"إظهار البوسترات", "Hide adult posters": u"حجب بوسترات الكبار", "Arabic posters": u"البوسترات العربية",
 	"3D channel logo when no poster": u"شعار القناة ثلاثي الأبعاد", "Show backdrops": u"إظهار الخلفيات", "Setup language": u"لغة الإعدادات",
 	"Channel logo and name size": u"حجم شعار واسم القناة",

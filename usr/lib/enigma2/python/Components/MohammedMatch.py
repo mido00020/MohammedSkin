@@ -400,16 +400,279 @@ def _names(m, side):
     t = _db['teams'][m[side]]
     return m[side], t['name']
 
+# ---- players (only with the user's own key, after the pledge; nothing is built in) ----
+_AF_FILE = '/etc/enigma2/MohammedSkin.af.json'
+_AF_HOST = 'https://v3.football.api-sports.io'
+_af = {}
+
+
+def _af_key():
+    try:
+        return U.user_key('apifootball')
+    except Exception:
+        return ''
+
+
+def players_on():
+    return bool(_af_key())
+
+
+def _af_load():
+    if not _af:
+        try:
+            with open(_AF_FILE) as f:
+                _af.update(json.load(f))
+        except Exception:
+            pass
+        _af.setdefault('ids', {})
+        _af.setdefault('sq', {})
+    return _af
+
+
+def _af_save():
+    try:
+        tmp = _AF_FILE + '.part'
+        with open(tmp, 'w') as f:
+            json.dump(_af, f, separators=(',', ':'))
+        os.rename(tmp, _AF_FILE)
+    except Exception as e:
+        print('[MohammedSkin] players file: %s' % e)
+
+
+_af_last = [0.0]
+
+
+def _af_get(path):
+    k = _af_key()
+    if not k:
+        return None
+    with _af_lock:
+        for _ in range(3):
+            wait = 6.5 - (time.time() - _af_last[0])  # the free plan takes 10 questions a minute
+            if wait > 0:
+                time.sleep(wait)
+            _af_last[0] = time.time()
+            d = U.get_json(_AF_HOST + path, {'x-apisports-key': k}, 12)
+            if not isinstance(d, dict):
+                return None
+            err = d.get('errors')
+            if err and 'rateLimit' in (err if isinstance(err, dict) else {}):
+                time.sleep(20)
+                continue
+            if err:
+                print('[MohammedSkin] players: %s' % (err,))
+                return None
+            return d.get('response')
+    return None
+
+
+try:
+    import threading as _th
+    _af_lock = _th.Lock()
+except Exception:
+    _af_lock = None
+
+
+_YOUTH = re.compile(r'\b(?:U\d\d|W|II|B|Reserves?|Youth|Women)\b', re.I)
+
+
+def _af_team(key):
+    """the id of a club on the players service (looked up once, then kept)"""
+    st = _af_load()
+    hit = st['ids'].get(key)
+    if hit is not None and (hit or time.time() - st.get('miss_' + key, 0) < 3 * 86400):
+        return hit
+    t = _db['teams'][key]
+    name = re.sub(r'[^0-9A-Za-z ]+', ' ', t['name']).strip()
+    name = re.sub(r'\s+', ' ', name)
+    nat = t.get('lg') == 'nat'
+    co = (t.get('co') or '').lower().replace('-', ' ')
+    qs = [name]
+    words = [x for x in name.split() if x.lower() not in ('al', 'fc', 'sc', 'cf', 'club', 'de', 'ac', 'as', 'cd')]
+    if words and max(words, key=len) != name:
+        qs.append(max(words, key=len))
+    best, score, asked = 0, -1, False
+    for q in qs:
+        if len(q) < 3:
+            continue
+        res = _af_get('/teams?search=' + q.replace(' ', '%20'))
+        if res is None:  # no network or the day is used up: try again later, keep nothing
+            return 0
+        asked = True
+        for r in res:
+            tm = r.get('team') or {}
+            n = tm.get('name') or ''
+            if _YOUTH.search(n):
+                continue
+            if co:
+                if tm.get('national') or (tm.get('country') or '').lower().replace('-', ' ') != co:
+                    continue
+            elif nat and not tm.get('national'):
+                continue
+            sc = 2 if bool(tm.get('national')) == nat else 1
+            nn, tn = n.lower().replace('-', ' '), t['name'].lower().replace('-', ' ')
+            if nn == tn:
+                sc += 5
+            elif nn in [x.lower().replace('-', ' ') for x in t.get('en') or []]:
+                sc += 4
+            elif nn in tn or tn in nn:
+                sc += 3
+            if sc > score:
+                best, score = tm.get('id') or 0, sc
+        if best:
+            break
+    if not asked:
+        return 0
+    st['ids'][key] = best
+    if not best:
+        st['miss_' + key] = time.time()
+    _af_save()
+    return best
+
+
+_STAR = (10, 9, 7, 11, 8, 19, 17, 14, 20, 21, 22, 6)
+
+
+def _af_star(tid):
+    """the club's best known attacking player (from the current squad, kept a week)"""
+    st = _af_load()
+    c = st['sq'].get(str(tid))
+    if c and time.time() - c.get('t', 0) < 7 * 86400:
+        return c.get('p')
+    res = _af_get('/players/squads?team=%d' % tid)
+    if res is None:
+        return c.get('p') if c else None
+    pl = (res[0].get('players') if res else None) or []
+    pos = {'Attacker': 0, 'Midfielder': 1}
+    cands = [x for x in pl if x.get('position') in pos and x.get('photo') and (x.get('age') or 30) >= 19]
+    def rank(x):
+        n = x.get('number') or 99
+        return (_STAR.index(n) if n in _STAR else 50, pos[x['position']], x.get('id') or 0)
+    cands.sort(key=rank)
+    p = cands[0] if cands else None
+    best = {'id': p['id'], 'name': p.get('name') or '', 'photo': p['photo']} if p else None
+    st['sq'][str(tid)] = {'t': time.time(), 'p': best}
+    _af_save()
+    return best
+
+
+def _cutout(path):
+    """the head and shoulders without the white studio background"""
+    from PIL import Image, ImageFilter, ImageDraw, ImageEnhance
+    im = Image.open(path).convert('RGB')
+    w, h = im.size
+    px = im.load()
+    a = Image.new('L', (w, h), 255)
+    ap = a.load()
+    corners = [px[x, y][:3] for x, y in ((1, 1), (w - 2, 1), (1, h // 3), (w - 2, h // 3))]
+    bg = tuple(sorted(c[i] for c in corners)[len(corners) // 2] for i in range(3))  # the studio colour
+    lim = int(h * .6)  # lower down the shirt can touch the edges: only the plain studio colour goes there
+
+    def near(c, tol):
+        return (c[0] - bg[0]) ** 2 + (c[1] - bg[1]) ** 2 + (c[2] - bg[2]) ** 2 <= tol * tol
+    seen = set()
+    stack = [(x, 0) for x in range(w)] + [(0, y) for y in range(h)] + [(w - 1, y) for y in range(h)]
+    while stack:
+        x, y = stack.pop()
+        if (x, y) in seen or x < 0 or y < 0 or x >= w or y >= h:
+            continue
+        seen.add((x, y))
+        if not near(px[x, y][:3], 30 if y < lim else 12):
+            continue
+        ap[x, y] = 0
+        stack.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
+    a = a.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1.2))
+    fade = Image.new('L', (1, h))
+    for y in range(h):
+        t = y / float(h - 1)
+        fade.putpixel((0, y), 255 if t < .8 else int(255 * (1 - (t - .8) / .2)))
+    a = Image.composite(a, Image.new('L', (w, h), 0), fade.resize((w, h)))
+    im = ImageEnhance.Sharpness(im).enhance(1.4)
+    out = im.convert('RGBA')
+    out.putalpha(a)
+    return out
+
+
+def _player(key, net=True):
+    """(picture, name) of the star of a club, or None. net=False: only what is kept already."""
+    if not players_on():
+        return None
+    try:
+        if net:
+            tid = _af_team(key)
+            p = _af_star(tid) if tid else None
+        else:
+            st = _af_load()
+            tid = st['ids'].get(key)
+            p = (st['sq'].get(str(tid)) or {}).get('p') if tid else None
+        if not p:
+            return None
+        path = os.path.join(U.CACHE_DIR, 'pl_%d.png' % p['id'])
+        if not os.path.isfile(path):
+            if not net or not U.download(p['photo'], path):
+                return None
+        return _cutout(path), p.get('name') or ''
+    except Exception as e:
+        print('[MohammedSkin] player %s: %s' % (key, e))
+        return None
+
+
+_fetching = set()
+
+
+def _prefetch(keys):
+    """look the stars up in the background; the card shows them the next time it is drawn"""
+    keys = [k for k in keys if k not in _fetching]
+    if not keys:
+        return
+    _fetching.update(keys)
+
+    def run():
+        for k in keys:
+            try:
+                _player(k, True)
+            finally:
+                _fetching.discard(k)
+    try:
+        import threading
+        th = threading.Thread(target=run, name='MohammedSkinPlayers')
+        th.daemon = True
+        th.start()
+    except Exception:
+        _fetching.difference_update(keys)
+
+
+def _wants_players(m, shape):
+    return shape != 'row' and 'a' in m and players_on()
+
+
+def _out(m, shape, w, h, pf):
+    live, hm = _when(m)
+    sig = json.dumps([m.get('a'), m.get('b'), m.get('comp'), m.get('ar'), shape, w, h, live, hm, 3] + (['p'] if pf else []))
+    return os.path.join(U.CACHE_DIR, 'mc_%s.png' % hashlib.md5(sig.encode('utf-8')).hexdigest()[:16])
+
 
 def make(m, shape, w, h):
     """draw the card: shape = poster (tall), wide or row. Returns the picture path."""
     from PIL import Image
     data()
-    live, hm = _when(m)
-    sig = json.dumps([m.get('a'), m.get('b'), m.get('comp'), m.get('ar'), shape, w, h, live, hm, 3])
-    out = os.path.join(U.CACHE_DIR, 'mc_%s.png' % hashlib.md5(sig.encode('utf-8')).hexdigest()[:16])
+    pf = _wants_players(m, shape)
+    out = _out(m, shape, w, h, pf)
     if os.path.isfile(out):
         return out
+    pls = {}
+    if pf:
+        for side in ('a', 'b'):
+            pls[m[side]] = _player(m[side], False)
+        need = [m[side] for side in ('a', 'b') if not pls[m[side]]]
+        if need:
+            _prefetch(need)
+        if not all(pls.values()):  # not here yet (or no network, day used up): the card without them for now
+            pls = {}
+            pf = False
+            out = _out(m, shape, w, h, False)
+            if os.path.isfile(out):
+                return out
     ar = m.get('ar')
     comp = m.get('comp')
     if 'a' not in m:  # a competition without the two clubs: its logo, big
@@ -456,20 +719,35 @@ def make(m, shape, w, h):
             line = _comp_line(comp, ar, int(top.size[1] * .76), int(w * .9))
             if line:
                 _put(im, line, w / 2, top.size[1] / 2, False)
-            cy = h * (.42 if wide else .47)
-            bs = int(min(w * (.24 if wide else .36), h * (.38 if wide else .26)))
             xs = (.28, .72) if wide else (.25, .75)
+            nh = int(h * (.075 if wide else .058))
+            if pls:  # the star of each club above its badge
+                ph = int(min(h * (.6 if wide else .42), w * (.34 if wide else .62)))
+                ptop = h * (.12 if wide else .115)
+                for side, x in ((left, xs[0]), (right, xs[1])):
+                    got = pls.get(side)
+                    if not got:
+                        continue
+                    pim = got[0].resize((ph, ph), Image.LANCZOS)
+                    _put(im, pim, w * x, ptop + ph / 2.0, True)
+                cy = ptop + ph * (.97 if wide else .98)
+                bs = int(min(w * (.15 if wide else .22), h * (.22 if wide else .16)))
+                _put(im, _vs(int(h * (.17 if wide else .1))), w / 2, ptop + ph * .45, False)
+                ny = cy + bs * .42 + nh * .75
+            else:
+                cy = h * (.42 if wide else .47)
+                bs = int(min(w * (.24 if wide else .36), h * (.38 if wide else .26)))
+                _put(im, _vs(int(bs * .62)), w / 2, cy, False)
+                ny = cy + bs * .5 + nh * 1.15
             _put(im, _badge(left, bs), w * xs[0], cy, False)
             _put(im, _badge(right, bs), w * xs[1], cy, False)
-            _put(im, _vs(int(bs * .62)), w / 2, cy, False)
-            nh = int(h * (.075 if wide else .058))
             for side, x in ((left, xs[0]), (right, xs[1])):
                 t = _db['teams'][side]
                 lab = _label(side, t['name'], ar, nh, int(w * (.4 if wide else .46)))
-                _put(im, lab, w * x, cy + bs * .5 + nh * 1.15)
+                _put(im, lab, w * x, ny)
             pill = _pill(m, ar, int(h * (.085 if wide else .062)))
             if pill:
-                _put(im, pill, w / 2, h * (.87 if wide else .9), False)
+                _put(im, pill, w / 2, h * ((.945 if pls else .87) if wide else .9), False)
         if shape != 'row':
             im = _round(im, max(8, min(w, h) // 30))
     tmp = out + '.part'
@@ -484,9 +762,7 @@ _busy = {}
 def make_async(m, shape, w, h, callback):
     """the picture if it is made already, else None and callback(path) when it is ready"""
     data()
-    live, hm = _when(m)
-    sig = json.dumps([m.get('a'), m.get('b'), m.get('comp'), m.get('ar'), shape, w, h, live, hm, 3])
-    out = os.path.join(U.CACHE_DIR, 'mc_%s.png' % hashlib.md5(sig.encode('utf-8')).hexdigest()[:16])
+    out = _out(m, shape, w, h, _wants_players(m, shape))
     if os.path.isfile(out):
         return out
     if out in _busy:
