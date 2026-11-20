@@ -15,6 +15,9 @@ _K = b'M0h@mmedSk1n'
 _TASHKEEL = re.compile(u'[ً-ْـٰ]')
 _ARABIC = re.compile(u'[؀-ۿ]')
 _SPORT_CH = re.compile(u'sport|ssc|bein|ad sport|alkass|al kass|dubai sport|abu dhabi sport|sky sport|sharjah sport|ksa sport|رياض|رياضي', re.I)
+_OTHER_SPORT = re.compile(u'تنس|كره السله|لكره السله|الكره الطائره|كره الطائره|الطائره الشاطئيه|كره اليد|كره الصالات|الهوكي|الرغبي|'
+                          u'كره الماء|كره القدم الامريكيه|الدوري الاميركي لكره|الدوري الامريكي لكره|\\btennis\\b|basketball|volleyball|'
+                          u'handball|futsal|\\bnba\\b|\\bnfl\\b|hockey|rugby', re.I)
 _VERSUS = re.compile(u'(?:\\s|^)(?:vs?\\.?|x|×|ضد|-|–|—|:)(?:\\s|$)|مباراه|مواجهه|مباراة|\\blive\\b|مباشر|\\bmatch\\b|ديربي|كلاسيكو|derby|clasico', re.I)
 _db = {}
 
@@ -121,6 +124,8 @@ def find(title, desc=u'', genre=None, chname=u''):
             if k and not any(s <= m.start() < e for s, e in spans):
                 found.append((m.start(), k))
     found.sort()
+    if _OTHER_SPORT.search(t):  # tennis, basketball, volleyball ... between two countries is no football match
+        return None
     sport = genre == 4 or bool(_SPORT_CH.search(_u(chname))) or comp is not None
     ar = bool(_ARABIC.search(title))
     if len(found) >= 2:

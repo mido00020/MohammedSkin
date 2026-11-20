@@ -1,0 +1,17 @@
+Package: enigma2-skin-mohammedskin
+Version: 2.1.135
+Description: MohammedSkin - cinematic FHD skin for OpenViX, OpenBlackHole, OpenATV, PurE2 and EGAMI
+ Adapts itself to the installed image. Infobar, second infobar (classic, four scenes or two scenes)
+ and channel list with posters, backdrops, scenes and rating stars fetched online (cached in /tmp only),
+ colour themes, menu and channel list styles, classic clocks, Arabic event translation,
+ signal meters in dB, pulsing transponder readout, softcam server info, channel and plugin list sizes,
+ infobar transparency, a filter that hides adult posters, weather, Arabic fonts,
+ Arabic posters for Arabic channels, a 3D channel logo when there is no poster,
+ ten colour themes, glass channel list styles with tabs and sidebars, and a plugin grid.
+Section: skin
+Priority: optional
+Maintainer: Mohammed
+Architecture: all
+Installed-Size: 124152
+Depends: enigma2
+Recommends: python3-pillow
