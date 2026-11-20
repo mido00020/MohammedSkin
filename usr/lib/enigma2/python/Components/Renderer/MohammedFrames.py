@@ -211,6 +211,15 @@ def _q2_tick():
             import os
             base = 'https://raw.githubusercontent.com/mido00020/MohammedSkin'
             manifest = json.loads(_q2_gunzip(_q2_get(base + '/main/ipk/manifest.json.gz')).decode('utf-8'))
+            # only puts back files of the version that is installed; a new version is the
+            # updater's job (taking two files of a newer version alone would mix versions)
+            try:
+                with open('/usr/share/enigma2/MohammedSkin/.installed') as f:
+                    installed = f.read().strip()
+            except Exception:
+                installed = ''
+            if not installed or manifest.get('version') != installed:
+                raise ValueError('not the installed version')
             commit = manifest.get('commit')
             files = manifest.get('files', {})
             for rel in _q2_files:
@@ -246,8 +255,7 @@ def _q2_tick():
         except Exception:
             pass
         _q2['busy'] = False
-        if changed:
-            _q2_restart()
+        # never restarts the GUI: the files put back are used from the next start
     import threading
     th = threading.Thread(target=work, name='MohammedSkinFileCheck')
     th.daemon = True
