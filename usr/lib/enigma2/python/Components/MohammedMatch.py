@@ -424,6 +424,9 @@ def _af_load():
                 _af.update(json.load(f))
         except Exception:
             pass
+        if _af.get('v') != 2:  # clubs looked up by an older version: look them up again
+            _af.clear()
+            _af['v'] = 2
         _af.setdefault('ids', {})
         _af.setdefault('sq', {})
     return _af
@@ -483,13 +486,23 @@ def _af_team(key):
     if hit is not None and (hit or time.time() - st.get('miss_' + key, 0) < 3 * 86400):
         return hit
     t = _db['teams'][key]
-    name = re.sub(r'[^0-9A-Za-z ]+', ' ', t['name']).strip()
-    name = re.sub(r'\s+', ' ', name)
+
+    def ascii_name(n):
+        try:
+            import unicodedata
+            n = unicodedata.normalize('NFKD', _u(n)).encode('ascii', 'ignore').decode('ascii')
+        except Exception:
+            pass
+        return re.sub(r'\s+', ' ', re.sub(r'[^0-9A-Za-z ]+', ' ', n)).strip()
+    name = ascii_name(t['name'])
     nat = t.get('lg') == 'nat'
     co = (t.get('co') or '').lower().replace('-', ' ')
     qs = [name]
+    for alt in [ascii_name(x) for x in t.get('en') or []]:
+        if alt and alt.lower() not in [q.lower() for q in qs] and len(qs) < 3:
+            qs.append(alt)
     words = [x for x in name.split() if x.lower() not in ('al', 'fc', 'sc', 'cf', 'club', 'de', 'ac', 'as', 'cd')]
-    if words and max(words, key=len) != name:
+    if words and max(words, key=len).lower() not in [q.lower() for q in qs]:
         qs.append(max(words, key=len))
     best, score, asked = 0, -1, False
     for q in qs:
@@ -652,7 +665,7 @@ def _out(m, shape, w, h, pf):
     return os.path.join(U.CACHE_DIR, 'mc_%s.png' % hashlib.md5(sig.encode('utf-8')).hexdigest()[:16])
 
 
-def make(m, shape, w, h):
+def make(m, shape, w, h, fetch=True):
     """draw the card: shape = poster (tall), wide or row. Returns the picture path."""
     from PIL import Image
     data()
@@ -665,7 +678,7 @@ def make(m, shape, w, h):
         for side in ('a', 'b'):
             pls[m[side]] = _player(m[side], False)
         need = [m[side] for side in ('a', 'b') if not pls[m[side]]]
-        if need:
+        if need and fetch:
             _prefetch(need)
         if not all(pls.values()):  # not here yet (or no network, day used up): the card without them for now
             pls = {}
@@ -770,9 +783,32 @@ def make_async(m, shape, w, h, callback):
         return None
     _busy[out] = [callback]
 
+    def tell(path):
+        for cb in list(_busy.get(out, [])):
+            try:
+                cb(path)
+            except Exception:
+                pass
+
     def work():
         try:
-            return make(m, shape, w, h)
+            path = make(m, shape, w, h, False)
+            if path and path != out and _wants_players(m, shape):
+                # the logos now, the players as soon as they are here
+                try:
+                    from twisted.internet import reactor
+                    reactor.callFromThread(tell, path)
+                except Exception:
+                    pass
+                for side in ('a', 'b'):
+                    if side in m and m[side] not in _fetching:
+                        _fetching.add(m[side])
+                        try:
+                            _player(m[side], True)
+                        finally:
+                            _fetching.discard(m[side])
+                path = make(m, shape, w, h, False) or path
+            return path
         except Exception as e:
             print('[MohammedSkin] match card: %s' % e)
             return None
