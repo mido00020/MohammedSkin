@@ -206,7 +206,12 @@ class MohammedPoster(Renderer):
 		shape = "wide" if w > h * 1.15 else "poster"
 		key = "match:%s:%s:%s:%s:%dx%d" % (m.get("a"), m.get("b"), m.get("comp"), m.get("begin"), w, h)
 		if key == self.current and self.shown:
-			return True
+			try:
+				final = MM.final_path(m, shape, w, h)  # with a players key: the card with the players
+				if getattr(self, "want", None) == final or MM.busy(final):
+					return True
+			except Exception:
+				return True
 		self.current = key
 		self.pending = None
 		self.timer.stop()

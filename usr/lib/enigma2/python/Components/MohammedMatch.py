@@ -770,6 +770,17 @@ def make(m, shape, w, h, fetch=True):
 
 
 _busy = {}
+_tried = {}
+
+
+def final_path(m, shape, w, h):
+    """the card that is wanted now: with the players when there is a key, else with the logos"""
+    data()
+    return _out(m, shape, w, h, _wants_players(m, shape))
+
+
+def busy(path):
+    return path in _busy
 
 
 def make_async(m, shape, w, h, callback):
@@ -801,12 +812,21 @@ def make_async(m, shape, w, h, callback):
                 except Exception:
                     pass
                 for side in ('a', 'b'):
-                    if side in m and m[side] not in _fetching:
-                        _fetching.add(m[side])
-                        try:
-                            _player(m[side], True)
-                        finally:
-                            _fetching.discard(m[side])
+                    k = m.get(side)
+                    if not k:
+                        continue
+                    for _ in range(240):  # another card is getting this club already: wait for it
+                        if k not in _fetching:
+                            break
+                        time.sleep(.5)
+                    if time.time() - _tried.get(k, 0) < 90 and _player(k, False) is None:
+                        continue  # asked a moment ago and nothing came: not again so soon
+                    _tried[k] = time.time()
+                    _fetching.add(k)
+                    try:
+                        _player(k, True)
+                    finally:
+                        _fetching.discard(k)
                 path = make(m, shape, w, h, False) or path
             return path
         except Exception as e:
