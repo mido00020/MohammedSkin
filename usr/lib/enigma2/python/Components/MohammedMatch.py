@@ -17,7 +17,8 @@ _ARABIC = re.compile(u'[؀-ۿ]')
 _SPORT_CH = re.compile(u'sport|ssc|bein|ad sport|alkass|al kass|dubai sport|abu dhabi sport|sky sport|sharjah sport|ksa sport|رياض|رياضي', re.I)
 _OTHER_SPORT = re.compile(u'تنس|كره السله|لكره السله|الكره الطائره|كره الطائره|الطائره الشاطئيه|كره اليد|كره الصالات|الهوكي|الرغبي|'
                           u'كره الماء|كره القدم الامريكيه|الدوري الاميركي لكره|الدوري الامريكي لكره|\\btennis\\b|basketball|volleyball|'
-                          u'handball|futsal|\\bnba\\b|\\bnfl\\b|hockey|rugby', re.I)
+                          u'handball|futsal|\\bnba\\b|\\bnfl\\b|hockey|rugby|snooker|darts|boxing|\\bufc\\b|\\bmma\\b|padel|golf|cricket|\\bwwe\\b|formula|motogp|'
+                          u'سنوكر|السهام|ملاكمه|المصارعه|مصارعه|بادل|جولف|الغولف|كريكيت|فورمولا|الفنون القتاليه', re.I)
 _VERSUS = re.compile(u'(?:\\s|^)(?:vs?\\.?|x|×|ضد|-|–|—|:)(?:\\s|$)|مباراه|مواجهه|مباراة|\\blive\\b|مباشر|\\bmatch\\b|ديربي|كلاسيكو|derby|clasico', re.I)
 _db = {}
 
@@ -139,8 +140,57 @@ def find(title, desc=u'', genre=None, chname=u''):
                 if la == lb and la in db['comps']:
                     comp = la
             return {'a': a, 'b': b, 'comp': comp, 'ar': ar}
+    if sport:
+        pair = _unknown_pair(title, t, comp, found)
+        if pair:
+            return {'a': pair[0], 'b': pair[1], 'comp': comp, 'ar': ar}
     if comp is not None and (genre == 4 or _SPORT_CH.search(_u(chname)) or _VERSUS.search(t)):
         return {'comp': comp, 'ar': ar}
+    return None
+
+
+_SEG = re.compile(u'\\s*(?:·|•|\\||،|\\s[-–—]\\s|:)\\s*')
+_PAIR = re.compile(u'^(.{2,40}?)\\s+(?:vs\\.?|v|x|×|ضد)\\s+(.{2,40}?)$', re.I)
+_FOOT = re.compile(u'دوري|كاس|بطوله|تصفيات|كره القدم|league|liga|ligue|\\bcup\\b|copa|coppa|pokal|football|soccer|'
+                   u'premier|serie a|bundesliga|eredivisie|championship|uefa|fifa|\\bcaf\\b|\\bafc\\b', re.I)
+_LEAD = re.compile(u'^(?:مباشر|حصري|مباراه|مباراة|live|en vivo|direct)\\s*', re.I)
+_NOT_NAME = re.compile(u'\\d{3,}|الحلقه|episode|season|\\bs\\d|\\be\\d|موسم|برنامج|ملخص|استوديو|studio|highlights', re.I)
+_PALETTE = ('1e5fbf', 'b8202f', '1f8a4c', '6a2ca0', 'd07a12', '0f7f8c', '8c1f5a', '3d4a63', 'a3912a', '2a6f3a')
+
+
+def _unknown_pair(title, t, comp, found):
+    """'X × Y' on a sports channel, X or Y not in the pack: a card with their names (first letters
+    in a circle of a colour of their own). Only for football: other sports are left out before."""
+    if not (comp is not None or found or _FOOT.search(t)):
+        return None
+    for seg in _SEG.split(_TASHKEEL.sub(u'', title)):
+        seg = _LEAD.sub(u'', seg.strip())
+        m = _PAIR.match(seg)
+        if not m:
+            continue
+        sides = []
+        for raw in (m.group(1).strip(), m.group(2).strip()):
+            if _NOT_NAME.search(raw) or len(raw.split()) > 4:
+                return None
+            n = _norm(raw)
+            k = None
+            for hit in _db['tre'].finditer(n):  # a known club on this side
+                k = _db['alias'].get(hit.group(1)) or _db['alias'].get(hit.group(1).lower())
+                if isinstance(k, (list, tuple)):  # one name, several clubs: the one of this competition
+                    k = ([x for x in k if comp and _db['teams'][x].get('lg') == comp] or list(k))[0] if k else None
+                if k:
+                    break
+            if not k:
+                k = u'x:' + raw
+                if k not in _db['teams']:
+                    if len(_db['teams']) > 2000:
+                        return None
+                    h = sum(ord(c) for c in raw)
+                    _db['teams'][k] = {'name': raw, 'ar': [], 'en': [], 'cs': [], 'c1': _PALETTE[h % len(_PALETTE)],
+                                       'c2': None, 'b': False, 'lg': 'x'}
+            sides.append(k)
+        if sides[0] != sides[1]:
+            return sides
     return None
 
 
@@ -234,8 +284,13 @@ def _badge(key, size):
         d = ImageDraw.Draw(im)
         c = _team_color(t)
         d.ellipse((2, 2, size - 3, size - 3), fill=c + (255,), outline=(255, 255, 255, 230), width=max(2, size // 30))
-        ini = u''.join(w[0] for w in re.sub(u'^(Al|Al-|FC|SC|AS)\\s+', u'', t['name']).split()[:2]).upper()
-        _text(d, (size / 2, size / 2), ini, _font(int(size * .36)), (255, 255, 255))
+        nm = re.sub(u'^(Al|Al-|FC|SC|AS)\\s+', u'', t['name'])
+        if _ARABIC.search(nm):
+            nm = re.sub(u'^ال', u'', nm.split()[0]) or nm
+            _text(d, (size / 2, size / 2), nm[0], _arfont(int(size * .44)), (255, 255, 255))
+        else:
+            ini = u''.join(w[0] for w in nm.split()[:2]).upper()
+            _text(d, (size / 2, size / 2), ini, _font(int(size * .36)), (255, 255, 255))
     # a soft light behind, so dark badges (black, navy) still stand out
     glow = Image.new('RGBA', out.size, (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
@@ -262,6 +317,105 @@ def _vs(s):
     return im
 
 
+_FORMS = {
+    u'\u0621': (0xFE80,), u'\u0622': (0xFE81, 0xFE82), u'\u0623': (0xFE83, 0xFE84), u'\u0624': (0xFE85, 0xFE86),
+    u'\u0625': (0xFE87, 0xFE88), u'\u0626': (0xFE89, 0xFE8A, 0xFE8B, 0xFE8C), u'\u0627': (0xFE8D, 0xFE8E),
+    u'\u0628': (0xFE8F, 0xFE90, 0xFE91, 0xFE92), u'\u0629': (0xFE93, 0xFE94), u'\u062A': (0xFE95, 0xFE96, 0xFE97, 0xFE98),
+    u'\u062B': (0xFE99, 0xFE9A, 0xFE9B, 0xFE9C), u'\u062C': (0xFE9D, 0xFE9E, 0xFE9F, 0xFEA0), u'\u062D': (0xFEA1, 0xFEA2, 0xFEA3, 0xFEA4),
+    u'\u062E': (0xFEA5, 0xFEA6, 0xFEA7, 0xFEA8), u'\u062F': (0xFEA9, 0xFEAA), u'\u0630': (0xFEAB, 0xFEAC), u'\u0631': (0xFEAD, 0xFEAE),
+    u'\u0632': (0xFEAF, 0xFEB0), u'\u0633': (0xFEB1, 0xFEB2, 0xFEB3, 0xFEB4), u'\u0634': (0xFEB5, 0xFEB6, 0xFEB7, 0xFEB8),
+    u'\u0635': (0xFEB9, 0xFEBA, 0xFEBB, 0xFEBC), u'\u0636': (0xFEBD, 0xFEBE, 0xFEBF, 0xFEC0), u'\u0637': (0xFEC1, 0xFEC2, 0xFEC3, 0xFEC4),
+    u'\u0638': (0xFEC5, 0xFEC6, 0xFEC7, 0xFEC8), u'\u0639': (0xFEC9, 0xFECA, 0xFECB, 0xFECC), u'\u063A': (0xFECD, 0xFECE, 0xFECF, 0xFED0),
+    u'\u0641': (0xFED1, 0xFED2, 0xFED3, 0xFED4), u'\u0642': (0xFED5, 0xFED6, 0xFED7, 0xFED8), u'\u0643': (0xFED9, 0xFEDA, 0xFEDB, 0xFEDC),
+    u'\u0644': (0xFEDD, 0xFEDE, 0xFEDF, 0xFEE0), u'\u0645': (0xFEE1, 0xFEE2, 0xFEE3, 0xFEE4), u'\u0646': (0xFEE5, 0xFEE6, 0xFEE7, 0xFEE8),
+    u'\u0647': (0xFEE9, 0xFEEA, 0xFEEB, 0xFEEC), u'\u0648': (0xFEED, 0xFEEE), u'\u0649': (0xFEEF, 0xFEF0),
+    u'\u064A': (0xFEF1, 0xFEF2, 0xFEF3, 0xFEF4)}
+_LAMALEF = {u'\u0622': (0xFEF5, 0xFEF6), u'\u0623': (0xFEF7, 0xFEF8), u'\u0625': (0xFEF9, 0xFEFA), u'\u0627': (0xFEFB, 0xFEFC)}
+
+
+def _shape(s):
+    """Arabic letters joined by hand (for a picture library without text shaping), in display order"""
+    s = _TASHKEEL.sub(u'', _u(s))
+    out = []
+    i = 0
+    joins = lambda c: c in _FORMS and len(_FORMS[c]) == 4
+    while i < len(s):
+        c = s[i]
+        prev = s[i - 1] if i else u''
+        after = joins(prev)
+        if c == u'\u0644' and i + 1 < len(s) and s[i + 1] in _LAMALEF:
+            out.append(unichr_(_LAMALEF[s[i + 1]][1 if after else 0]))
+            i += 2
+            continue
+        f = _FORMS.get(c)
+        if not f:
+            out.append(c)
+            i += 1
+            continue
+        nxt = s[i + 1] if i + 1 < len(s) else u''
+        before = len(f) == 4 and nxt in _FORMS
+        if len(f) == 1:
+            g = f[0]
+        elif after and before:
+            g = f[3]
+        elif after:
+            g = f[1]
+        elif before:
+            g = f[2]
+        else:
+            g = f[0]
+        out.append(unichr_(g))
+        i += 1
+    return u''.join(reversed(out))
+
+
+def unichr_(n):
+    try:
+        return unichr(n)
+    except NameError:
+        return chr(n)
+
+
+def _arfont(n):
+    from PIL import ImageFont
+    for f in ('moh-arabic.ttf', 'ar-title.ttf'):
+        p = os.path.join(U.SKIN_DIR, 'fonts', f)
+        if os.path.isfile(p):
+            try:
+                return ImageFont.truetype(p, n)
+            except Exception:
+                pass
+    return _font(n)
+
+
+def _ar_label(text, height, maxw):
+    from PIL import Image, ImageDraw
+    try:
+        raqm = U._raqm()
+    except Exception:
+        raqm = False
+    shown = text if raqm else _shape(text)
+    n = height
+    while True:
+        f = _arfont(n)
+        d = ImageDraw.Draw(Image.new('L', (4, 4)))
+        try:
+            bb = d.textbbox((0, 0), shown, font=f, direction='rtl') if raqm else d.textbbox((0, 0), shown, font=f)
+        except Exception:
+            w0, h0 = d.textsize(shown, font=f)
+            bb = (0, 0, w0, h0)
+        if bb[2] - bb[0] <= maxw or n <= 12:
+            break
+        n -= 2
+    im = Image.new('RGBA', (bb[2] - bb[0] + 8, bb[3] - bb[1] + 8), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    if raqm:
+        d.text((4 - bb[0], 4 - bb[1]), shown, font=f, fill=(255, 255, 255), direction='rtl')
+    else:
+        d.text((4 - bb[0], 4 - bb[1]), shown, font=f, fill=(255, 255, 255))
+    return im
+
+
 def _label(img_key, text_en, ar, height, maxw):
     """the picture of a name: Arabic ones come ready made (this receiver's picture library may not join
     Arabic letters), English ones are written here."""
@@ -272,6 +426,8 @@ def _label(img_key, text_en, ar, height, maxw):
             im = Image.open(p).convert('RGBA')
             s = min(float(height) / im.size[1], float(maxw) / im.size[0])
             return im.resize((max(1, int(im.size[0] * s)), max(1, int(im.size[1] * s))), Image.LANCZOS)
+    if _ARABIC.search(text_en):
+        return _ar_label(text_en, height, maxw)
     f = _font(height)
     n = height
     while n > 10:
@@ -629,7 +785,20 @@ def _player(key, net=True):
         if not os.path.isfile(path):
             if not net or not U.download(p['photo'], path):
                 return None
-        return _cutout(path), p.get('name') or ''
+        cut = os.path.join(U.CACHE_DIR, 'plc_%d.png' % p['id'])
+        from PIL import Image
+        if os.path.isfile(cut):
+            try:
+                return Image.open(cut).convert('RGBA'), p.get('name') or ''
+            except Exception:
+                pass
+        im = _cutout(path)  # made once: the next cards take it ready
+        try:
+            im.save(cut + '.part', 'PNG')
+            os.rename(cut + '.part', cut)
+        except Exception:
+            pass
+        return im, p.get('name') or ''
     except Exception as e:
         print('[MohammedSkin] player %s: %s' % (key, e))
         return None
@@ -661,7 +830,7 @@ def _prefetch(keys):
 
 
 def _wants_players(m, shape):
-    return shape != 'row' and 'a' in m and players_on()
+    return shape != 'row' and 'a' in m and players_on() and not (u'%s%s' % (m['a'], m['b'])).count(u'x:')
 
 
 def _out(m, shape, w, h, pf):

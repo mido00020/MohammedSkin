@@ -39,6 +39,8 @@ class MohammedFrames(Renderer):
                 self.interval = max(40, int(value))
             else:
                 attribs.append((attrib, value))
+        if self.cache is None and self.mode in ('cycle', 'bounce', 'once'):
+            self.cache = {}  # moving pictures: each frame read from the disk once, not 10 times a second
         self.skinAttributes = attribs
         return Renderer.applySkin(self, desktop, parent)
 
