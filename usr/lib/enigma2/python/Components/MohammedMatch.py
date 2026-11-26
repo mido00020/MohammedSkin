@@ -21,6 +21,8 @@ _OTHER_SPORT = re.compile(u'تنس|كره السله|لكره السله|الك�
                           u'handball|futsal|\\bnba\\b|\\bnfl\\b|hockey|rugby|snooker|darts|boxing|\\bufc\\b|\\bmma\\b|padel|golf|cricket|\\bwwe\\b|formula|motogp|'
                           u'سنوكر|السهام|ملاكمه|المصارعه|مصارعه|بادل|جولف|الغولف|كريكيت|فورمولا|الفنون القتاليه', re.I)
 _VERSUS = re.compile(u'(?:\\s|^)(?:vs?\\.?|x|×|ضد|-|–|—|:)(?:\\s|$)|مباراه|مواجهه|مباراة|\\blive\\b|مباشر|\\bmatch\\b|ديربي|كلاسيكو|derby|clasico', re.I)
+_LIVE = re.compile(u'^(?:مباشر|انتهت|live|ft)\\b[^:]{0,24}:\\s*', re.I)
+_SCORE = re.compile(u'\\s+\\d{1,2}\\s*[-–]\\s*\\d{1,2}\\s+')
 _db = {}
 _dlock = threading.RLock()
 
@@ -114,6 +116,10 @@ def find(title, desc=u'', genre=None, chname=u''):
     title = _u(title)
     if not title:
         return None
+    live = _LIVE.match(title)       # a match followed live in the guide: 'مباشر 67': A 2 - 0 B' / 'انتهت: A 2 - 1 B'
+    if live:
+        title = title[live.end():]
+    title = _SCORE.sub(u' × ', title)
     t = _norm(title)
     comp = None
     m = db['cre'].search(t)
@@ -139,7 +145,7 @@ def find(title, desc=u'', genre=None, chname=u''):
     found.sort()
     if _OTHER_SPORT.search(t):  # tennis, basketball, volleyball ... between two countries is no football match
         return None
-    sport = genre == 4 or bool(_SPORT_CH.search(_u(chname))) or comp is not None
+    sport = genre == 4 or bool(live) or bool(_SPORT_CH.search(_u(chname))) or comp is not None
     ar = bool(_ARABIC.search(title))
     if len(found) >= 2:
         if not (sport or _VERSUS.search(t)):
