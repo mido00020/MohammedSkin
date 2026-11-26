@@ -4019,7 +4019,7 @@ def reapply_all(base=SKIN_DIR, log=print):
         log('MohammedSkin: tuning failed: %s' % e)
     return (key, fam)
 _SKIP_GENRES = (2, 4)
-_NEWS_TITLE = re.compile(u'^(?:نشرة|موجز|النشرة|الموجز|الأخبار|أخبار|اخبار|مباراة)(?:\\s|$)|^(?:news|nachrichten|tagesschau|journal|telediario|notiziario|haberler)(?:\\s|$)|\\b(?:live|direct)\\s*:\\s*\\S+\\s+(?:vs?\\.?|-)\\s+\\S', re.I | re.U)
+_NEWS_TITLE = re.compile(u'^(?:نشرة|موجز|النشرة|الموجز|الأخبار|أخبار|اخبار|مباراة)(?:\\s|$)|^(?:news|nachrichten|tagesschau|journal|telediario|notiziario|haberler)(?:\\s|$)|\\b(?:live|direct)\\s*:\\s*\\S+\\s+(?:vs?\\.?|-)\\s+\\S|^(?:مباشر|انتهت|قريبا|قريباً)[^:]{0,24}:|\\s\u00d7\\s', re.I | re.U)
 _DESC_YEAR = re.compile('(?<!\\d)((?:19[3-9]|20[0-4])\\d)(?!\\d)')
 
 def event_genre(event):
@@ -4041,6 +4041,14 @@ def event_genre(event):
         except Exception:
             pass
     return None
+
+def _live_match(name):
+    # a match followed live in the guide ('مباشر 67': A 1 - 0 B', 'A × B'): no poster for it
+    try:
+        name = name.decode('utf-8', 'ignore')
+    except AttributeError:
+        pass
+    return bool(_NEWS_TITLE.search(name or ''))
 
 def skip_event(event, title):
     if _NEWS_TITLE.search(title or ''):
@@ -4129,7 +4137,7 @@ def event_query(event, ref=None, chname=''):
         return q or None
     title, year = clean_title(name)
     q = {}
-    if not no_event_title(title) and (not no_event_title(name)) and (not skip_event(event, title)):
+    if not no_event_title(title) and (not no_event_title(name)) and (not skip_event(event, title)) and (not _live_match(name)):
         arabic = arabic_channel(ref, chname) or bool(_ARABIC.search(title))
         extra = []
         en = english_title(event, ref)
