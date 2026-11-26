@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.136'
+SKIN_VERSION = '2.1.137'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -967,14 +967,17 @@ def _work(key, title, year, kind, arabic=False, extra=(), hint=None):
             def fetch(name, url, path):
                 if download(url, path):
                     done[name] = path
-            threads = [threading.Thread(target=fetch, args=j) for j in jobs]
-            for t in threads:
+            # the poster (and the Arabic one) first and alone: it gets the whole line and the CPU,
+            # the backdrop and the scenes follow once the poster is on the screen
+            first_jobs = [j for j in jobs if j[0] in ('poster', 'poster_ar')]
+            later_jobs = [j for j in jobs if j[0] not in ('poster', 'poster_ar')]
+            first = [threading.Thread(target=fetch, args=j) for j in first_jobs]
+            for t in first:
                 t.daemon = True
                 t.start()
-            first = [t for t, j in zip(threads, jobs) if j[0] in ('poster', 'poster_ar')]
             for t in first:
                 t.join(TIMEOUT + 4)
-            if done.get('poster') and len(threads) > len(first):
+            if done.get('poster') and later_jobs:
                 part = dict(entry, partial=True)
                 for k in ('poster', 'poster_ar'):
                     if done.get(k):
@@ -984,8 +987,14 @@ def _work(key, title, year, kind, arabic=False, extra=(), hint=None):
                     cbs = list(_inflight.get(key, []))
                 for cb in cbs:
                     _deliver(cb, part)
-            for t in threads:
-                t.join(TIMEOUT + 4)
+            # at most three at a time: eight downloads together were too much for a weak box
+            for i in range(0, len(later_jobs), 3):
+                group = [threading.Thread(target=fetch, args=j) for j in later_jobs[i:i + 3]]
+                for t in group:
+                    t.daemon = True
+                    t.start()
+                for t in group:
+                    t.join(TIMEOUT + 4)
             for k in ('poster', 'backdrop', 'poster_ar'):
                 if done.get(k):
                     entry[k] = done[k]
@@ -1142,6 +1151,9 @@ def cover_crop(path, w, h):
     except Exception:
         return path
 _crop_busy = {}
+# drawing pictures (crops, 3D logos, match cards) is done two at a time: while scrolling fast,
+# a dozen of them together froze weak boxes
+CPU = threading.Semaphore(2)
 
 def cover_crop_async(path, w, h, callback):
     if not path or w <= 0 or h <= 0:
@@ -1157,7 +1169,8 @@ def cover_crop_async(path, w, h, callback):
 
     def work():
         try:
-            res = cover_crop(path, w, h)
+            with CPU:
+                res = cover_crop(path, w, h)
         except Exception:
             res = path
         with _lock:
@@ -3504,7 +3517,8 @@ def picon3d_async(ref, name, w, h, callback):
     def work():
         path = None
         try:
-            path = picon3d(ref, name, w, h)
+            with CPU:
+                path = picon3d(ref, name, w, h)
         except Exception:
             path = None
         with _lock:

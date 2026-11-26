@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import threading
 import time
 import zlib
 from Components import MohammedSkinUtils as U
@@ -21,6 +22,7 @@ _OTHER_SPORT = re.compile(u'تنس|كره السله|لكره السله|الك�
                           u'سنوكر|السهام|ملاكمه|المصارعه|مصارعه|بادل|جولف|الغولف|كريكيت|فورمولا|الفنون القتاليه', re.I)
 _VERSUS = re.compile(u'(?:\\s|^)(?:vs?\\.?|x|×|ضد|-|–|—|:)(?:\\s|$)|مباراه|مواجهه|مباراة|\\blive\\b|مباشر|\\bmatch\\b|ديربي|كلاسيكو|derby|clasico', re.I)
 _db = {}
+_dlock = threading.RLock()
 
 
 def _norm(s):
@@ -46,15 +48,24 @@ def _alt(names):
 def data():
     if _db:
         return _db
+    with _dlock:
+        return _data()
+
+
+def _data():
+    if _db:
+        return _db
     try:
         blob = bytearray(open(os.path.join(BASE, 'data.bin'), 'rb').read())
+        kb = bytearray(_K)
         for i in range(len(blob)):
-            blob[i] ^= bytearray(_K)[i % len(_K)]
+            blob[i] ^= kb[i % len(kb)]
         d = json.loads(zlib.decompress(bytes(blob)).decode('utf-8'))
     except Exception as e:
         print('[MohammedSkin] football data: %s' % e)
         _db['bad'] = True
         return _db
+    db = {}
     alias, cs = {}, {}
     for key, t in d['teams'].items():
         for n in t['ar'] + t['en']:
@@ -66,14 +77,15 @@ def data():
         for n in c['ar'] + c['en']:
             calias.setdefault(n, code)
     # Arabic names may carry a joined "و" (and): "الهلال والنصر"
-    _db['teams'] = d['teams']
-    _db['comps'] = d['comps']
-    _db['alias'] = alias
-    _db['csalias'] = cs
-    _db['calias'] = calias
-    _db['tre'] = re.compile(u'(?<!\\w)(?:و(?=ال))?(%s)(?!\\w)' % _alt(alias.keys()), re.I | re.U)
-    _db['csre'] = re.compile(u'(?<!\\w)(%s)(?!\\w)' % _alt(cs.keys()), re.U) if cs else None
-    _db['cre'] = re.compile(u'(?<!\\w)(%s)(?!\\w)' % _alt(calias.keys()), re.I | re.U)
+    db['teams'] = d['teams']
+    db['comps'] = d['comps']
+    db['alias'] = alias
+    db['csalias'] = cs
+    db['calias'] = calias
+    db['tre'] = re.compile(u'(?<!\\w)(?:و(?=ال))?(%s)(?!\\w)' % _alt(alias.keys()), re.I | re.U)
+    db['csre'] = re.compile(u'(?<!\\w)(%s)(?!\\w)' % _alt(cs.keys()), re.U) if cs else None
+    db['cre'] = re.compile(u'(?<!\\w)(%s)(?!\\w)' % _alt(calias.keys()), re.I | re.U)
+    _db.update(db)  # all at once: another thread never sees half of it
     return _db
 
 
@@ -194,6 +206,18 @@ def _unknown_pair(title, t, comp, found):
     return None
 
 
+_fe = {}
+
+
+def preload():
+    """read the football data in the background at start: the first match is no longer waited for"""
+    try:
+        if U.settings().get('matches', True):
+            U.in_background(data, lambda r: None)
+    except Exception:
+        pass
+
+
 def find_event(event, chname=u''):
     if event is None:
         return None
@@ -207,10 +231,19 @@ def find_event(event, chname=u''):
         genre = U.event_genre(event)
     except Exception:
         genre = None
+    # the same programme is asked for again and again (every redraw of the list): answered once
+    ck = (name, desc[:240], genre, chname, begin, bool(U.settings().get('matches', True)))
+    if ck in _fe:
+        m = _fe[ck]
+        return dict(m) if m else None
     m = find(name, desc, genre, chname)
     if m:
         m['begin'], m['length'] = begin or 0, length or 0
-    return m
+    if len(_fe) > 600:
+        _fe.clear()
+    _fe[ck] = m
+    return dict(m) if m else None
+
 
 # ------------------------------------------------------------------ the card
 
@@ -977,7 +1010,8 @@ def make_async(m, shape, w, h, callback):
 
     def work():
         try:
-            path = make(m, shape, w, h, False)
+            with U.CPU:
+                path = make(m, shape, w, h, False)
             if path and path != out and _wants_players(m, shape):
                 # the logos now, the players as soon as they are here
                 try:
@@ -1001,7 +1035,8 @@ def make_async(m, shape, w, h, callback):
                         _player(k, True)
                     finally:
                         _fetching.discard(k)
-                path = make(m, shape, w, h, False) or path
+                with U.CPU:
+                    path = make(m, shape, w, h, False) or path
             return path
         except Exception as e:
             print('[MohammedSkin] match card: %s' % e)

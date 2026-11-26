@@ -26,12 +26,22 @@ from enigma import ePixmap, ePicLoad, eTimer, eEPGCache
 
 from Components import MohammedSkinUtils as U
 
+_names = {}      # service reference -> its name (asking the service for it on every redraw was slow)
+_preloaded = [False]
+
 
 class MohammedPoster(Renderer):
 	GUI_WIDGET = ePixmap
 
 	def __init__(self):
 		Renderer.__init__(self)
+		if not _preloaded[0]:
+			_preloaded[0] = True
+			try:
+				from Components import MohammedMatch as MM
+				MM.preload()
+			except Exception:
+				pass
 		self.kind = "poster"
 		self.scene = 0
 		self.which = "now"
@@ -117,10 +127,21 @@ class MohammedPoster(Renderer):
 		if ref is None:
 			return None, ""
 		try:
+			rs = ref.toString() if hasattr(ref, "toString") else str(ref)
+		except Exception:
+			rs = None
+		if rs is not None and rs in _names:
+			return ref, _names[rs]
+		try:
 			from ServiceReference import ServiceReference
-			return ref, (ServiceReference(ref).getServiceName() or "").replace(u"\x86", "").replace(u"\x87", "")
+			name = (ServiceReference(ref).getServiceName() or "").replace(u"\x86", "").replace(u"\x87", "")
 		except Exception:
 			return ref, ""
+		if rs is not None and name:
+			if len(_names) > 800:
+				_names.clear()
+			_names[rs] = name
+		return ref, name
 
 	def channelName(self):
 		return self.channel()[1]
