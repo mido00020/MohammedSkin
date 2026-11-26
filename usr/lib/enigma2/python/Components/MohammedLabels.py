@@ -15,6 +15,8 @@ LABELS = {
 		"de": u"Jetzt läuft", "fr": u"En cours", "es": u"Ahora", "it": u"In onda", "pt": u"Agora", "nl": u"Nu bezig", "fa": u"در حال پخش", "zh": u"正在播放", "ja": u"放送中", "hr": u"Trenutno"},
 	"Then at": {"ar": u"ثم الساعة", "el": u"Μετά στις", "uk": u"Далі о", "ru": u"Далее в", "pl": u"Potem o", "tr": u"Sonra",
 		"de": u"Danach um", "fr": u"Ensuite à", "es": u"Luego a las", "it": u"Poi alle", "pt": u"Depois às", "nl": u"Daarna om", "fa": u"سپس ساعت", "zh": u"接下来", "ja": u"次は", "hr": u"Zatim u"},
+	"After that at": {"ar": u"بعدها الساعة", "el": u"Έπειτα στις", "uk": u"Потім о", "ru": u"Потом в", "pl": u"Później o", "tr": u"Daha sonra",
+		"de": u"Später um", "fr": u"Puis à", "es": u"Después a las", "it": u"Più tardi alle", "pt": u"Mais tarde às", "nl": u"Later om", "fa": u"بعد از آن ساعت", "zh": u"之后", "ja": u"その後", "hr": u"Kasnije u"},
 	"Next:": {"ar": u"التالي:", "el": u"Επόμενο:", "uk": u"Далі:", "ru": u"Далее:", "pl": u"Następnie:", "tr": u"Sonraki:",
 		"de": u"Danach:", "fr": u"Ensuite :", "es": u"Siguiente:", "it": u"Poi:", "pt": u"A seguir:", "nl": u"Straks:", "fa": u"بعدی:", "zh": u"下一个:", "ja": u"次:", "hr": u"Sljedeće:"},
 	"Next at": {"ar": u"التالي الساعة", "el": u"Επόμενο στις", "uk": u"Наступне о", "ru": u"Следующее в", "pl": u"Następny o", "tr": u"Sonraki saat",

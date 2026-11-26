@@ -113,8 +113,25 @@
 		<widget source="session.Event_Next" render="Label" position="230,786" size="400,30" font="Regular;18" foregroundColor="smoke" backgroundColor="ink" transparent="1" zPosition="2">
 			<convert type="MohammedInfo">Duration</convert>
 		</widget>
-		<widget source="session.Event_Next" render="Label" position="640,694" size="790,260" font="ArText;24" foregroundColor="smoke" backgroundColor="ink" transparent="1" valign="top" zPosition="2">
+		<widget source="session.Event_Next" render="Label" position="640,694" size="790,124" font="ArText;24" foregroundColor="smoke" backgroundColor="ink" transparent="1" valign="top" zPosition="2">
 			<convert type="MohammedTranslate">Description</convert>
+		</widget>
+		<!-- after the next one -->
+		<eLabel position="640,834" size="790,1" backgroundColor="line" zPosition="2" />
+		<widget source="session.CurrentService" render="Label" position="640,846" size="150,30" font="Regular;20" foregroundColor="brass" backgroundColor="ink" transparent="1" noWrap="1" zPosition="2">
+			<convert type="MohammedAfterNext">Text:After that at</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="794,846" size="100,30" font="Regular;20" foregroundColor="brass" backgroundColor="ink" transparent="1" noWrap="1" zPosition="2">
+			<convert type="MohammedAfterNext">Time</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="900,846" size="530,30" font="Regular;18" foregroundColor="smoke" backgroundColor="ink" transparent="1" noWrap="1" zPosition="2">
+			<convert type="MohammedAfterNext">Duration</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="640,876" size="790,52" font="ArTitle;34" foregroundColor="ivory" backgroundColor="ink" transparent="1" noWrap="1" zPosition="2">
+			<convert type="MohammedAfterNext">Name</convert>
+		</widget>
+		<widget source="session.CurrentService" render="Label" position="640,932" size="790,64" font="ArText;22" foregroundColor="smoke" backgroundColor="ink" transparent="1" valign="top" zPosition="2">
+			<convert type="MohammedAfterNext">Description</convert>
 		</widget>
 		<!-- four scenes from the event, one under the other -->
 		<widget source="session.Event_Now" render="MohammedPoster" kind="scene" index="0" delay="400" cornerRadius="19" position="1470,150" size="360,203" zPosition="3" />
