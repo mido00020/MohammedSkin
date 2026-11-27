@@ -811,7 +811,7 @@ class MohammedSkinSetup(Screen):
             self.session.open(MessageBox, self.t('Could not reach the update server.\nCheck the internet connection and try again.'), MessageBox.TYPE_ERROR, timeout=6)
         elif newer:
             self.latestFound = latest
-            if U.version_tuple(latest) > U.version_tuple(U.SKIN_VERSION):
+            if U.version_tuple(latest) > max(U.version_tuple(U.SKIN_VERSION), U.version_tuple(U.package_version())):
                 text = self.m(u'يوجد تحديث جديد لسكن MohammedSkin\n\nالمثبت: %s\nالجديد: %s\n\nهل تريد التحديث الآن؟', 'A new version of MohammedSkin is available.\n\nInstalled: %s\nNew: %s\n\nUpdate now?') % (U.SKIN_VERSION, latest)
             else:
                 text = self.m(u'آخر تحديث للسكن ما اكتمل (%s)\n\nهل تريد إكماله الآن؟', 'The last MohammedSkin update did not finish (%s).\n\nFinish it now?') % latest
@@ -831,7 +831,7 @@ class MohammedSkinSetup(Screen):
                 return
         except Exception:
             return
-        if U.version_tuple(latest) > U.version_tuple(U.SKIN_VERSION) and self.session.current_dialog is self:
+        if U.version_tuple(latest) > max(U.version_tuple(U.SKIN_VERSION), U.version_tuple(U.package_version())) and self.session.current_dialog is self:
             self.startAutoUpdate(latest)
             return
         self['key_blue'].setText(u'%s %s' % (self.t('Update'), latest))

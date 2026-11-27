@@ -35,7 +35,7 @@ MAX_CACHE_FILES = 600
 NEGATIVE_TTL = 30 * 60
 TIMEOUT = 5
 UA = 'Mozilla/5.0 (Enigma2; MohammedSkin)'
-SKIN_VERSION = '2.1.137'
+SKIN_VERSION = '2.1.141'
 UPDATE_BASE = 'https://raw.githubusercontent.com/mido00020/MohammedSkin/main'
 UPDATE_CMD = 'wget -q --no-check-certificate "%s/installer.sh" -O - | NORESTART=1 /bin/sh' % UPDATE_BASE
 DEFAULT_SETTINGS = {'tmdb': '', 'omdb': '', 'fanart': '', 'language': 'en-US', 'posters': True, 'backdrops': True, 'translate': True, 'theme': 'red', 'clock': 'royal', 'clock_smooth': True, 'anim': True, 'menu_style': 'classic', 'channels_style': 'classic', 'infobar_style': 'classic', 'sib_style': 'classic', 'ibposter_style': 'left', 'rating': True, 'image': '', 'family': '', 'ch_font': 'normal', 'ch_preview': 'poster', 'fit_screens': True, 'ib_backdrop': 'band', 'ib_led': True, 'ib_meter_color': 'classic', 'ib_meter_shape': 'line', 'menu_bg': 'auto', 'menu_anim': True, 'osd_fit': True, 'epg_english': True, 'date_format': 'skin', 'label_lang': 'en', 'ib_meter_back': True, 'weather_forecast': True, 'event_color': 'default', 'ch_rows': 'normal', 'pl_font': 'normal', 'ib_alpha': 'normal', 'adult_filter': 'normal', 'weather': True, 'weather_city': '', 'weather_mode': 'auto', 'weather_lat': None, 'weather_lon': None, 'weather_place_en': '', 'weather_place_ar': '', 'weather_units': 'c', 'weather_lang': 'ar', 'ar_text_font': 'tajawal', 'ar_title_font': 'lalezar', 'arabic_posters': 'auto', 'logo3d': True, 'weather_pos': 'top_right', 'pl_layout': 'grid', 'tr_lang': 'ar', 'tr_service': 'auto', 'tr_key': '', 'tr_region': ''}
@@ -3753,11 +3753,28 @@ def install_complete(base=SKIN_DIR):
     except Exception:
         return False
 
+def package_version():
+    # the version opkg itself installed: an update is never offered again for the version that is on the box,
+    # even if the number written in this file was left behind (that made the setup update and restart again and again)
+    for st in ('/var/lib/opkg/status', '/usr/lib/opkg/status', '/var/lib/dpkg/status'):
+        try:
+            with open(st) as f:
+                found = False
+                for line in f:
+                    if line.startswith('Package:'):
+                        found = line.split(':', 1)[1].strip() == 'enigma2-skin-mohammedskin'
+                    elif found and line.startswith('Version:'):
+                        return line.split(':', 1)[1].strip()
+        except Exception:
+            continue
+    return ''
+
 def check_update(callback):
 
     def work():
         v = latest_version()
-        newer = bool(v) and (version_tuple(v) > version_tuple(SKIN_VERSION) or not install_complete())
+        have = max(version_tuple(SKIN_VERSION), version_tuple(package_version()))
+        newer = bool(v) and (version_tuple(v) > have or not install_complete())
         try:
             from twisted.internet import reactor
             reactor.callFromThread(callback, v, newer)
@@ -4967,7 +4984,7 @@ def _k9k(latest, newer):
     # Only a really newer version, and each version is tried by itself once: the update restarts
     # the GUI, so it must never run again and again (a failed or half finished one is left to the
     # blue button in the setup plugin).
-    if version_tuple(latest) <= version_tuple(SKIN_VERSION):
+    if version_tuple(latest) <= max(version_tuple(SKIN_VERSION), version_tuple(package_version())):
         return
     mark = '/etc/enigma2/MohammedSkin.autoupdate'
     try:
